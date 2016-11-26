@@ -1,0 +1,212 @@
+//=============================================================================
+//
+//	タイトル	シーンファイル(2DDX)
+//	ファイル名	scene2DDX.cpp
+//	作成者		AT13A284_07 池田達哉
+//	作成日		2016/04/20
+//
+//=============================================================================
+//=============================================================================
+//	インクルード
+//=============================================================================
+#include "scene2DDX.h"
+#include "manager.h"
+#include "main.h"
+#include "rendererDX.h"
+#include "debugproc.h"
+
+//=============================================================================
+//	関数名	:CScene2DDX()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:コンストラクタ。
+//=============================================================================
+CScene2DDX::CScene2DDX(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+{
+	m_fLength	= 0.0f;
+	m_fAngle	= 0.0f;
+}
+
+//=============================================================================
+//	関数名	:~CScene2DDX()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:デストラクタ。
+//=============================================================================
+CScene2DDX::~CScene2DDX()
+{
+
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:D3DXVECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:初期化処理を行うと共に、初期位置を設定する。
+//=============================================================================
+void CScene2DDX::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
+{
+	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイス
+
+	VERTEX_2D	*pVtx;	// 2D頂点情報
+
+	// 各種初期化処理
+	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
+	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_fLength	= hypotf(size.x, size.y) * 0.5f;
+	m_fAngle	= atan2f(size.x, size.y);
+
+	// 頂点バッファ生成
+	pDevice->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+
+	// テクスチャのロード
+	D3DXCreateTextureFromFile(CRendererDX::GetDevice(), str, &m_Texture);
+	
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 描画座標設定
+	pVtx[0].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[0].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[0].Pos.z = 0.0f;
+	
+	pVtx[1].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[1].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[1].Pos.z = 0.0f;
+	
+	pVtx[2].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
+	pVtx[2].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
+	pVtx[2].Pos.z = 0.0f;
+	
+	pVtx[3].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
+	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
+	pVtx[3].Pos.z = 0.0f;
+	
+	// 除算係数設定
+	for(int cntRhw = 0 ; cntRhw < VERTEX_NUM ; cntRhw++)
+	{
+		pVtx[cntRhw].rhw = 1.0f;
+	}
+	
+	// スコア色設定
+	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
+	{
+		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	
+	// テクスチャ貼付座標設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:Uninit
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:終了処理を行う。
+//=============================================================================
+void CScene2DDX::Uninit(void)
+{
+	// テクスチャの削除
+	if(m_Texture != NULL)
+	{
+		m_Texture->Release();
+		m_Texture = NULL;
+	}
+	// 頂点バッファの削除
+	if(m_pVtxBuff != NULL)
+	{
+		m_pVtxBuff->Release();
+		m_pVtxBuff = NULL;
+	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+void CScene2DDX::Update(void)
+{
+
+}
+
+//=============================================================================
+//	関数名	:Draw
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:描画処理を行う。
+//=============================================================================
+void CScene2DDX::Draw(void)
+{
+	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+
+	// アルファテスト開始
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 250);
+
+	// 頂点フォーマットの設定
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_2D);
+	// テクスチャの設定
+	pDevice->SetTexture(0, m_Texture);
+	// メーター描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+	// アルファテスト終了
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+}
+
+//=============================================================================
+//	関数名	:Create
+//	引数	:D3DXVECTOR3	pos		-> 初期位置
+//			:D3DXVECTOR2	size	-> ポリゴンのサイズ
+//			:char			*str	-> テクスチャのファイルパス
+//	戻り値	:無し
+//	説明	:インスタンス生成を行うと共に、初期位置を設定する。
+//=============================================================================
+CScene2DDX *CScene2DDX::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
+{
+	CScene2DDX *scene2D;	// インスタンス
+
+	// インスタンス生成
+	scene2D = new CScene2DDX;
+
+	// 初期化処理
+	scene2D->Init(pos, size, str);
+
+	// インスタンスを返す
+	return scene2D;
+}
+
+//=============================================================================
+//	関数名	:SetColor
+//	引数	:float	a		-> アルファ値
+//			:float	r		-> R値
+//			:float	g		-> G値
+//			:float	b		-> B値
+//	戻り値	:無し
+//	説明	:ポリゴン色を設定する。
+//=============================================================================
+void CScene2DDX::SetColor(float a, float r, float g, float b)
+{
+	VERTEX_2D	*pVtx;	// 2D頂点情報
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for(int i = 0 ; i < 4 ; i++)
+	{
+		pVtx[i].col = D3DCOLOR_COLORVALUE(r, g, b, a);
+	}
+	
+	m_pVtxBuff->Unlock();
+
+}

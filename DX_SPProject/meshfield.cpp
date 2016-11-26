@@ -1,0 +1,559 @@
+//=============================================================================
+//
+//	タイトル	メッシュフィールド
+//	ファイル名	meshfield.cpp
+//	作成者		AT13A284_07 池田達哉
+//	作成日		2016/05/10
+//
+//=============================================================================
+//=============================================================================
+//	インクルード
+//=============================================================================
+#include "meshfield.h"
+#include "manager.h"
+#include "main.h"
+#include "rendererDX.h"
+#include "sceneXDX.h"
+#include <typeinfo.h>
+
+static D3DXVECTOR3 g_PosBuff[MESHFIELD_VERTEX_NUM];
+static D3DXVECTOR3 g_NorBuff[MESHFIELD_VERTEX_NUM];
+
+//=============================================================================
+//	静的メンバ変数
+//=============================================================================
+LPDIRECT3DTEXTURE9	CMeshfield::m_Texture;
+
+//=============================================================================
+//	関数名	:CMeshfield()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:コンストラクタ。
+//=============================================================================
+CMeshfield::CMeshfield(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+{
+
+}
+
+//=============================================================================
+//	関数名	:~CMeshfield()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:デストラクタ。
+//=============================================================================
+CMeshfield::~CMeshfield()
+{
+
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:初期化処理を行う。
+//=============================================================================
+void CMeshfield::Init(D3DXVECTOR3 pos)
+{
+	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+
+	// 各種初期化処理
+	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
+	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// 頂点バッファ生成
+	pDevice->CreateVertexBuffer((sizeof(VERTEX_3D) * MESHFIELD_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	
+	// 頂点情報セット
+	SetMeshfieldData();
+
+	// インデックスバッファの確保
+	pDevice->CreateIndexBuffer((sizeof(WORD) * MESHFIELD_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
+
+	WORD *pIdx;
+
+	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+	{
+		int buff = (MESHFIELD_VERTEX_NUM / (MESHFIELD_VERTICAL + 1));
+
+		for(int nCntVertical = 0 ; nCntVertical < MESHFIELD_VERTICAL ; nCntVertical++)
+		{
+			for(int nCntIdx = 0 ; nCntIdx < MESHFIELD_INDEX_STANDARD ; nCntIdx++)
+			{
+				if((nCntVertical == (MESHFIELD_VERTICAL - 1)) && (nCntIdx == (MESHFIELD_INDEX_STANDARD - 2)))
+				{// 処理打ち切り
+					break;
+				}
+
+				if(nCntIdx == (MESHFIELD_INDEX_STANDARD - 1))
+				{
+					buff += (MESHFIELD_HORIZONTAL + 2);
+					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
+				}
+				else if(nCntIdx == (MESHFIELD_INDEX_STANDARD - 2))
+				{
+					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
+				}
+				else
+				{
+					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
+				
+					if(nCntIdx % 2 == 0)
+					{
+						buff -= (MESHFIELD_HORIZONTAL + 1);
+					}
+					else
+					{
+						if(nCntIdx != (MESHFIELD_INDEX_STANDARD - 3))
+						{
+							buff += (MESHFIELD_HORIZONTAL + 2);
+						}
+					}
+				}
+			}
+		}
+	}
+	m_pIdxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:Uninit
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:終了処理を行う。
+//=============================================================================
+void CMeshfield::Uninit(void)
+{
+	if(m_pVtxBuff != NULL)
+	{
+		m_pVtxBuff->Release();
+		m_pVtxBuff = NULL;
+	}
+	if(m_pIdxBuff != NULL)
+	{
+		m_pIdxBuff->Release();
+		m_pIdxBuff = NULL;
+	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+void CMeshfield::Update(void)
+{
+	VERTEX_3D *pVtx;	// 頂点バッファ
+	WORD *pIdx;			// インデックスバッファ
+
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	// 法線設定
+	for(int y = 0 ; y <= MESHFIELD_VERTICAL ; y++)
+	{
+		for(int x = 0 ; x <= MESHFIELD_HORIZONTAL ; x++)
+		{
+			if((y != 0) && (y != (MESHFIELD_VERTICAL))
+				&& (x != 0) && (x != (MESHFIELD_HORIZONTAL)))
+			{
+				// 法線設定
+				D3DXVECTOR3 n0;
+				if(1)
+				{// ちゃんとした法線設定
+					D3DXVECTOR3 n1, n2, n3, n4, n5, n6, v01, v02, v03, v04, v05, v06;
+					v01 = pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					v02 = pVtx[((y - 1) * (MESHFIELD_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					v03 = pVtx[((y - 1) * (MESHFIELD_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					v04 = pVtx[((y) * (MESHFIELD_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					v05 = pVtx[((y + 1) * (MESHFIELD_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					v06 = pVtx[((y + 1) * (MESHFIELD_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+					D3DXVec3Cross(&n1, &v01, &v02);
+					D3DXVec3Normalize(&n1, &n1);
+					D3DXVec3Cross(&n2, &v02, &v03);
+					D3DXVec3Normalize(&n2, &n2);
+					D3DXVec3Cross(&n3, &v03, &v04);
+					D3DXVec3Normalize(&n3, &n3);
+					D3DXVec3Cross(&n4, &v04, &v05);
+					D3DXVec3Normalize(&n4, &n4);
+					D3DXVec3Cross(&n5, &v05, &v06);
+					D3DXVec3Normalize(&n5, &n5);
+					D3DXVec3Cross(&n6, &v06, &v01);
+					D3DXVec3Normalize(&n6, &n6);
+					n0 = (n1 + n2 + n3 + n4 + n5 + n6) / 6.0f;
+					D3DXVec3Normalize(&n0, &n0);
+				}
+				else
+				{// 楽～な法線設定
+					D3DXVECTOR3 n1, n2;
+					D3DXVECTOR3 v1, v2;
+					v1 = pVtx[(y * (MESHFIELD_HORIZONTAL + 1)) + (x + 1)].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1)) + (x - 1)].Pos;
+					v2 = pVtx[((y - 1) * (MESHFIELD_HORIZONTAL + 1)) + x].Pos - pVtx[((y + 1) * (MESHFIELD_HORIZONTAL + 1)) + x].Pos;
+					n1 = D3DXVECTOR3(-v1.y, v1.x, 0.0f);
+					D3DXVec3Normalize(&n1, &n1);
+					n2 = D3DXVECTOR3(0.0f, v2.z, -v2.y);
+					D3DXVec3Normalize(&n2, &n2);
+					n0 = n1 + n2;
+					D3DXVec3Normalize(&n0, &n0);
+				}
+				pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Nor = n0;
+				g_NorBuff[(y * (MESHFIELD_HORIZONTAL + 1) + x)] = n0;
+			}
+			else
+			{
+				pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+				g_NorBuff[(y * (MESHFIELD_HORIZONTAL + 1) + x)] = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			}
+		}
+	}
+	
+	m_pIdxBuff->Unlock();
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:Draw
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:描画処理を行う。
+//=============================================================================
+void CMeshfield::Draw(void)
+{
+	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
+
+	// マトリックス初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+	
+	// スケール設定
+	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
+	
+	// 回転設定
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+	
+	// 座標設定
+	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);		// ワールドマトリックスの設定
+		
+	// ライティング設定をオフに
+	//pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	
+	// 描画処理
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+	pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファのバインド
+	pDevice->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
+	pDevice->SetTexture(0, m_Texture);								// テクスチャの設定
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, MESHFIELD_VERTEX_NUM, 0, MESHFIELD_POLYGON_NUM);	// メッシュフィールド描画
+		
+	// ライティング設定をオフに
+	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+}
+
+//=============================================================================
+//	関数名	:GetFrontMesh
+//	引数	:D3DXVECTOR3 pos
+//	戻り値	:無し
+//	説明	:メッシュ上のどの点に乗っているか判別する。
+//=============================================================================
+inline int	CMeshfield::GetFrontMesh(D3DXVECTOR3 pos)
+{
+	VERTEX_3D	*pVtx;						// 頂点バッファ
+	WORD		*pIdx;						// インデックスバッファ
+	int			onPolygon = 0;				// どのポリゴンに乗っているか
+
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	for(int i = 0 ; i < (MESHFIELD_INDEX_NUM - 2) ; i++)
+	{
+		if(i % 2 == 0)
+		{
+			D3DXVECTOR3 n0, v01, v02;
+			v01 = pVtx[pIdx[i + 1]].Pos - pVtx[pIdx[i]].Pos;
+			v01.y = 0.0f;
+			v02 = pos - pVtx[pIdx[i]].Pos;
+			v02.y = 0.0f;
+			D3DXVec3Cross(&n0, &v01, &v02);
+			if(n0.y >= 0.0f)
+			{
+				v01 = pVtx[pIdx[i + 2]].Pos - pVtx[pIdx[i + 1]].Pos;
+				v01.y = 0.0f;
+				v02 = pos - pVtx[pIdx[i + 1]].Pos;
+				v02.y = 0.0f;
+				D3DXVec3Cross(&n0, &v01, &v02);
+				if(n0.y >= 0.0f)
+				{
+					v01 = pVtx[pIdx[i]].Pos - pVtx[pIdx[i + 2]].Pos;
+					v01.y = 0.0f;
+					v02 = pos - pVtx[pIdx[i + 2]].Pos;
+					v02.y = 0.0f;
+					D3DXVec3Cross(&n0, &v01, &v02);
+					if(n0.y >= 0.0f)
+					{// 点はポリゴンの中にある
+						return i;
+					}
+				}
+			}
+		}
+		else
+		{
+			D3DXVECTOR3 n0, v01, v02;
+			v01 = pVtx[pIdx[i + 2]].Pos - pVtx[pIdx[i]].Pos;
+			v01.y = 0.0f;
+			v02 = pos - pVtx[pIdx[i]].Pos;
+			v02.y = 0.0f;
+			D3DXVec3Cross(&n0, &v01, &v02);
+			if(n0.y >= 0.0f)
+			{
+				v01 = pVtx[pIdx[i + 1]].Pos - pVtx[pIdx[i + 2]].Pos;
+				v01.y = 0.0f;
+				v02 = pos - pVtx[pIdx[i + 2]].Pos;
+				v02.y = 0.0f;
+				D3DXVec3Cross(&n0, &v01, &v02);
+				if(n0.y >= 0.0f)
+				{
+					v01 = pVtx[pIdx[i]].Pos - pVtx[pIdx[i + 1]].Pos;
+					v01.y = 0.0f;
+					v02 = pos - pVtx[pIdx[i + 1]].Pos;
+					v02.y = 0.0f;
+					D3DXVec3Cross(&n0, &v01, &v02);
+					if(n0.y >= 0.0f)
+					{// 点はポリゴンの中にある
+						return i;
+					}
+				}
+			}
+		}
+	}
+
+	m_pIdxBuff->Unlock();
+	m_pVtxBuff->Unlock();
+
+	return -1;
+}
+
+//=============================================================================
+//	関数名	:GetHeight
+//	引数	:D3DXVECTOR3 pos
+//	戻り値	:無し
+//	説明	:与えられた座標の乗っかっているポリゴンの高さを返す。
+//=============================================================================
+float CMeshfield::GetHeight(D3DXVECTOR3 pos)
+{
+	VERTEX_3D	*pVtx;							// 頂点バッファ
+	WORD		*pIdx;							// インデックスバッファ
+	float		height		= 0.0f;
+	int			onPolygon	= GetFrontMesh(pos);// どのポリゴンに乗っているか
+	D3DXVECTOR3	vc1, vc2, vc3;
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+	if(onPolygon >= 0)
+	{
+		D3DXVECTOR3	v1, v2, v3;
+		D3DXVECTOR3	vp1, vp2, vp3;
+		
+		if(onPolygon % 2 == 0)
+		{
+			// ベクトル算出
+			v1	= pVtx[pIdx[onPolygon + 1]].Pos - pVtx[pIdx[onPolygon]].Pos;
+			vp1	= pos - pVtx[pIdx[onPolygon]].Pos;
+			v2	= pVtx[pIdx[onPolygon + 2]].Pos - pVtx[pIdx[onPolygon + 1]].Pos;
+			vp2	= pos - pVtx[pIdx[onPolygon + 1]].Pos;
+			v3	= pVtx[pIdx[onPolygon]].Pos - pVtx[pIdx[onPolygon + 2]].Pos;
+			vp3	= pos - pVtx[pIdx[onPolygon + 2]].Pos;
+		}
+		else
+		{
+			// ベクトル算出
+			v1	= pVtx[pIdx[onPolygon + 2]].Pos - pVtx[pIdx[onPolygon]].Pos;
+			vp1	= pos - pVtx[pIdx[onPolygon]].Pos;
+			v2	= pVtx[pIdx[onPolygon + 1]].Pos - pVtx[pIdx[onPolygon + 2]].Pos;
+			vp2	= pos - pVtx[pIdx[onPolygon + 1]].Pos;
+			v3	= pVtx[pIdx[onPolygon]].Pos - pVtx[pIdx[onPolygon + 1]].Pos;
+			vp3	= pos - pVtx[pIdx[onPolygon + 1]].Pos;
+		}
+
+		// 指定座標の外積算出
+		D3DXVec3Cross(&vc1, &v1, &vp1);
+		D3DXVec3Cross(&vc2, &v2, &vp2);
+		D3DXVec3Cross(&vc3, &v3, &vp3);
+	}
+	else
+	{
+		//height = 0.0f;
+	}
+
+	// 指定座標がポリゴン内かどうか
+	if((vc1.y >= 0.0f) && (vc2.y >= 0.0f) && (vc3.y >= 0.0f))
+	{
+		D3DXVECTOR3	nor, v1, v2;
+
+		// 法線算出
+		v1 = pVtx[pIdx[onPolygon + 1]].Pos - pVtx[pIdx[onPolygon]].Pos;
+		v2 = pVtx[pIdx[onPolygon + 2]].Pos - pVtx[pIdx[onPolygon]].Pos;
+		D3DXVec3Cross(&nor, &v1, &v2);
+
+		// 高さを求める
+		height = pVtx[pIdx[onPolygon]].Pos.y
+			- (nor.x * (pos.x - pVtx[pIdx[onPolygon]].Pos.x)
+			+ nor.z * (pos.z - pVtx[pIdx[onPolygon]].Pos.z)) / nor.y;
+	}
+
+	m_pIdxBuff->Unlock();
+	m_pVtxBuff->Unlock();
+
+	return height;
+}
+
+//=============================================================================
+//	関数名:SetMeshfieldData
+//	引数:VERTEX_3D *pVtx(頂点データ)
+//	戻り値:無し
+//	説明:頂点データをセットする。
+//=============================================================================
+void CMeshfield::SetMeshfieldData(void)
+{
+	VERTEX_3D *pVtx;
+	static float rot = 1.0f;
+	
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 座標設定
+	for(int nCntVtxVertical = 0 ; nCntVtxVertical <= MESHFIELD_VERTICAL ; nCntVtxVertical++)
+	{
+		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= MESHFIELD_HORIZONTAL ; nCntVtxHorizontal++)
+		{
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos.x
+				= (m_Pos.x - (MESHFIELD_WIDTH * 0.5f * MESHFIELD_HORIZONTAL)) + (MESHFIELD_WIDTH * nCntVtxHorizontal);
+			g_PosBuff[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].x
+				= (m_Pos.x - (MESHFIELD_WIDTH * 0.5f * MESHFIELD_HORIZONTAL)) + (MESHFIELD_WIDTH * nCntVtxHorizontal);
+			
+			//pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos.y = g_HeightMap[nCntVtxVertical][nCntVtxHorizontal];
+			//g_PosBuff[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].y = g_HeightMap[nCntVtxVertical][nCntVtxHorizontal];
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos.y = 0.0f;
+			g_PosBuff[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].y = 0.0f;
+			
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos.z
+				= (m_Pos.z + (MESHFIELD_HEIGHT * 0.5f * MESHFIELD_VERTICAL)) - (MESHFIELD_HEIGHT * nCntVtxVertical);
+			g_PosBuff[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].z
+				= (m_Pos.z + (MESHFIELD_HEIGHT * 0.5f * MESHFIELD_VERTICAL)) - (MESHFIELD_HEIGHT * nCntVtxVertical);
+		}
+	}
+	
+	/*
+	for(int x = 0 ; x <= MESHFIELD_VERTICAL ; x++)
+	{
+		for(int y = 0 ; y <= MESHFIELD_HORIZONTAL ; y++)
+		{
+			pVtx[(y * (MESHFIELD_VERTICAL + 1) + x)].Pos.y = (sinf(rot) * MESHFIELD_WAVE);
+			g_PosBuff[(y * (MESHFIELD_VERTICAL + 1) + x)].y = (sinf(rot) * MESHFIELD_WAVE);
+			rot += MESHFIELD_WAVEROT;
+		}
+	}*/
+
+	
+	// 法線設定
+	for(int y = 0 ; y <= MESHFIELD_VERTICAL ; y++)
+	{
+		for(int x = 0 ; x <= MESHFIELD_HORIZONTAL ; x++)
+		{
+			if((y != 0) && (y != (MESHFIELD_VERTICAL))
+				&& (x != 0) && (x != (MESHFIELD_HORIZONTAL)))
+			{
+				//pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+				// 法線設定
+				D3DXVECTOR3 n0, n1, n2, n3, n4, n5, n6, v01, v02, v03, v04, v05, v06;
+				v01 = pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				v02 = pVtx[((y - 1) * (MESHFIELD_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				v03 = pVtx[((y - 1) * (MESHFIELD_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				v04 = pVtx[((y) * (MESHFIELD_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				v05 = pVtx[((y + 1) * (MESHFIELD_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				v06 = pVtx[((y + 1) * (MESHFIELD_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Pos;
+				D3DXVec3Cross(&n1, &v01, &v02);
+				D3DXVec3Normalize(&n1, &n1);
+				D3DXVec3Cross(&n2, &v02, &v03);
+				D3DXVec3Normalize(&n2, &n2);
+				D3DXVec3Cross(&n3, &v03, &v04);
+				D3DXVec3Normalize(&n3, &n3);
+				D3DXVec3Cross(&n4, &v04, &v05);
+				D3DXVec3Normalize(&n4, &n4);
+				D3DXVec3Cross(&n5, &v05, &v06);
+				D3DXVec3Normalize(&n5, &n5);
+				D3DXVec3Cross(&n6, &v06, &v01);
+				D3DXVec3Normalize(&n6, &n6);
+				n0 = (n1 + n2 + n3 + n4 + n5 + n6) / 6.0f;
+				pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Nor = n0;
+			}
+			else
+			{
+				pVtx[(y * (MESHFIELD_HORIZONTAL + 1) + x)].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			}
+		}
+	}
+	
+	// 色設定
+	for(int nCntVertex = 0 ; nCntVertex < MESHFIELD_VERTEX_NUM ; nCntVertex++)
+	{
+		//pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+	
+	// テクスチャ貼付座標設定
+	for(int nCntVtxVertical = 0 ; nCntVtxVertical <= MESHFIELD_VERTICAL ; nCntVtxVertical++)
+	{
+		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= MESHFIELD_HORIZONTAL ; nCntVtxHorizontal++)
+		{
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.x = (float)nCntVtxHorizontal * 0.5f;
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.y = (float)nCntVtxVertical * 0.5f;
+		}
+	}
+
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:Create
+//	引数	:D3DXVECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:インスタンス生成を行う。
+//=============================================================================
+CMeshfield *CMeshfield::Create(D3DXVECTOR3 pos)
+{
+	CMeshfield *meshfield;
+	
+	meshfield = new CMeshfield;
+
+	meshfield->Init();
+
+	return meshfield;
+}
+
+//=============================================================================
+//	関数名	:GetVtxPos
+//	引数	:int nNumVtx(頂点番号)
+//	戻り値	:無し
+//	説明	:指定した番号の頂点座標を返す。
+//=============================================================================
+D3DXVECTOR3 CMeshfield::GetVtxPos(int nNumVtx)
+{
+	return g_PosBuff[nNumVtx];
+}
+
+//=============================================================================
+//	関数名	:GetVtxNor
+//	引数	:int nNumVtx(頂点番号)
+//	戻り値	:無し
+//	説明	:指定した番号の頂点の法線を返す。
+//=============================================================================
+D3DXVECTOR3 CMeshfield::GetVtxNor(int nNumVtx)
+{
+	return g_NorBuff[nNumVtx];
+}
