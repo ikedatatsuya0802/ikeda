@@ -20,7 +20,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CSceneXDX::m_Texture[MODEL_TEXTURENUM];
+LPDIRECT3DTEXTURE9	CSceneXDX::m_pTexture[MODEL_TEXTURENUM];
 LPD3DXMESH			CSceneXDX::m_pMesh;
 LPD3DXBUFFER		CSceneXDX::m_pBuffMat;
 DWORD				CSceneXDX::m_NumMat;
@@ -58,7 +58,7 @@ CSceneXDX::~CSceneXDX()
 //=============================================================================
 void CSceneXDX::Init(D3DXVECTOR3 pos)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -108,37 +108,20 @@ void CSceneXDX::Update(void)
 //=============================================================================
 void CSceneXDX::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice		= CRendererDX::GetDevice();		// 3Dデバイス
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
-	D3DXMATERIAL		*pMat		= NULL;							// マテリアル
-	D3DMATERIAL9		matDef;										// デフォルトのマテリアル
+	D3DXMATERIAL		*pMat		= NULL;		// マテリアル
+	D3DMATERIAL9		matDef;					// デフォルトのマテリアル
 
 
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	// マトリックス設定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 	
 	// アルファテスト開始
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 250);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
 
 	// 描画処理
-	pDevice->GetMaterial(&matDef);	// 現在のマテリアルを取得
+	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
 
 	// マテリアル変換
 	pMat = (D3DXMATERIAL *)m_pBuffMat->GetBufferPointer();	
@@ -146,47 +129,47 @@ void CSceneXDX::Draw(void)
 	// プレイヤー描画
 	for(int nCntMat = 0 ; nCntMat < (int)m_NumMat ; nCntMat++)
 	{
-		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
+		D3D_DEVICE->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
 
 		// テクスチャ読み込み
 		if(pMat[nCntMat].pTextureFilename)
 		{
 			if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player000.png") == 0)
 			{// レールテクスチャ
-				pDevice->SetTexture(0, m_Texture[0]);
+				D3D_DEVICE->SetTexture(0, m_pTexture[0]);
 			}
 			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player001.png") == 0)
 			{// レールテクスチャ
-				pDevice->SetTexture(0, m_Texture[1]);
+				D3D_DEVICE->SetTexture(0, m_pTexture[1]);
 			}
 			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player002.jpg") == 0)
 			{// レールテクスチャ
-				pDevice->SetTexture(0, m_Texture[2]);
+				D3D_DEVICE->SetTexture(0, m_pTexture[2]);
 			}
 			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player003.jpg") == 0)
 			{// レールテクスチャ
-				pDevice->SetTexture(0, m_Texture[3]);
+				D3D_DEVICE->SetTexture(0, m_pTexture[3]);
 			}
 			else
 			{
-				pDevice->SetTexture(0, NULL);
+				D3D_DEVICE->SetTexture(0, NULL);
 			}
 		}
 		else
 		{// テクスチャ無し
-			pDevice->SetTexture(0, NULL);
+			D3D_DEVICE->SetTexture(0, NULL);
 		}
 
 		m_pMesh->DrawSubset(nCntMat);
 	}
 
 	// マテリアルを元に戻す
-	pDevice->SetMaterial(&matDef);
+	D3D_DEVICE->SetMaterial(&matDef);
 
 	// アルファテスト終了
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 	
 	// デバッグ情報表示
 #ifdef _DEBUG

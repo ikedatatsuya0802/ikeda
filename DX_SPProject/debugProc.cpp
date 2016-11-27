@@ -28,10 +28,8 @@ char		CDebugProc::m_aStrDebug[DEBUGSTR_MAX];
 //=============================================================================
 HRESULT CDebugProc::Init(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-
 	// フォント設定
-	D3DXCreateFont(pDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &m_pFont);
+	D3DXCreateFont(D3D_DEVICE, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &m_pFont);
 	
 	// メモリ初期化
 	memset(m_aStrDebug, 0, sizeof(m_aStrDebug));
@@ -47,11 +45,8 @@ HRESULT CDebugProc::Init(void)
 //=============================================================================
 void CDebugProc::Uninit(void)
 {
-	if(m_pFont != NULL)
-	{
-		m_pFont->Release();
-		m_pFont = NULL;
-	}
+	// インスタンス削除
+	SafetyRelease(m_pFont);
 }
 
 //=============================================================================

@@ -103,11 +103,10 @@ void CModel::Update(void)
 //=============================================================================
 void CModel::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice		= CRendererDX::GetDevice();		// 3Dデバイス
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
-	D3DXMATRIX parentMatrix;										// 親オブジェクトのマトリックス
-	D3DXMATERIAL		*pMat		= NULL;							// マテリアル
-	D3DMATERIAL9		matDef;										// デフォルトのマテリアル
+	D3DXMATRIX		mtxView, mtxScl, mtxRot, mtxTrans;	// マトリックス
+	D3DXMATRIX		parentMatrix;						// 親オブジェクトのマトリックス
+	D3DXMATERIAL	*pMat		= NULL;					// マテリアル
+	D3DMATERIAL9	matDef;								// デフォルトのマテリアル
 
 	
 	// マトリックス初期化
@@ -123,7 +122,7 @@ void CModel::Draw(void)
 	}
 	else
 	{
-		pDevice->GetTransform(D3DTS_WORLD, &parentMatrix);
+		D3D_DEVICE->GetTransform(D3DTS_WORLD, &parentMatrix);
 	}
 
 	// 回転設定
@@ -142,15 +141,15 @@ void CModel::Draw(void)
 
 	// ワールドマトリックスの設定
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &parentMatrix);
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 	
 	// アルファテスト開始
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 250);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
 
 	// 描画処理
-	pDevice->GetMaterial(&matDef);	// 現在のマテリアルを取得
+	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
 
 	// マテリアル変換
 	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();	
@@ -158,28 +157,28 @@ void CModel::Draw(void)
 	// プレイヤー描画
 	for(int nCntMat = 0 ; nCntMat < (int)m_ModelStatus.NumMat ; nCntMat++)
 	{
-		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
+		D3D_DEVICE->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
 
 		// テクスチャ読み込み
 		if(pMat[nCntMat].pTextureFilename)
 		{
-			pDevice->SetTexture(0, NULL);
+			D3D_DEVICE->SetTexture(0, NULL);
 		}
 		else
 		{// テクスチャ無し
-			pDevice->SetTexture(0, NULL);
+			D3D_DEVICE->SetTexture(0, NULL);
 		}
 
 		m_ModelStatus.pMesh->DrawSubset(nCntMat);
 	}
 
 	// マテリアルを元に戻す
-	pDevice->SetMaterial(&matDef);
+	D3D_DEVICE->SetMaterial(&matDef);
 
 	// アルファテスト終了
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 
 //=============================================================================
@@ -205,7 +204,7 @@ CModel *CModel::Create(char *filename, D3DXVECTOR3 pos)
 //=============================================================================
 //	関数名	:LoadModel
 //	引数	:char *filename -> ファイル名
-//			:LPDIRECT3DDEVICE9 pDevice -> 3Dデバイス
+//			:LPDIRECT3DDEVICE9 D3D_DEVICE -> 3Dデバイス
 //			:MODELSTATUS ms -> 3Dモデルの各種情報
 //	戻り値	:無し
 //	説明	:モデルを読み込む。エラー回避付き。
@@ -213,18 +212,18 @@ CModel *CModel::Create(char *filename, D3DXVECTOR3 pos)
 void CModel::LoadModel(char *filename)
 {
 	FILE *fp;	// ファイルポインタ
-	LPDIRECT3DDEVICE9	pDevice	= CRendererDX::GetDevice();	// 3Dデバイス
+
 
 	// もし3Dモデルファイルのファイル名が間違っていた場合、ダミーのモデルを読み込む。
 	if(fopen_s(&fp, filename, "r") == NULL)
 	{// ファイル名が正常
 		fclose(fp);
-		D3DXLoadMeshFromX(filename, D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		D3DXLoadMeshFromX(filename, D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
 			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
 	}
 	else
 	{// 指定したファイルが存在していない
-		D3DXLoadMeshFromX("./data/MODEL/dummy.x", D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		D3DXLoadMeshFromX("./data/MODEL/dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
 			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
 	}
 

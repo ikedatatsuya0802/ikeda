@@ -56,9 +56,9 @@ public:
 	void	Draw(void);
 	
 	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_Texture); }
+	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { if(m_Texture != NULL){m_Texture->Release(); m_Texture = NULL;} }
+	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
 
 	inline int	GetFrontMesh(D3DXVECTOR3 pos);
 	float		GetHeight(D3DXVECTOR3 pos);
@@ -71,7 +71,7 @@ public:
 	static D3DXVECTOR3	GetVtxNor(int nNumVtx);
 
 protected:
-	static LPDIRECT3DTEXTURE9	m_Texture;	// テクスチャへのポインタ
+	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_pIdxBuff;	// インデックスバッファへのポインタ
 

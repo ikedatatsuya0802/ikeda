@@ -37,9 +37,9 @@ public:
 	void	Draw(void);
 	
 	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_Texture); }
+	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { if(m_Texture != NULL){m_Texture->Release(); m_Texture = NULL;} }
+	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
 
 	static CSkybox	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
@@ -50,7 +50,7 @@ protected:
 	void	SetSkyboxData(VERTEX_3D *pVtx);
 	void	DrawSkyboxData(void);
 	
-	static LPDIRECT3DTEXTURE9	m_Texture;	// テクスチャへのポインタ
+	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
 	
 	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス

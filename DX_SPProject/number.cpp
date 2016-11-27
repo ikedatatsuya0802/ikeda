@@ -18,7 +18,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CNumber::m_Texture;
+LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
 
 //=============================================================================
 //	関数名	:CNumber()
@@ -52,7 +52,7 @@ CNumber::~CNumber()
 void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 {
 	VERTEX_2D			*pVtx;										// 2D頂点情報
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -61,7 +61,7 @@ void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 	m_fAngle	= atan2f(size.x, size.y);
 
 	// 頂点バッファ生成
-	pDevice->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -134,11 +134,8 @@ void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 //=============================================================================
 void CNumber::Uninit(void)
 {
-	if(m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
-	}
+	SafetyRelease(m_pVtxBuff);
+	SafetyRelease(m_pTexture);
 }
 
 //=============================================================================
@@ -160,26 +157,24 @@ void CNumber::Update(void)
 //=============================================================================
 void CNumber::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-
 	// アルファテスト開始
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 250);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
 
 	// 頂点フォーマットの設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
 	// テクスチャの設定
-	pDevice->SetTexture(0, m_Texture);
+	D3D_DEVICE->SetTexture(0, m_pTexture);
 	// メーター描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
 
 	// アルファテスト終了
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 
 //=============================================================================

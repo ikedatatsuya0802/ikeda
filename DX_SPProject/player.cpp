@@ -342,7 +342,6 @@ void CPlayer::UpdateMotion(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice		= CRendererDX::GetDevice();		// 3Dデバイス
 	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
 
 	
@@ -363,12 +362,12 @@ void CPlayer::Draw(void)
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
 	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 	
 	// アルファテスト開始
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 250);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
 
 	// 描画処理
 	for(int i = 0 ; i < m_NumParts ; i++)
@@ -377,9 +376,9 @@ void CPlayer::Draw(void)
 	}
 
 	// アルファテスト終了
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 	
 	// デバッグ情報表示
 #ifdef _DEBUG

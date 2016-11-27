@@ -17,7 +17,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CSkybox::m_Texture;
+LPDIRECT3DTEXTURE9	CSkybox::m_pTexture;
 
 //=============================================================================
 //	関数名	:CSkybox()
@@ -50,14 +50,14 @@ CSkybox::~CSkybox()
 void CSkybox::Init(D3DXVECTOR3 pos)
 {
 	VERTEX_3D			*pVtx;										// 3D頂点情報
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 頂点バッファ生成
-	pDevice->CreateVertexBuffer(((sizeof(VERTEX_3D) * SKYBOX_VERTEX_NUM)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer(((sizeof(VERTEX_3D) * SKYBOX_VERTEX_NUM)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -100,60 +100,43 @@ void CSkybox::Update(void)
 //=============================================================================
 void CSkybox::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
-	
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-		
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-		
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-		
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);		// ワールドマトリックスの設定
+	// マトリックス設定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
 	// ライティング設定をオフに
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 		
 	// Zテスト方法更新
-	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// アルファテスト開始
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 	// 描画処理
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
-	pDevice->SetTexture(0, m_Texture);									// テクスチャの設定
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
 	for(int i = 0 ; i < SKYBOX_PRIMITIVE_NUM ; i++)
 	{
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_NUM), PRIMITIVE_NUM);	// 描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_NUM), PRIMITIVE_NUM);	// 描画
 	}
 
 	// Zテスト方法更新
-	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// アルファテスト終了
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 	// ライティング設定をオンに
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================

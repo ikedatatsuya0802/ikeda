@@ -22,7 +22,7 @@ static D3DXVECTOR3 g_NorBuff[MESHFIELD_VERTEX_NUM];
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CMeshfield::m_Texture;
+LPDIRECT3DTEXTURE9	CMeshfield::m_pTexture;
 
 //=============================================================================
 //	関数名	:CMeshfield()
@@ -54,20 +54,18 @@ CMeshfield::~CMeshfield()
 //=============================================================================
 void CMeshfield::Init(D3DXVECTOR3 pos)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 頂点バッファ生成
-	pDevice->CreateVertexBuffer((sizeof(VERTEX_3D) * MESHFIELD_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * MESHFIELD_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
 	// 頂点情報セット
 	SetMeshfieldData();
 
 	// インデックスバッファの確保
-	pDevice->CreateIndexBuffer((sizeof(WORD) * MESHFIELD_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
+	D3D_DEVICE->CreateIndexBuffer((sizeof(WORD) * MESHFIELD_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
 
 	WORD *pIdx;
 
@@ -123,16 +121,10 @@ void CMeshfield::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CMeshfield::Uninit(void)
 {
-	if(m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
-	}
-	if(m_pIdxBuff != NULL)
-	{
-		m_pIdxBuff->Release();
-		m_pIdxBuff = NULL;
-	}
+	// インスタンス削除
+	SafetyRelease(m_pVtxBuff);
+	SafetyRelease(m_pTexture);
+	SafetyRelease(m_pIdxBuff);
 }
 
 //=============================================================================
@@ -220,38 +212,24 @@ void CMeshfield::Update(void)
 //=============================================================================
 void CMeshfield::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
+	
 
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-	
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-	
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-	
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);		// ワールドマトリックスの設定
+	// マトリックス設定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 		
 	// ライティング設定をオフに
-	//pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 	
 	// 描画処理
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファのバインド
-	pDevice->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	pDevice->SetTexture(0, m_Texture);								// テクスチャの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, MESHFIELD_VERTEX_NUM, 0, MESHFIELD_POLYGON_NUM);	// メッシュフィールド描画
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+	D3D_DEVICE->SetIndices(m_pIdxBuff);								// インデックスバッファのバインド
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
+	D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, MESHFIELD_VERTEX_NUM, 0, MESHFIELD_POLYGON_NUM);	// メッシュフィールド描画
 		
 	// ライティング設定をオフに
-	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================

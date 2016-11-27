@@ -48,7 +48,7 @@ CCameraDX::~CCameraDX()
 //=============================================================================
 void CCameraDX::Init(void)
 {
-	m_CS.posV = D3DXVECTOR3(0.0f, 1000.0f, -500.0f);
+	m_CS.posV = D3DXVECTOR3(0.0f, 300.0f, -900.0f);
 	m_CS.posR = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 	m_CS.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot = D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
@@ -364,8 +364,6 @@ void CCameraDX::CameraMove(void)
 //=============================================================================
 void CCameraDX::SetCamera(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイス
-
 	// プロジェクションマトリクスの初期化
 	D3DXMatrixIdentity(&m_CS.mtxProjection);
 	
@@ -377,13 +375,13 @@ void CCameraDX::SetCamera(void)
 								CAMERA_FARZ);									// FarZ値
 
 	// プロジェクションマトリクスの設定
-	pDevice->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
+	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
 	// ビューマトリクスの初期化
 	D3DXMatrixIdentity(&m_CS.mtxView);
 	// ビューマトリクスの作成
 	D3DXMatrixLookAtLH(&m_CS.mtxView, &m_CS.posV, &m_CS.posR, &m_CS.vecU);
 	// ビューマトリクスの設定
-	pDevice->SetTransform(D3DTS_VIEW, &m_CS.mtxView);
+	D3D_DEVICE->SetTransform(D3DTS_VIEW, &m_CS.mtxView);
 
 
 	// デバッグ情報表示
@@ -401,8 +399,6 @@ void CCameraDX::SetCamera(void)
 //=============================================================================
 void CCameraDX::SetCamera2D(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイス
-	
 	// 射影変換行列
 	m_CS.mtxProjection	= D3DXMATRIX(
      2/SCREEN_WIDTH , 0.0f, 0.0f, 0.0f,
@@ -419,7 +415,7 @@ void CCameraDX::SetCamera2D(void)
 	//D3DXMatrixOrthoLH(&proj, SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_NEARZ, CAMERA_FARZ);
 
 	// プロジェクションマトリクスの設定
-	pDevice->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
+	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
 
 	// ビューマトリクスの初期化
 	D3DXMatrixIdentity(&view);
@@ -428,5 +424,5 @@ void CCameraDX::SetCamera2D(void)
 	D3DXMatrixLookAtLH(&view, &m_CS.posV, &m_CS.posR, &m_CS.vecU);
 
 	// ビューマトリクスの設定
-	pDevice->SetTransform(D3DTS_VIEW, &view);
+	D3D_DEVICE->SetTransform(D3DTS_VIEW, &view);
 }

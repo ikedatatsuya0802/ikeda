@@ -45,13 +45,13 @@ public:
 	void	Draw(void);
 	
 	// リソースのロード
-	static void	Load(int texNum) {	D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"MODEL_TEXFILENAME000, &m_Texture[0]);
-									D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"MODEL_TEXFILENAME001, &m_Texture[1]);
-									D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"MODEL_TEXFILENAME002, &m_Texture[2]);
-									D3DXCreateTextureFromFile(CRendererDX::GetDevice(), ".\\data\\TEXTURE\\"MODEL_TEXFILENAME003, &m_Texture[3]);
-									D3DXLoadMeshFromX("./data/MODEL/box.x", D3DXMESH_SYSTEMMEM, CRendererDX::GetDevice(), NULL, &m_pBuffMat, NULL, &m_NumMat, &m_pMesh);}
+	static void	Load(int texNum) {	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME000, &m_pTexture[0]);
+									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME001, &m_pTexture[1]);
+									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME002, &m_pTexture[2]);
+									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME003, &m_pTexture[3]);
+									D3DXLoadMeshFromX("./data/MODEL/box.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL, &m_pBuffMat, NULL, &m_NumMat, &m_pMesh);}
 	// リソースのアンロード
-	static void	Unload(int texNum) { for(int i = 0 ; i < MODEL_TEXTURENUM ; i++){if(m_Texture != NULL){m_Texture[texNum]->Release(); m_Texture[texNum] = NULL;}}
+	static void	Unload(int texNum) { for(int i = 0 ; i < MODEL_TEXTURENUM ; i++){if(m_pTexture != NULL){m_pTexture[texNum]->Release(); m_pTexture[texNum] = NULL;}}
 									if(m_pMesh != NULL){ m_pMesh->Release(); m_pMesh = NULL; }if(m_pBuffMat != NULL){ m_pBuffMat->Release(); m_pBuffMat = NULL;} }
 
 	static CSceneXDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -60,7 +60,7 @@ protected:
 	CSceneXDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneXDX();
 
-	static LPDIRECT3DTEXTURE9	m_Texture[MODEL_TEXTURENUM];	// テクスチャへのポインタ
+	static LPDIRECT3DTEXTURE9	m_pTexture[MODEL_TEXTURENUM];	// テクスチャへのポインタ
 
 	D3DXMATRIX			m_mtxWorld;		// ワールドマトリックス
 	static LPD3DXMESH	m_pMesh;		// メッシュ情報

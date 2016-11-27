@@ -31,14 +31,12 @@ LPDIRECT3DTEXTURE9		CFade::m_pTexture[2];
 //=============================================================================
 void CFade::Init(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイスへのポインタ
-
 	VERTEX_2D			*pVtx;	// 頂点情報
 
 	
-	pDevice->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
-	D3DXCreateTextureFromFile(pDevice, ".\\data\\TEXTURE\\fade000.jpg", &m_pTexture[0]);
-	D3DXCreateTextureFromFile(pDevice, ".\\data\\TEXTURE\\fade001.jpg", &m_pTexture[1]);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\fade000.jpg", &m_pTexture[0]);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\fade001.jpg", &m_pTexture[1]);
 
 	// フェード情報の初期設定
 	m_Fade[0].Pos		= D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f);
@@ -231,22 +229,20 @@ void CFade::Update(void)
 //=============================================================================
 void CFade::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイスへのポインタ
-
 	if(m_FadeState.State != FS_NONE)
 	{
 		// 頂点フォーマットの設定
-		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_2D);
+		D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
 		// テクスチャの設定
-		pDevice->SetTexture(0, m_pTexture[0]);
+		D3D_DEVICE->SetTexture(0, m_pTexture[0]);
 		// フェード描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 0), PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 0), PRIMITIVE_NUM);
 		// テクスチャの設定
-		pDevice->SetTexture(0, m_pTexture[1]);
+		D3D_DEVICE->SetTexture(0, m_pTexture[1]);
 		// フェード描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 1), PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 1), PRIMITIVE_NUM);
 	}
 }
 

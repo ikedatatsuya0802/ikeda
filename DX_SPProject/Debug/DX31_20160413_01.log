@@ -1,20 +1,12 @@
-﻿  player.cpp
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(441): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : 'sscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(584): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  railLine.cpp
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(334): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : 'fopen' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(592): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(342): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(596): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(346): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(612): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(356): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(619): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(362): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(633): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\school\gm31\dx_spproject\player.cpp(640): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-  cylinder.cpp
-  コードを生成中...
-  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\school\GM31\DX_SPProject\Debug\DX_SPProject.exe
+  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

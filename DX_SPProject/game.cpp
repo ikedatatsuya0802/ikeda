@@ -24,8 +24,8 @@
 #include "skybox.h"
 #include "player.h"
 #include "gametime.h"
-#include "solari.h"
 #include "rail.h"
+#include "railLine.h"
 #include "sound.h"
 
 //=============================================================================
@@ -61,12 +61,15 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
 	CCylinder::Create();
-	CRail::Create(0);
+	//CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
 	CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 	
 	//CSolari::Create(D3DXVECTOR3(0.0f, 200.0f, 0.0f));
+
+
+	CRailLine::Create(0);
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);

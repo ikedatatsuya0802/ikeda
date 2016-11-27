@@ -199,7 +199,7 @@ LPDIRECT3DVERTEXBUFFER9 CRendererDX::SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *p
 {
 	VERTEX_2D *pVtx;
 
-	CRendererDX::GetDevice()->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, pVtxBuff, NULL);
 
 
 	(*pVtxBuff)->Lock(0, 0, (void**)&pVtx, 0);
@@ -266,4 +266,77 @@ void CRendererDX::DrawPrimitiveForTarget(LPDIRECT3DVERTEXBUFFER9 pVtxBuff, LPDIR
 
 	// 描画処理終了
 	m_pD3DDevice->EndScene();
+}
+
+//=============================================================================
+//	関数名	:DrawPrimitiveForTarget
+//	引数	:D3DXMATRIX *mtxWorld	->	ワールドマトリックスのポインタ
+//			:D3DXMATRIX pos			->	設定する座標
+//			:D3DXMATRIX rot			->	設定する回転(デフォルトで全て0.0f)
+//			:D3DXMATRIX scl			->	設定するスケール(デフォルトで全て1.0f)
+//	戻り値	:無し
+//	説明	:マトリックスを設定する。
+//=============================================================================
+void CRendererDX::SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scl)
+{
+	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;			// マトリックス
+
+
+	// マトリックス初期化
+	D3DXMatrixIdentity(mtxWorld);
+
+	// スケール設定
+	D3DXMatrixScaling(&mtxScl, scl.x, scl.y, scl.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxScl);
+
+	// 回転設定
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxRot);
+
+	// 座標設定
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, mtxWorld);	
+}
+
+//=============================================================================
+//	関数名	:DrawPrimitiveForTarget
+//	引数	:D3DXMATRIX *mtxWorld	->	ワールドマトリックスのポインタ
+//			:D3DXMATRIX pos			->	設定する座標
+//			:D3DXMATRIX rot			->	設定する回転(デフォルトで全て0.0f)
+//			:D3DXMATRIX scl			->	設定するスケール(デフォルトで全て1.0f)
+//	戻り値	:無し
+//	説明	:ビルボードモードでマトリックスを設定する。
+//=============================================================================
+void CRendererDX::SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scl)
+{
+	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;			// マトリックス
+
+
+	// マトリックス初期化
+	D3DXMatrixIdentity(mtxWorld);
+
+	// ビルボード設定
+	D3D_DEVICE->GetTransform(D3DTS_VIEW, &mtxView);
+	D3DXMatrixInverse(mtxWorld, NULL, &mtxView);
+	mtxWorld->_41 = 0.0f;
+	mtxWorld->_42 = 0.0f;
+	mtxWorld->_43 = 0.0f;
+
+	// スケール設定
+	D3DXMatrixScaling(&mtxScl, scl.x, scl.y, scl.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxScl);
+
+	// 回転設定
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxRot);
+
+	// 座標設定
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, mtxWorld);
 }

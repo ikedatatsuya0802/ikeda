@@ -18,7 +18,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CCylinder::m_Texture;
+LPDIRECT3DTEXTURE9	CCylinder::m_pTexture;
 
 //=============================================================================
 //	関数名	:CCylinder()
@@ -50,20 +50,18 @@ CCylinder::~CCylinder()
 //=============================================================================
 void CCylinder::Init(D3DXVECTOR3 pos)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 頂点バッファ生成
-	pDevice->CreateVertexBuffer((sizeof(VERTEX_3D) * CYLINDER_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * CYLINDER_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
 	// 頂点情報セット
 	SetCylinderData();
 
 	// インデックスバッファの確保
-	pDevice->CreateIndexBuffer((sizeof(WORD) * CYLINDER_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
+	D3D_DEVICE->CreateIndexBuffer((sizeof(WORD) * CYLINDER_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
 
 	WORD *pIdx;
 
@@ -119,16 +117,10 @@ void CCylinder::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CCylinder::Uninit(void)
 {
-	if(m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
-	}
-	if(m_pIdxBuff != NULL)
-	{
-		m_pIdxBuff->Release();
-		m_pIdxBuff = NULL;
-	}
+	// インスタンス削除
+	SafetyRelease(m_pVtxBuff);
+	SafetyRelease(m_pTexture);
+	SafetyRelease(m_pIdxBuff);
 }
 
 //=============================================================================
@@ -139,71 +131,7 @@ void CCylinder::Uninit(void)
 //=============================================================================
 void CCylinder::Update(void)
 {
-	VERTEX_3D *pVtx;	// 頂点バッファ
-	WORD *pIdx;			// インデックスバッファ
 
-
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
-
-	// 法線設定
-	for(int y = 0 ; y <= CYLINDER_VERTICAL ; y++)
-	{
-		for(int x = 0 ; x <= CYLINDER_HORIZONTAL ; x++)
-		{
-			if((y != 0) && (y != (CYLINDER_VERTICAL))
-				&& (x != 0) && (x != (CYLINDER_HORIZONTAL)))
-			{
-				// 法線設定
-				D3DXVECTOR3 n0;
-				if(1)
-				{// ちゃんとした法線設定
-					D3DXVECTOR3 n1, n2, n3, n4, n5, n6, v01, v02, v03, v04, v05, v06;
-					v01 = pVtx[(y * (CYLINDER_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					v02 = pVtx[((y - 1) * (CYLINDER_HORIZONTAL + 1) + (x - 1))].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					v03 = pVtx[((y - 1) * (CYLINDER_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					v04 = pVtx[((y) * (CYLINDER_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					v05 = pVtx[((y + 1) * (CYLINDER_HORIZONTAL + 1) + x)].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					v06 = pVtx[((y + 1) * (CYLINDER_HORIZONTAL + 1) + (x + 1))].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Pos;
-					D3DXVec3Cross(&n1, &v01, &v02);
-					D3DXVec3Normalize(&n1, &n1);
-					D3DXVec3Cross(&n2, &v02, &v03);
-					D3DXVec3Normalize(&n2, &n2);
-					D3DXVec3Cross(&n3, &v03, &v04);
-					D3DXVec3Normalize(&n3, &n3);
-					D3DXVec3Cross(&n4, &v04, &v05);
-					D3DXVec3Normalize(&n4, &n4);
-					D3DXVec3Cross(&n5, &v05, &v06);
-					D3DXVec3Normalize(&n5, &n5);
-					D3DXVec3Cross(&n6, &v06, &v01);
-					D3DXVec3Normalize(&n6, &n6);
-					n0 = (n1 + n2 + n3 + n4 + n5 + n6) / 6.0f;
-					D3DXVec3Normalize(&n0, &n0);
-				}
-				else
-				{// 楽～な法線設定
-					D3DXVECTOR3 n1, n2;
-					D3DXVECTOR3 v1, v2;
-					v1 = pVtx[(y * (CYLINDER_HORIZONTAL + 1)) + (x + 1)].Pos - pVtx[(y * (CYLINDER_HORIZONTAL + 1)) + (x - 1)].Pos;
-					v2 = pVtx[((y - 1) * (CYLINDER_HORIZONTAL + 1)) + x].Pos - pVtx[((y + 1) * (CYLINDER_HORIZONTAL + 1)) + x].Pos;
-					n1 = D3DXVECTOR3(-v1.y, v1.x, 0.0f);
-					D3DXVec3Normalize(&n1, &n1);
-					n2 = D3DXVECTOR3(0.0f, v2.z, -v2.y);
-					D3DXVec3Normalize(&n2, &n2);
-					n0 = n1 + n2;
-					D3DXVec3Normalize(&n0, &n0);
-				}
-				pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Nor = n0;
-			}
-			else
-			{
-				pVtx[(y * (CYLINDER_HORIZONTAL + 1) + x)].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			}
-		}
-	}
-	
-	m_pIdxBuff->Unlock();
-	m_pVtxBuff->Unlock();
 }
 
 //=============================================================================
@@ -214,38 +142,24 @@ void CCylinder::Update(void)
 //=============================================================================
 void CCylinder::Draw(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
+	
 
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-	
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-	
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-	
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);		// ワールドマトリックスの設定
+	// マトリックス設定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 		
 	// ライティング設定をオフに
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 	
 	// 描画処理
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファのバインド
-	pDevice->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	pDevice->SetTexture(0, m_Texture);								// テクスチャの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, CYLINDER_VERTEX_NUM, 0, CYLINDER_POLYGON_NUM);	// メッシュフィールド描画
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+	D3D_DEVICE->SetIndices(m_pIdxBuff);								// インデックスバッファのバインド
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
+	D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, CYLINDER_VERTEX_NUM, 0, CYLINDER_POLYGON_NUM);	// メッシュフィールド描画
 		
 	// ライティング設定をオンに
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================

@@ -44,7 +44,7 @@ CLightDX::~CLightDX()
 //=============================================================================
 HRESULT CLightDX::Init(void)
 {
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	
 	D3DXVECTOR3 vecDir;
 
 	// 1番目ライトの設定
@@ -53,8 +53,8 @@ HRESULT CLightDX::Init(void)
 	m_aLight[0].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 光の色
 	vecDir = D3DXVECTOR3(0.7f, -0.5f, 0.2f);							// 光の向き
 	D3DXVec3Normalize((D3DXVECTOR3*)&m_aLight[0].Direction, &vecDir);	// 正規化
-	pDevice->SetLight(0, &m_aLight[0]);									// ライトの反映
-	pDevice->LightEnable(0, TRUE);										// ライトの有効化
+	D3D_DEVICE->SetLight(0, &m_aLight[0]);									// ライトの反映
+	D3D_DEVICE->LightEnable(0, TRUE);										// ライトの有効化
 	
 	// 2番目ライトの設定
 	ZeroMemory(&m_aLight[1], sizeof(D3DLIGHT9));
@@ -62,8 +62,8 @@ HRESULT CLightDX::Init(void)
 	m_aLight[1].Diffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);			// 光の色
 	vecDir = D3DXVECTOR3(-0.75f, -0.55f, -0.25f);						// 光の向き
 	D3DXVec3Normalize((D3DXVECTOR3*)&m_aLight[1].Direction, &vecDir);	// 正規化
-	pDevice->SetLight(1, &m_aLight[1]);									// ライトの反映
-	pDevice->LightEnable(1, TRUE);										// ライトの有効化
+	D3D_DEVICE->SetLight(1, &m_aLight[1]);									// ライトの反映
+	D3D_DEVICE->LightEnable(1, TRUE);										// ライトの有効化
 	
 	// 3番目ライトの設定
 	ZeroMemory(&m_aLight[2], sizeof(D3DLIGHT9));
@@ -71,8 +71,8 @@ HRESULT CLightDX::Init(void)
 	m_aLight[2].Diffuse = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);			// 光の色
 	vecDir = D3DXVECTOR3(0.0f, 0.0f, -1.0f);							// 光の向き
 	D3DXVec3Normalize((D3DXVECTOR3*)&m_aLight[2].Direction, &vecDir);	// 正規化
-	pDevice->SetLight(2, &m_aLight[2]);									// ライトの反映
-	pDevice->LightEnable(2, TRUE);										// ライトの有効化
+	D3D_DEVICE->SetLight(2, &m_aLight[2]);									// ライトの反映
+	D3D_DEVICE->LightEnable(2, TRUE);										// ライトの有効化
 
 	return S_OK;
 }

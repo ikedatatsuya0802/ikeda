@@ -21,7 +21,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CRail::m_Texture;
+LPDIRECT3DTEXTURE9	CRail::m_pTexture;
 
 //=============================================================================
 //	関数名	:CScene3D()
@@ -54,7 +54,7 @@ CRail::~CRail()
 void CRail::Init(int line, D3DXVECTOR3 pos)
 {
 	VERTEX_3D			*pVtx;										// 3D頂点情報
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();			// 3Dデバイス
+	
 	char			*str	= NULL;	// ファイル内容格納配列
 	unsigned int	offset	= 0;	// 文字列指定子
 
@@ -67,10 +67,10 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 	CalcSpline(line);
 
 	// 頂点バッファ生成
-	pDevice->CreateVertexBuffer((sizeof(VERTEX_3D) * (((m_Spline.nNum - 1) * RAIL_SET) * 2 + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * (((m_Spline.nNum - 1) * RAIL_SET) * 2 + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
-	D3DXCreateTextureFromFile(pDevice, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_Texture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_pTexture);
 	
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -139,10 +139,10 @@ void CRail::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
-	if(m_Texture != NULL)
+	if(m_pTexture != NULL)
 	{
-		m_Texture->Release();
-		m_Texture = NULL;
+		m_pTexture->Release();
+		m_pTexture = NULL;
 	}
 	if(m_Spline.Pos != NULL)
 	{
@@ -186,40 +186,20 @@ void CRail::Update(void)
 //=============================================================================
 void CRail::Draw(void)
 {
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;	// マトリックス
-	LPDIRECT3DDEVICE9	pDevice = CRendererDX::GetDevice();	// 3Dデバイス
-	CCameraDX	*camera = CManager::GetCamera();	// 3Dデバイス
-
-	
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-	
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-		
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-		
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	// マトリックス設定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 	
 	// ライティング設定をオフに
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 描画処理
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	pDevice->SetTexture(0, m_Texture);								// テクスチャの設定
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, (((m_Spline.nNum - 1) * RAIL_SET) * 2));	// 描画
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, (((m_Spline.nNum - 1) * RAIL_SET) * 2));	// 描画
 
 	// ライティング設定をオンに
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// デバッグ情報表示
 #ifdef _DEBUG

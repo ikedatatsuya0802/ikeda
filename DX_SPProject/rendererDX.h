@@ -24,10 +24,12 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 頂点情報
-#define	FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点情報
-#define	VERTEX_NUM		(4)															// 頂点数
-#define	PRIMITIVE_NUM	(2)															// プリミティブ数
+#define	FVF_VERTEX_2D		(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 頂点情報
+#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点情報
+
+#define	VERTEX_NUM			(4)							// 頂点数
+#define	PRIMITIVE_NUM		(2)							// プリミティブ数
+#define	D3D_DEVICE			CRendererDX::m_pD3DDevice	// 3Dデバイス
 
 //=============================================================================
 //	構造体
@@ -62,14 +64,17 @@ public:
 	static void	Begin(void);
 	static void	End(void);
 
-	static LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
+	//static LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
 	static LPDIRECT3DVERTEXBUFFER9 SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *pVtxBuff);
+	static void SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	static void SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+
+	static LPDIRECT3DDEVICE9		m_pD3DDevice;		// 3Dデバイスへのポインタ
 
 protected:
 	static void DrawPrimitiveForTarget(LPDIRECT3DVERTEXBUFFER9 pVtxBuff, LPDIRECT3DSURFACE9 target, LPDIRECT3DTEXTURE9 texture, bool alphafalse = false);
 
 	static LPDIRECT3D9				m_pD3D;				// 3Dオブジェクト
-	static LPDIRECT3DDEVICE9		m_pD3DDevice;		// 3Dデバイスへのポインタ
 
 	static LPDIRECT3DTEXTURE9		m_BlurTex1;			// ブラーエフェクト用テクスチャ1
 	static LPDIRECT3DSURFACE9		m_BlurSurf1;		// ブラーエフェクト用サーフェス1
