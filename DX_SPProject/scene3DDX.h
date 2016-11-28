@@ -40,7 +40,7 @@ public:
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGON3DDX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
+	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 	static CScene3DDX	*Create(void);
 	static CScene3DDX	*Create(D3DXVECTOR3 pos);

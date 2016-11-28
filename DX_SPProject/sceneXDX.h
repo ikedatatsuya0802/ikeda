@@ -10,8 +10,7 @@
 //=============================================================================
 #include "sceneDX.h"
 #include "scene3DDX.h"
-#include "manager.h"
-#include "rendererDX.h"
+#include "model.h"
 
 //=============================================================================
 //	マクロ定義
@@ -55,6 +54,8 @@ public:
 									if(m_pMesh != NULL){ m_pMesh->Release(); m_pMesh = NULL; }if(m_pBuffMat != NULL){ m_pBuffMat->Release(); m_pBuffMat = NULL;} }
 
 	static CSceneXDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 
 protected:
 	CSceneXDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

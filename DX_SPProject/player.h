@@ -23,7 +23,7 @@
 #define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.0005f)		// プレイヤーのスピード
+#define	PLAYER_MOVEMENT			(0.0002f)		// プレイヤーのスピード
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
@@ -63,7 +63,7 @@ typedef enum{
 //	クラス定義
 //=============================================================================
 class CModel;
-class CPlayer : public CSceneDX
+class CPlayer : public CSceneXDX
 {
 public:
 	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -72,9 +72,10 @@ public:
 	void	Draw(void);
 
 	static CPlayer	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	//SPLINE	GetSpline(void) { return m_Spline; }
-	float	GetPerSpline(void) { return m_Per; }
-	void	SetPerSpline(float perSpline) { m_Per = perSpline; }
+	float	GetPerSpline(void) { return m_Per; }					// スプライン情報を取得
+	void	SetPerSpline(float perSpline) { m_Per = perSpline; }	// スプライン位置をセット
 
 protected:
 	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
@@ -91,7 +92,6 @@ private:
 	bool			m_Pause;		// ポーズ
 	int				m_NumParts;		// パーツ数
 	int				m_NumMotion;	// モーション数
-	D3DXMATRIX		m_mtxWorld;		// ワールドマトリックス
 	
 	int				m_nCntMove;		// 移動カウンタ
 	D3DXVECTOR3		m_Move;			// モデルの相対移動量

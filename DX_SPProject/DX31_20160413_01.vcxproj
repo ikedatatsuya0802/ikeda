@@ -90,6 +90,7 @@
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="number.cpp" />
+    <ClCompile Include="orbit.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="rail.cpp" />
     <ClCompile Include="railLine.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="mode.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="number.h" />
+    <ClInclude Include="orbit.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="rail.h" />
     <ClInclude Include="railLine.h" />

@@ -485,7 +485,7 @@ void CMeshfield::SetMeshfieldData(void)
 	for(int nCntVertex = 0 ; nCntVertex < MESHFIELD_VERTEX_NUM ; nCntVertex++)
 	{
 		//pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 1.0f);
+		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	// テクスチャ貼付座標設定

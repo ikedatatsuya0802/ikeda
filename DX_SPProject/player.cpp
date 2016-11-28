@@ -9,14 +9,8 @@
 //=============================================================================
 //	インクルード
 //=============================================================================
-#include <stdio.h>
-#include "main.h"
 #include "player.h"
-#include "model.h"
 #include "game.h"
-#include "cameraDX.h"
-#include "rendererDX.h"
-#include "scene3DDX.h"
 #include "meshfield.h"
 #include "railLine.h"
 
@@ -26,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(int priority) : CSceneDX(priority)
+CPlayer::CPlayer(int priority) : CSceneXDX(priority)
 {
 
 }
@@ -56,7 +50,7 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_NumParts	= 0;
 	m_NumMotion	= 0;
 	m_Pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rot		= D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
+	m_Rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Move		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_RotMove	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nCntMove	= 0;
@@ -351,6 +345,7 @@ void CPlayer::Draw(void)
 #ifdef _DEBUG
 	CDebugProc::DebugProc("スプライン座標:(%.4f)\n", m_Per);
 	CDebugProc::DebugProc("モデル座標:(%5.2f:%5.2f:%5.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	CDebugProc::DebugProc("モデル回転:(%5.2f:%5.2f:%5.2f)\n", m_Rot.x, m_Rot.y, m_Rot.z);
 	//CDebugProc::DebugProc("Key:%d, Frame:%d\n", m_Key, m_Frame);
 #endif
 }

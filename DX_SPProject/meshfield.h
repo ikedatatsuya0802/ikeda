@@ -58,7 +58,7 @@ public:
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
+	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 	inline int	GetFrontMesh(D3DXVECTOR3 pos);
 	float		GetHeight(D3DXVECTOR3 pos);

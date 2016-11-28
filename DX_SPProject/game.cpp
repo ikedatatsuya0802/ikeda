@@ -10,7 +10,6 @@
 //	インクルード
 //=============================================================================
 #include "game.h"
-#include <process.h>
 #include "manager.h"
 #include "input.h"
 #include "fade.h"
@@ -26,7 +25,7 @@
 #include "gametime.h"
 #include "railLine.h"
 #include "rail.h"
-#include "sound.h"
+#include "orbit.h"
 
 //=============================================================================
 //	プロトタイプ
@@ -51,9 +50,6 @@ void CGame::Init(void)
 {
 	// リソースのロード
 
-	//CScene2DDX::Create(D3DXVECTOR3(1200.0f, 100.0f, 0.0f));
-	//CScene3DDX::Create();
-	//CSceneBillboardDX::Create();
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
 	CCylinder::Create();
@@ -61,6 +57,11 @@ void CGame::Init(void)
 	//CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
+	COrbit *orbit1 = COrbit::Create();
+	COrbit *orbit2 = COrbit::Create();
+	orbit1->SetLocPos(D3DXVECTOR3(-6.0f, 22.0f, 72.0f), D3DXVECTOR3(-8.0f, 22.0f, 72.0f));
+	orbit2->SetLocPos(D3DXVECTOR3(6.0f, 22.0f, 72.0f), D3DXVECTOR3(8.0f, 22.0f, 72.0f));
+
 	CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 	
 	//CSolari::Create(D3DXVECTOR3(0.0f, 200.0f, 0.0f));

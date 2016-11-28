@@ -50,7 +50,8 @@ HRESULT CLightDX::Init(void)
 	// 1番目ライトの設定
 	ZeroMemory(&m_aLight[0], sizeof(D3DLIGHT9));
 	m_aLight[0].Type = D3DLIGHT_DIRECTIONAL;							// 平行高原
-	m_aLight[0].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 光の色
+	//m_aLight[0].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 光の色
+	m_aLight[0].Diffuse = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);			// 光の色
 	vecDir = D3DXVECTOR3(0.7f, -0.5f, 0.2f);							// 光の向き
 	D3DXVec3Normalize((D3DXVECTOR3*)&m_aLight[0].Direction, &vecDir);	// 正規化
 	D3D_DEVICE->SetLight(0, &m_aLight[0]);									// ライトの反映

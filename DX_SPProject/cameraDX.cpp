@@ -144,54 +144,54 @@ void CCameraDX::CameraMove(void)
 	if(CInput::GetKeyboardPress(DIK_UP) && !CInput::GetKeyboardPress(DIK_LEFT) && !CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(奥)
 	{
 		// 視点移動
-		m_CS.posV.x += sinf(m_CS.Rot.y) * CAMERA_POSV_MOVEMENT;
-		m_CS.posV.z += cosf(m_CS.Rot.y) * CAMERA_POSV_MOVEMENT;
+		m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
+		m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
 
 		// 注視点設定
-		m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 	else if(CInput::GetKeyboardPress(DIK_DOWN) && !CInput::GetKeyboardPress(DIK_LEFT) && !CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(手前)
 	{
 		// 視点移動
-		m_CS.posV.x -= sinf(m_CS.Rot.y) * CAMERA_POSV_MOVEMENT;
-		m_CS.posV.z -= cosf(m_CS.Rot.y) * CAMERA_POSV_MOVEMENT;
+		m_CSEdit.posV.x -= sinf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
+		m_CSEdit.posV.z -= cosf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
 
 		// 注視点設定
-		m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 	else if(CInput::GetKeyboardPress(DIK_LEFT))		// カメラ移動(左)
 	{
 		if(CInput::GetKeyboardPress(DIK_UP))			// 左奥
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y - (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y - (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y - (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y - (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 		else if(CInput::GetKeyboardPress(DIK_DOWN))	// 左手前
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y - (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y - (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y - (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y - (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 		else								// 左
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y - (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y - (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y - (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y - (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 	}
 	else if(CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(右)
@@ -199,32 +199,32 @@ void CCameraDX::CameraMove(void)
 		if(CInput::GetKeyboardPress(DIK_UP))			// 右奥
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y + (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y + (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y + (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y + (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 		else if(CInput::GetKeyboardPress(DIK_DOWN))	// 右手前
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y + (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y + (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y + (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y + (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 		else								// 右
 		{
 			// 視点移動
-			m_CS.posV.x += sinf(m_CS.Rot.y + (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
-			m_CS.posV.z += cosf(m_CS.Rot.y + (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y + (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
+			m_CSEdit.posV.z += cosf(m_CSEdit.Rot.y + (D3DX_PI * 0.5f)) * CAMERA_POSV_MOVEMENT;
 
 			// 注視点設定
-			m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-			m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 	}
 
@@ -233,148 +233,148 @@ void CCameraDX::CameraMove(void)
 	if(KH_Y && !KH_Z && !KH_C)			// 視点移動(上)
 	{
 		// 視点設定
-		m_CS.posV.y += CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y;
 	}
 	else if(KH_N && !KH_Z && !KH_C)	// 視点移動(下)
 	{
 		// 視点設定
-		m_CS.posV.y -= CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y;
 	}
 	else if(KH_Z)		// 視点移動(左)
 	{
 		if(KH_Y)			// 左上
 		{
 			// 視点変更
-			m_CS.posV.y += CAMERA_POSR_MOVEMENT_Y;
+			m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y;
 			
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
 		}
 		else if(KH_N)	// 左下
 		{
 			// 視点変更
-			m_CS.posV.y -= CAMERA_POSR_MOVEMENT_Y;
+			m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y;
 			
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
 		}
 		else
 		{
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
 		}
 		
 		// 視点注視点間距離更新
-		m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
+		m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 		
 		// 視点設定
-		m_CS.posV.x = m_CS.posR.x - (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posV.z = m_CS.posR.z - (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 	else if(KH_C)		// 視点移動(右)
 	{
 		if(KH_Y)			// 右上
 		{
 			// 視点変更
-			m_CS.posV.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else if(KH_N)	// 右下
 		{
 			// 視点変更
-			m_CS.posV.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else
 		{
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X;
 		}
 			
 		// 視点注視点間距離更新
-		m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
+		m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 		
 		// 視点設定
-		m_CS.posV.x = m_CS.posR.x - (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posV.z = m_CS.posR.z - (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 
 	// 注視点移動
 	if(KH_T && !KH_Q && !KH_E)			// 注視点移動(上)
 	{
 		// 注視点設定
-		m_CS.posR.y += CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posR.y += CAMERA_POSR_MOVEMENT_Y;
 	}
 	else if(KH_B && !KH_Q && !KH_E)	// 注視点移動(下)
 	{
 		// 注視点設定
-		m_CS.posR.y -= CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posR.y -= CAMERA_POSR_MOVEMENT_Y;
 	}
 	else if(KH_Q)		// 注視点移動(左)
 	{
 		if(KH_T)			// 左上
 		{
 			// 視点変更
-			m_CS.posR.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posR.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else if(KH_B)	// 左下
 		{
 			// 視点変更
-			m_CS.posR.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posR.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else
 		{
 			// 角度増減
-			m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X;
 		}
 			
 		// 視点注視点間距離更新
-		m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
+		m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 		
 		// 注視点設定
-		m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 	else if(KH_E)		// 注視点移動(右)
 	{
 		if(KH_T)			// 右上
 		{
 			// 視点変更
-			m_CS.posR.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posR.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else if(KH_B)	// 右下
 		{
 			// 視点変更
-			m_CS.posR.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posR.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
 		}
 		else
 		{
 			// 角度増減
-			m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X;
+			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
 		}
 			
 		// 視点注視点間距離更新
-		m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
+		m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 			
 		// 注視点設定
-		m_CS.posR.x = m_CS.posV.x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posR.z = m_CS.posV.z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
+		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
 }
 

@@ -39,7 +39,7 @@ public:
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
+	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 	static CSkybox	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
