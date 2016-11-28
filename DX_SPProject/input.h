@@ -8,9 +8,9 @@
 //	作成日		2016/04/26
 //
 //=============================================================================
-#include "d3dx9.h"
+#include <d3dx9.h>
 #define DIRECTINPUT_VERSION	(0x0800)
-#include "dinput.h"
+#include <dinput.h>
 
 //=============================================================================
 //	リンク
@@ -52,12 +52,9 @@ typedef struct _MSTATE {
 class CInput
 {
 public:
-	CInput();
-	~CInput();
-
-	static HRESULT	InitInput(HINSTANCE hInstance, HWND hWnd);
-	static void		UninitInput(void);
-	static void		UpdateInput(void);
+	static HRESULT	Init(HINSTANCE hInstance, HWND hWnd);
+	static void		Uninit(void);
+	static void		Update(void);
 
 	// キーボード処理
 	static HRESULT	InitKeyboard(HINSTANCE hInstance, HWND hWnd);
@@ -91,6 +88,8 @@ public:
 	static bool	GMR(void){ return (m_aMouseStateRelease & 0x80) ? true : false; }
 	static bool	GMRp(void){ return (m_aMouseStateRepeat & 0x80) ? true : false; }
 
+	static MSTATE	m_MState;				// マウス情報
+
 private:
 	static LPDIRECTINPUT8		m_pInput;				// DirectInputオブジェクトへのポインタ
 
@@ -112,7 +111,7 @@ private:
 	static LPDIRECTINPUT8 pDInput;
 	static DIMOUSESTATE2 dIMouseState;
 	
-	static MSTATE	m_MState;				// マウス情報
+	//static MSTATE	m_MState;				// マウス情報
 
 	static BYTE		m_aMouseState;			// マウスの左ボタン入力情報ワーク
 	static BYTE		m_aMouseStateTrigger;	// マウスの左ボタントリガ情報

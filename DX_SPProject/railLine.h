@@ -9,7 +9,6 @@
 //
 //=============================================================================
 #include "scene3DDX.h"
-#include "rail.h"
 #include <vector>
 using namespace std;
 
@@ -34,7 +33,7 @@ typedef struct {
 	vector<D3DXVECTOR3>	Vec;			// スプラインの誘導ベクトル
 	vector<D3DXVECTOR3>	PosHermite;		// スプライン分割点
 	D3DXVECTOR3	Rot;					// スプライン上での(主にY軸の)回転値
-} SPLINE2;
+} SPLINE;
 
 //=============================================================================
 //	クラス定義
@@ -53,6 +52,7 @@ public:
 	static void	Unload(void) { if(m_pTexture != NULL){m_pTexture->Release(); m_pTexture = NULL;} }
 
 	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SPLINE* GetSpline(void) { return &m_Spline; }
 
 protected:
 	CRailLine(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
@@ -72,7 +72,7 @@ protected:
 	
 	D3DXMATRIX	m_mtxWorld;				// ワールドマトリックス
 	int			m_RailLineLine;				// レールの配置
-	SPLINE2		m_Spline;
+	SPLINE		m_Spline;
 };
 
 #endif

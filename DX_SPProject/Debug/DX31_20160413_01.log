@@ -1,12 +1,1 @@
-﻿  railLine.cpp
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(334): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : 'fopen' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(342): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(346): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(356): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\railline.cpp(362): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : 'fscanf' の宣言を確認してください。
-  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe
+﻿  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

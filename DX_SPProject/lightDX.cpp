@@ -109,6 +109,6 @@ void CLightDX::Draw(void)
 {	
 	// デバッグ情報表示
 #ifdef _DEBUG
-	CDebugProc::DebugProc("ライトベクトル:(%5.2f:%5.2f:%5.2f)\n", m_aLight[0].Direction.x, m_aLight[0].Direction.y, m_aLight[0].Direction.z);
+	//CDebugProc::DebugProc("ライトベクトル:(%5.2f:%5.2f:%5.2f)\n", m_aLight[0].Direction.x, m_aLight[0].Direction.y, m_aLight[0].Direction.z);
 #endif
 }

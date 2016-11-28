@@ -64,6 +64,8 @@ void CSkybox::Init(D3DXVECTOR3 pos)
 			SetSkyboxData(pVtx);
 	}
 	m_pVtxBuff->Unlock();
+
+	Load();
 }
 
 //=============================================================================
@@ -74,11 +76,9 @@ void CSkybox::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CSkybox::Uninit(void)
 {
-	if(m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
-	}
+	SafetyRelease(m_pVtxBuff);
+
+	Unload();
 }
 
 //=============================================================================

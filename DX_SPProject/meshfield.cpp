@@ -111,6 +111,8 @@ void CMeshfield::Init(D3DXVECTOR3 pos)
 		}
 	}
 	m_pIdxBuff->Unlock();
+
+	Load();
 }
 
 //=============================================================================
@@ -125,6 +127,8 @@ void CMeshfield::Uninit(void)
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
 	SafetyRelease(m_pIdxBuff);
+
+	Unload();
 }
 
 //=============================================================================

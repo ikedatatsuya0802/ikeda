@@ -11,6 +11,7 @@
 #include "sceneDX.h"
 #include "sceneXDX.h"
 #include "rail.h"
+#include "railLine.h"
 
 //=============================================================================
 //	マクロ定義
@@ -71,7 +72,7 @@ public:
 	void	Draw(void);
 
 	static CPlayer	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	SPLINE	GetSpline(void) { return m_Spline; }
+	//SPLINE	GetSpline(void) { return m_Spline; }
 	float	GetPerSpline(void) { return m_Per; }
 	void	SetPerSpline(float perSpline) { m_Per = perSpline; }
 
@@ -108,7 +109,7 @@ private:
 	int			m_Key;
 	int			m_Frame;
 
-	SPLINE		m_Spline;
+	SPLINE*	m_Spline;
 	float		m_Per;			// スプライン上位置
 	float		m_PerMove;		// スプライン上位置の遷移量
 };

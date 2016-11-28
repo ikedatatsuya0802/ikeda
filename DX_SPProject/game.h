@@ -15,6 +15,7 @@
 //=============================================================================
 class CMeshfield;
 class CPlayer;
+class CRailLine;
 
 //=============================================================================
 //	クラス定義
@@ -31,11 +32,13 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
+	static CRailLine	*GetRailLine(void) { return m_RailLine; }
 	static CPlayer		*GetPlayer1(void){ return m_Player1; }
 	static CPlayer		*GetPlayer2(void){ return m_Player2; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
+	static CRailLine	*m_RailLine;	// レール情報のインスタンス
 	static CPlayer		*m_Player1;		// プレイヤーのインスタンス
 	static CPlayer		*m_Player2;		// プレイヤーのインスタンス
 };

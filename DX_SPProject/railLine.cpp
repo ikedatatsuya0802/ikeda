@@ -253,10 +253,15 @@ void CRailLine::Draw(void)
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 	D3D_DEVICE->DrawPrimitive(D3DPT_LINESTRIP, 0, m_Spline.PosHermite.size());	// 描画
 
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
+	// 加算合成設定
+	D3D_DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	// Zテスト開始
+	//D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	//D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
+	//D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	D3D_DEVICE->SetTexture(0, m_pTexturePoints);	// テクスチャの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuffSPoints, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
@@ -285,11 +290,15 @@ void CRailLine::Draw(void)
 	// ライティング設定をオンに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
+	// Zテスト終了
+	//D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	//D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	//D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	
+	// レンダーステート設定を戻す
+	D3D_DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 
 	// デバッグ情報表示

@@ -24,8 +24,8 @@
 #include "skybox.h"
 #include "player.h"
 #include "gametime.h"
-#include "rail.h"
 #include "railLine.h"
+#include "rail.h"
 #include "sound.h"
 
 //=============================================================================
@@ -37,6 +37,7 @@ static int		g_nCountFPS;				// FPSカウンタ
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;		// メッシュフィールド
+CRailLine	*CGame::m_RailLine;		// メッシュフィールド
 CPlayer		*CGame::m_Player1;		// 自分のプレイヤー
 CPlayer		*CGame::m_Player2;		// 他の誰かのプレイヤー
 
@@ -49,11 +50,6 @@ CPlayer		*CGame::m_Player2;		// 他の誰かのプレイヤー
 void CGame::Init(void)
 {
 	// リソースのロード
-	CMeshfield	::Load();
-	CSkybox		::Load();
-	CCylinder	::Load();
-	CRail		::Load();
-	CNumber		::Load();
 
 	//CScene2DDX::Create(D3DXVECTOR3(1200.0f, 100.0f, 0.0f));
 	//CScene3DDX::Create();
@@ -61,15 +57,13 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
 	CCylinder::Create();
+	m_RailLine = CRailLine::Create(0);
 	//CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
 	CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 	
 	//CSolari::Create(D3DXVECTOR3(0.0f, 200.0f, 0.0f));
-
-
-	CRailLine::Create(0);
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -84,11 +78,6 @@ void CGame::Init(void)
 void CGame::Uninit(void)
 {
 	// リソースのアンロード
-	CMeshfield	::Unload();
-	CSkybox		::Unload();
-	CCylinder	::Unload();
-	CRail		::Unload();
-	CNumber		::Unload();
 
 	// 終了処理・インスタンス削除
 	if(m_Meshfield != NULL)

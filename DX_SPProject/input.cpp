@@ -11,6 +11,7 @@
 //=============================================================================
 #include "input.h"
 #include "main.h"
+#include "debugProc.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -37,15 +38,16 @@ BYTE	CInput::m_aMouseStateRepeat;					// マウスの左ボタンリピート情報
 int		CInput::m_aMouseRepeatCount;					// キーボードのリピートカウント
 
 //=============================================================================
-//	関数名	:CInput
+//	関数名	:InitInput
 //	引数	:無し
 //	戻り値	:無し
-//	説明	:コンストラクタ。
+//	説明	:初期化処理を行う。
 //=============================================================================
-CInput::CInput(void)
+HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	m_pInput			= NULL;
-	m_pDevKeyboard		= NULL;
+	// 変数初期化
+	m_pInput = NULL;
+	m_pDevKeyboard = NULL;
 
 	memset(m_aKeyState, 0, sizeof(m_aKeyState));
 	memset(m_aKeyStateTrigger, 0, sizeof(m_aKeyStateTrigger));
@@ -53,28 +55,8 @@ CInput::CInput(void)
 	memset(m_aKeyStateRepeat, 0, sizeof(m_aKeyStateRepeat));
 
 	memset(m_aKeyStateRepeatCount, 0, sizeof(m_aKeyStateRepeatCount));
-	m_nRepeatInterval	= NULL;
-}
+	m_nRepeatInterval = NULL;
 
-//=============================================================================
-//	関数名	:~CInput
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:デストラクタ。
-//=============================================================================
-CInput::~CInput(void)
-{
-
-}
-
-//=============================================================================
-//	関数名	:InitInput
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:初期化処理を行う。
-//=============================================================================
-HRESULT CInput::InitInput(HINSTANCE hInstance, HWND hWnd)
-{
 	if(m_pInput == NULL)
 	{
 		if(FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, NULL)))
@@ -83,6 +65,9 @@ HRESULT CInput::InitInput(HINSTANCE hInstance, HWND hWnd)
 			return E_FAIL;
 		}
 	}
+
+	InitKeyboard(hInstance, hWnd);
+	InitMouse(hInstance, hWnd);
 
 	return S_OK;
 }
@@ -93,13 +78,12 @@ HRESULT CInput::InitInput(HINSTANCE hInstance, HWND hWnd)
 //	戻り値	:無し
 //	説明	:入力の終了処理を行う。
 //=============================================================================
-void CInput::UninitInput(void)
+void CInput::Uninit(void)
 {
-	if(m_pInput != NULL)
-	{
-		m_pInput->Release();
-		m_pInput = NULL;
-	}
+	SafetyRelease(m_pInput);
+
+	UninitKeyboard();
+	UninitMouse();
 }
 
 //=============================================================================
@@ -108,9 +92,10 @@ void CInput::UninitInput(void)
 //	戻り値	:無し
 //	説明	:入力の更新処理を行う。
 //=============================================================================
-void CInput::UpdateInput(void)
+void CInput::Update(void)
 {
 	UpdateKeyboard();
+	UpdateMouse();
 }
 
 //=============================================================================
@@ -121,11 +106,6 @@ void CInput::UpdateInput(void)
 //=============================================================================
 HRESULT CInput::InitKeyboard(HINSTANCE hInstance, HWND hWnd)
 {
-	if(FAILED(InitInput(hInstance, hWnd)))
-	{
-		MessageBox(hWnd, "InitInputに失敗しました", "E_FAILが返されました", MB_OK);
-		return E_FAIL;
-	}
 	if(FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevKeyboard, NULL)))							// 3Dデバイスの生成
 	{
 		MessageBox(hWnd, "m_pInput->CreateDeviceに失敗しました", "E_FAILが返されました", MB_OK);
@@ -218,8 +198,6 @@ void CInput::UninitKeyboard(void)
 		m_pDevKeyboard->Release();
 		m_pDevKeyboard = NULL;
 	}
-
-	UninitInput();
 }
 
 //=============================================================================
@@ -230,20 +208,8 @@ void CInput::UninitKeyboard(void)
 //=============================================================================
 HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 {
-	if(FAILED(m_pInput->CreateDevice(GUID_SysMouse, &m_pDevMouse, NULL)))							// 3Dデバイスの生成
-	{
-		MessageBox(hWnd, "m_pInput->CreateDeviceに失敗しました", "E_FAILが返されました", MB_OK);
-		return E_FAIL;
-	}
-	if(FAILED(m_pDevMouse->SetCooperativeLevel(hWnd, (DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))))		// 協調モードの設定
-	{
-		MessageBox(hWnd, "m_pDevKeyboard->SetCooperativeLevelに失敗しました", "E_FAILが返されました", MB_OK);
-		return E_FAIL;
-	}
-	m_pDevKeyboard->Acquire();		// アクセス権を取得
-
 	// マウスポインタ情報の初期化
-	SetRect(&m_MState.moveRect, 10, 10, 630, 470);							// マウスカーソルの動く範囲
+	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
 	m_MState.x = m_MState.moveRect.left;									// マウスカーソルのＸ座標を初期化
 	m_MState.y = m_MState.moveRect.top;										// マウスカーソルのＹ座標を初期化
 	m_MState.lButton = false;												// 左ボタンの情報を初期化
@@ -266,69 +232,8 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 //=============================================================================
 void CInput::UpdateMouse(void)
 {
-	BYTE aMouseState;
-
-	if(SUCCEEDED(m_pDevMouse->GetDeviceState(sizeof(aMouseState), &aMouseState)))
-	{
-		// トリガ処理
-		m_aMouseStateTrigger = aMouseState & (m_aMouseState ^ aMouseState);
-			
-		// リリース処理
-		m_aMouseStateRelease = m_aMouseState & (m_aMouseState ^ aMouseState);
-
-		// リピート処理
-		if(aMouseState)
-		{
-			m_aMouseRepeatCount++;
-			if(m_aMouseRepeatCount > REPEAT_TIME)
-			{
-				// リピート間隔によってリピートを行う
-				if(m_aMouseRepeatCount % m_nRepeatInterval == 0)
-				{
-					m_aMouseStateRepeat = aMouseState;
-				}
-				else
-				{
-					m_aMouseStateRepeat = 0;
-				}
-			}
-		}
-		else if(m_aMouseStateRelease)
-		{
-			m_aMouseRepeatCount = 0;
-			m_aMouseStateRepeat = 0;
-		}
-
-		m_aMouseState = aMouseState;
-	}
-	else
-	{
-		m_pDevMouse->Acquire();
-	}
-
-	// 取得した情報を元にマウスの情報を更新
-	//m_MState.x += (g_diMouseState.lX * m_MState.moveAdd);
-	//m_MState.y += (g_diMouseState.lY * m_MState.moveAdd);
-	if(m_MState.x < m_MState.moveRect.left)
-	{
-		m_MState.x = m_MState.moveRect.left;
-	}
-	if(m_MState.x > m_MState.moveRect.right - m_MState.imgWidth)
-	{
-		m_MState.x = m_MState.moveRect.right - m_MState.imgWidth;
-	}
-	if(m_MState.y < m_MState.moveRect.top)
-	{
-		m_MState.y = m_MState.moveRect.top;
-	}
-	if(m_MState.y > m_MState.moveRect.bottom - m_MState.imgHeight)
-	{
-		m_MState.y = m_MState.moveRect.bottom - m_MState.imgHeight;
-	}
-	//(g_diMouseState.rgbButtons[0] & 0x80) ? m_MState.lButton = true : m_MState.lButton = false;
-	//(g_diMouseState.rgbButtons[1] & 0x80) ? m_MState.rButton = true : m_MState.rButton = false;
-	//(g_diMouseState.rgbButtons[2] & 0x80) ? m_MState.cButton = true : m_MState.cButton = false;
-
+	CDebugProc::DebugProc("マウス:(%d, %d)\n", m_MState.x, m_MState.y);
+	CDebugProc::DebugProc("MD:(%d, %d, %d)\n", m_MState.lButton, m_MState.cButton, m_MState.rButton);
 }
 
 //=============================================================================
@@ -339,12 +244,10 @@ void CInput::UpdateMouse(void)
 //=============================================================================
 void CInput::UninitMouse(void)
 {
-	if(m_pDevKeyboard != NULL)
+	if(m_pDevMouse != NULL)
 	{
-		m_pDevKeyboard->Unacquire();	// アクセス権の開放
-		m_pDevKeyboard->Release();
-		m_pDevKeyboard = NULL;
+		m_pDevMouse->Unacquire();	// アクセス権の開放
+		m_pDevMouse->Release();
+		m_pDevMouse = NULL;
 	}
-
-	UninitInput();
 }

@@ -20,6 +20,9 @@
 #define	CAMERA_POSR_MOVEMENT_X		(0.05f)			// 注視点の移動量(左右)
 #define	CAMERA_POSR_MOVEMENT_Y		(2.0f)			// 注視点の移動量(上下)
 
+#define	CAMERA_POSV_TOPLAYER		(200.0f)		// プレイヤーからの距離
+#define	CAMERA_POSV_TOHIGHPLAYER	(70.0f)		// プレイヤーからの距離
+
 //=============================================================================
 //	構造体
 //=============================================================================
@@ -31,7 +34,7 @@ typedef struct{	// カメラ情報
 	D3DXMATRIX	mtxView;		// ビューマトリックス
 	D3DXVECTOR3 Rot;			// 回転角
 	float		fDistance;		// 視点―注視点間距離
-}CAMERA;
+} CAMERA;
 
 //=============================================================================
 //	クラス定義
@@ -46,23 +49,24 @@ public:
 	~CCameraDX();
 
 	CAMERA	m_CS;			// カメラ
+	CAMERA	m_CSEdit;		// カメラ(エディットモード)
 
 	void	Init(void);
 	void	Uninit(void);
 	void	Update(void);
 	void	SetCamera(void);
 	void	SetCamera2D(void);
-
 	
-	void	SetCameraPos(D3DXVECTOR3 v = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3 r = D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	{ m_CS.posV = v; m_CS.posR = r; }
+	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
+	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
+	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
 	
+	void	ChangeCameraMode(void) { ; }
 
 protected:
-	//=========================================================================
-	//	メンバ変数
-	//=========================================================================
 	void CameraMove(void);
+
+	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
 };
 
 #endif

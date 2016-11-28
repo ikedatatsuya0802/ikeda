@@ -45,10 +45,9 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_Light			= new CLightDX();
 
 	// ‰Šú‰»ˆ—
+	CInput::Init(hInstance, hWnd);
 	m_Mode->Init();
 	CFade::Init();
-	CInput::InitKeyboard(hInstance, hWnd);
-	CInput::InitMouse(hInstance, hWnd);
 	CDebugProc::Init();
 	m_Camera->Init();
 	m_Light->Init();
@@ -90,7 +89,7 @@ void CManager::Update(void)
 	m_Mode->Update();
 	CFade::Update();
 	
-	CInput::UpdateKeyboard();
+	CInput::Update();
 	CRendererDX::Update();
 	m_Camera->Update();
 	CDebugProc::Update();

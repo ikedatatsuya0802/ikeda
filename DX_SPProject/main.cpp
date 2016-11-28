@@ -23,15 +23,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static HWND		g_hWnd;						// ウィンドウハンドル
 static int		g_nCountFPS;				// FPSカウンタ
 
-											//=============================================================================
-											//	関数名	:WinMain
-											//	引数	:HINSTANCE hInstance
-											//			:HINSTANCE hPrevInstance
-											//			:LPSTR lpCmdLine
-											//			:int nCmdLine
-											//	戻り値	:int
-											//	説明	:メイン関数
-											//=============================================================================
+//=============================================================================
+//	関数名	:WinMain
+//	引数	:HINSTANCE hInstance
+//			:HINSTANCE hPrevInstance
+//			:LPSTR lpCmdLine
+//			:int nCmdLine
+//	戻り値	:int
+//	説明	:メイン関数
+//=============================================================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wcex = {
@@ -142,6 +142,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+
 	case WM_KEYDOWN:
 		switch(wParam)
 		{
@@ -154,9 +155,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		break;
-	case WM_LBUTTONDOWN:
-		SetFocus(hWnd);
+
+	case WM_MOUSEMOVE:			// マウスが動いた
+		//CInput::m_MState.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
+		//CInput::m_MState.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
+		CInput::m_MState.x = ((short)LOWORD(lParam));
+		CInput::m_MState.y = (((short)HIWORD(lParam)) * -1);
 		break;
+
+	case WM_LBUTTONDOWN:		// マウス左ボタンが押された
+		if(!CInput::m_MState.cButton && !CInput::m_MState.rButton)
+		{
+			//CInput::m_MState.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
+			//CInput::m_MState.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
+			CInput::m_MState.x = ((short)LOWORD(lParam));
+			CInput::m_MState.y = (((short)HIWORD(lParam)) * -1);
+			CInput::m_MState.lButton = true;
+		}
+		break;
+
+	case WM_LBUTTONUP:			// マウス左ボタンが離された
+		CInput::m_MState.lButton = false;
+		break;
+
+	case WM_MBUTTONDOWN:		// マウス中央ボタンが押された
+		if(!CInput::m_MState.lButton && !CInput::m_MState.rButton)
+		{
+			//CInput::m_MState.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
+			//CInput::m_MState.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
+			CInput::m_MState.x = ((short)LOWORD(lParam));
+			CInput::m_MState.y = (((short)HIWORD(lParam)) * -1);
+			CInput::m_MState.cButton = true;
+		}
+		break;
+
+	case WM_MBUTTONUP:			// マウス中央ボタンが離された
+		CInput::m_MState.cButton = false;
+		break;
+
+	case WM_RBUTTONDOWN:		// マウス右ボタンが押された
+		if(!CInput::m_MState.lButton && !CInput::m_MState.cButton)
+		{
+			//CInput::m_MState.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
+			//CInput::m_MState.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
+			CInput::m_MState.x = ((short)LOWORD(lParam));
+			CInput::m_MState.y = (((short)HIWORD(lParam)) * -1);
+			CInput::m_MState.rButton = true;
+		}
+		break;
+
+	case WM_RBUTTONUP:			// マウス右ボタンが離された
+		CInput::m_MState.rButton = false;
+		break;
+
 	default:
 		break;
 	}

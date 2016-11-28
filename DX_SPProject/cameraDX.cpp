@@ -48,11 +48,22 @@ CCameraDX::~CCameraDX()
 //=============================================================================
 void CCameraDX::Init(void)
 {
-	m_CS.posV = D3DXVECTOR3(0.0f, 300.0f, -900.0f);
+	// カメラモード設定
+	m_flgCameraMode = false;
+
+	// 通常時カメラ設定
+	m_CS.posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_CS.posR = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 	m_CS.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot = D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
 	m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
+
+	// エディット時カメラ設定
+	m_CSEdit.posV = D3DXVECTOR3(0.0f, 300.0f, -900.0f);
+	m_CSEdit.posR = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
+	m_CSEdit.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_CSEdit.Rot = D3DXVECTOR3(0.0f, atan2f((m_CSEdit.posR.x - m_CSEdit.posV.x), (m_CSEdit.posR.z - m_CSEdit.posV.z)), 0.0f);
+	m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 }
 
 //=============================================================================
@@ -74,9 +85,19 @@ void CCameraDX::Uninit(void)
 //=============================================================================
 void CCameraDX::Update(void)
 {
-	CameraMove();
+#ifdef _DEBUG
+	if(m_flgCameraMode)
+	{
+		CameraMove();
+	}
 
-	/*CPlayer	*player	= NULL;			// プレイヤーインスタンス
+	if(KT_L)
+	{
+		m_flgCameraMode = m_flgCameraMode ? false : true;
+	}
+#endif
+
+	CPlayer	*player	= NULL;			// プレイヤーインスタンス
 		
 	const type_info& this_id = typeid(*CManager::GetMode());
 	//const type_info& client_id = typeid(CGame);
@@ -93,22 +114,23 @@ void CCameraDX::Update(void)
 	if(player != NULL)
 	{
 		// 視点設定
-		m_CS.posR = player->GetPos();
+		m_CS.posR.x = player->GetPos().x;
+		m_CS.posR.z = player->GetPos().z;
+		m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
 
-		// 注視点設定
-		m_CS.posV.x = player->GetPos().x - (sinf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posV.z = player->GetPos().z - (cosf(m_CS.Rot.y) * m_CS.fDistance);
-		m_CS.posV.y = player->GetPos().y + 50.0f;
-		
-		// 視点移動
-		//m_CS.posV.x = player->GetPos().x + 100.0f;
-		//m_CS.posV.z = player->GetPos().z - 500.0f;
+		//camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+		//camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+
+		// 視点設定
+		m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetRot().y) * CAMERA_POSV_TOPLAYER);
+		m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetRot().y) * CAMERA_POSV_TOPLAYER);
+		m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
 
 		// 注視点設定
 		//m_CS.posR.x = player->GetPos().x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
 		//m_CS.posR.z = player->GetPos().z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
 		
-	}*/
+	}
 }
 
 //=============================================================================
@@ -364,30 +386,32 @@ void CCameraDX::CameraMove(void)
 //=============================================================================
 void CCameraDX::SetCamera(void)
 {
+	CAMERA camera = m_flgCameraMode ? m_CSEdit : m_CS;
+
 	// プロジェクションマトリクスの初期化
-	D3DXMatrixIdentity(&m_CS.mtxProjection);
+	D3DXMatrixIdentity(&camera.mtxProjection);
 	
 	// プロジェクションマトリクスの作成
-	D3DXMatrixPerspectiveFovLH(&m_CS.mtxProjection,						// プロジェクションマトリクス
+	D3DXMatrixPerspectiveFovLH(&camera.mtxProjection,						// プロジェクションマトリクス
 								(D3DX_PI * 0.25),								// 視野角
 								((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// アスペクト比
 								CAMERA_NEARZ,									// NearZ値
 								CAMERA_FARZ);									// FarZ値
 
 	// プロジェクションマトリクスの設定
-	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
+	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &camera.mtxProjection);
 	// ビューマトリクスの初期化
-	D3DXMatrixIdentity(&m_CS.mtxView);
+	D3DXMatrixIdentity(&camera.mtxView);
 	// ビューマトリクスの作成
-	D3DXMatrixLookAtLH(&m_CS.mtxView, &m_CS.posV, &m_CS.posR, &m_CS.vecU);
+	D3DXMatrixLookAtLH(&camera.mtxView, &camera.posV, &camera.posR, &camera.vecU);
 	// ビューマトリクスの設定
-	D3D_DEVICE->SetTransform(D3DTS_VIEW, &m_CS.mtxView);
+	D3D_DEVICE->SetTransform(D3DTS_VIEW, &camera.mtxView);
 
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", m_CS.posV.x, m_CS.posV.y, m_CS.posV.z);
-	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", m_CS.posR.x, m_CS.posR.y, m_CS.posR.z);
+	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera.posV.x, camera.posV.y, camera.posV.z);
+	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera.posR.x, camera.posR.y, camera.posR.z);
 #endif
 }
 
