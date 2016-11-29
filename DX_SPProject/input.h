@@ -35,8 +35,8 @@
 //=============================================================================
 typedef struct _MSTATE {
 	RECT	moveRect;		// 画面上で動ける範囲
-	int		x;				// X座標
-	int		y;				// Y座標
+	D3DXVECTOR3	sPos;		// スクリーン座標
+	D3DXVECTOR3	wPos;		// ワールド座標
 	bool	lButton;		// 左ボタン
 	bool	rButton;		// 右ボタン
 	bool	cButton;		// 真ん中ボタン
@@ -44,6 +44,8 @@ typedef struct _MSTATE {
 	RECT	imgRect;		// マウス用画像矩形
 	int		imgWidth;		// マウス画像幅
 	int		imgHeight;		// マウス画像高さ
+	int		Notch;
+	int		WheelFraction;
 } MSTATE;	// マウス状態
 
 //=============================================================================
@@ -87,6 +89,13 @@ public:
 	static bool	GMT(void){ return (m_aMouseStateTrigger & 0x80) ? true : false; }
 	static bool	GMR(void){ return (m_aMouseStateRelease & 0x80) ? true : false; }
 	static bool	GMRp(void){ return (m_aMouseStateRepeat & 0x80) ? true : false; }
+
+	static D3DXVECTOR3* CalcScreenToWorld(D3DXVECTOR3* pout,
+		int Sx, int Sy, float fZ, int Screen_w, int Screen_h,
+		D3DXMATRIX* View, D3DXMATRIX* Prj);
+	static D3DXVECTOR3* CalcScreenToXZ(D3DXVECTOR3* pout,
+		int Sx, int Sy, int Screen_w, int Screen_h,
+		D3DXMATRIX* View, D3DXMATRIX* Prj);
 
 	static MSTATE	m_MState;				// マウス情報
 

@@ -200,7 +200,7 @@ void CPlayer::UpdateMove(void)
 	m_Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
 
 	m_PerMove += (-m_PerMove * PLAYER_SPEED_DOWN);
-
+	/*
 	// ジャンプ
 	if(KT_SPACE && !m_bJump)
 	{
@@ -222,7 +222,7 @@ void CPlayer::UpdateMove(void)
 	{
 		// ジャンプ量の減衰
 		m_Move.y -= PLAYER_GRAVITY;
-	}
+	}*/m_Pos.y = 0.0f;
 
 	// 回転量補正
 	if(m_RotMove.y > D3DX_PI)				// 回転量がプラス方向に逆向きの場合

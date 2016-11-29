@@ -42,9 +42,6 @@ typedef struct{	// カメラ情報
 class CCameraDX
 {
 public:
-	//=========================================================================
-	//	メソッド
-	//=========================================================================
 	CCameraDX();
 	~CCameraDX();
 
@@ -60,8 +57,9 @@ public:
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
 	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
-	
-	void	ChangeCameraMode(void) { ; }
+
+	bool	GetCameraMode(void) { return m_flgCameraMode; }
+	void	ChangeCameraMode(void) { m_flgCameraMode = m_flgCameraMode ? false : true; }
 
 protected:
 	void CameraMove(void);

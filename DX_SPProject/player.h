@@ -23,7 +23,7 @@
 #define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.0002f)		// プレイヤーのスピード
+#define	PLAYER_MOVEMENT			(0.0003f)		// プレイヤーのスピード
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ

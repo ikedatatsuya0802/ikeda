@@ -11,7 +11,8 @@
 //=============================================================================
 #include "input.h"
 #include "main.h"
-#include "debugProc.h"
+#include "manager.h"
+#include "cameraDX.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -210,15 +211,19 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 {
 	// マウスポインタ情報の初期化
 	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
-	m_MState.x = m_MState.moveRect.left;									// マウスカーソルのＸ座標を初期化
-	m_MState.y = m_MState.moveRect.top;										// マウスカーソルのＹ座標を初期化
-	m_MState.lButton = false;												// 左ボタンの情報を初期化
-	m_MState.rButton = false;												// 右ボタンの情報を初期化
-	m_MState.cButton = false;												// 中央ボタンの情報を初期化
-	m_MState.moveAdd = 2;													// マウスカーソルの移動量を設定
+	m_MState.sPos.x		= (float)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
+	m_MState.sPos.y		= (float)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
+	m_MState.sPos.z		= 0.0f;								// マウスカーソルのZ座標を初期化
+	m_MState.wPos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ワールド座標の初期化
+	m_MState.lButton	= false;							// 左ボタンの情報を初期化
+	m_MState.rButton	= false;							// 右ボタンの情報を初期化
+	m_MState.cButton	= false;							// 中央ボタンの情報を初期化
+	m_MState.moveAdd	= 2;								// マウスカーソルの移動量を設定
 	SetRect(&m_MState.imgRect, 400, 0, 420, 20);							// マウスカーソル画像の矩形を設定
 	m_MState.imgWidth = m_MState.imgRect.right - m_MState.imgRect.left;		// 画像の幅を計算
 	m_MState.imgHeight = m_MState.imgRect.bottom - m_MState.imgRect.top;	// 画像の高さを計算
+	m_MState.Notch			= 0;
+	m_MState.WheelFraction	= 0;
 
 
 	return S_OK;
@@ -232,7 +237,15 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 //=============================================================================
 void CInput::UpdateMouse(void)
 {
-	CDebugProc::DebugProc("マウス:(%d, %d)\n", m_MState.x, m_MState.y);
+	CCameraDX* camera = CManager::GetCamera();
+	
+	CalcScreenToXZ(&m_MState.wPos, (int)m_MState.sPos.x, (int)m_MState.sPos.y, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, &camera->m_CSEdit.mtxView, &camera->m_CSEdit.mtxProjection);
+
+	
+
+	CDebugProc::DebugProc("マウス(2D):(%.0f, %.0f, %.0f)\n", m_MState.sPos.x, m_MState.sPos.y, m_MState.sPos.z);
+	CDebugProc::DebugProc("マウス(3D):(%.2f, %.2f, %.2f)\n", m_MState.wPos.x, m_MState.wPos.y, m_MState.wPos.z);
+	CDebugProc::DebugProc("ホイール:%d, %d\n", CInput::m_MState.Notch, CInput::m_MState.WheelFraction);
 	CDebugProc::DebugProc("MD:(%d, %d, %d)\n", m_MState.lButton, m_MState.cButton, m_MState.rButton);
 }
 
@@ -250,4 +263,61 @@ void CInput::UninitMouse(void)
 		m_pDevMouse->Release();
 		m_pDevMouse = NULL;
 	}
+}
+
+//=============================================================================
+//	関数名	:CalcScreenToWorld
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:スクリーン座標をワールド座標に変換する。
+//=============================================================================
+D3DXVECTOR3* CInput::CalcScreenToWorld(D3DXVECTOR3* pout, int Sx, int Sy, float fZ, int Screen_w, int Screen_h, D3DXMATRIX* View, D3DXMATRIX* Prj)
+{
+	// 各行列の逆行列を算出
+	D3DXMATRIX InvView, InvPrj, VP, InvViewport;
+	D3DXMatrixInverse(&InvView, NULL, View);
+	D3DXMatrixInverse(&InvPrj, NULL, Prj);
+	D3DXMatrixIdentity(&VP);
+	VP._11 = Screen_w / 2.0f; VP._22 = -Screen_h / 2.0f;
+	VP._41 = Screen_w / 2.0f; VP._42 = Screen_h / 2.0f;
+	D3DXMatrixInverse(&InvViewport, NULL, &VP);
+
+	// 逆変換
+	D3DXMATRIX tmp = InvViewport * InvPrj * InvView;
+	D3DXVec3TransformCoord(pout, &D3DXVECTOR3((float)Sx, (float)Sy, (float)fZ), &tmp);
+
+	return pout;
+}
+
+//=============================================================================
+//	関数名	:CalcScreenToXZ
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:スクリーン座標とXZ平面のワールド座標の交点を算出する。
+//=============================================================================
+D3DXVECTOR3* CInput::CalcScreenToXZ(D3DXVECTOR3* pout, int Sx, int Sy, int Screen_w, int Screen_h, D3DXMATRIX* View, D3DXMATRIX* Prj)
+{
+	D3DXVECTOR3 nearpos;
+	D3DXVECTOR3 farpos;
+	D3DXVECTOR3 ray;
+	CalcScreenToWorld(&nearpos, Sx, Sy, 0.0f, Screen_w, Screen_h, View, Prj);
+	CalcScreenToWorld(&farpos, Sx, Sy, 1.0f, Screen_w, Screen_h, View, Prj);
+	ray = farpos - nearpos;
+	D3DXVec3Normalize(&ray, &ray);
+
+	// 床との交差が起きている場合は交点を
+	// 起きていない場合は遠くの壁との交点を出力
+	if(ray.y <= 0)
+	{
+		// 床交点
+		float Lray = D3DXVec3Dot(&ray, &D3DXVECTOR3(0, 1, 0));
+		float LP0 = D3DXVec3Dot(&(-nearpos), &D3DXVECTOR3(0, 1, 0));
+		*pout = nearpos + (LP0 / Lray)*ray;
+	}
+	else
+	{
+		*pout = farpos;
+	}
+
+	return pout;
 }

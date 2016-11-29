@@ -16,12 +16,8 @@
 //	前方宣言
 //=============================================================================
 class CMode;
-class CInput;
-class CDebugProc;
-class CRendererDX;
 class CSceneDX;
 class CCameraDX;
-class CLightDX;
 
 //=============================================================================
 //	クラス定義
@@ -48,7 +44,6 @@ private:
 	//=========================================================================
 	static CMode		*m_Mode;		// モードのインスタンス
 	static CCameraDX	*m_Camera;		// カメラのインスタンス
-	static CLightDX		*m_Light;		// ライトのインスタンス
 
 };
 

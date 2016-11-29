@@ -107,8 +107,7 @@ void CRailLine::SetSplineVtx(int line)
 			pVtx[i].tex = D3DXVECTOR2(0.0f, 0.0f);
 		}
 	}
-	m_pVtxBuff->Unlock();
-	
+	m_pVtxBuff->Unlock();	
 }
 
 //=============================================================================
@@ -213,24 +212,10 @@ void CRailLine::Uninit(void)
 //=============================================================================
 void CRailLine::Update(void)
 {
-	/*static float t = 0.0f;
-	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	float nowt = (t - ((int)t));
-
-	pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[(int)t + 0].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[(int)t + 1].x)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[(int)t + 0].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[(int)t + 1].x);
-	pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[(int)t + 0].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[(int)t + 1].z)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[(int)t + 0].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[(int)t + 1].z);	
-	pos.y = 20.0f;
-
-	CManager::GetCamera()->SetCameraPos(pos, D3DXVECTOR3(0.0f, pos.y + 100.0f, pos.z - 200.0f));
-
-
-	t += (1.0f / RAILLINE_SET) * 0.1f;
-	if(t > (m_Spline.nNum - 1))
+	for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 	{
-		t -= m_Spline.nNum;
-	}*/
+		m_Spline.Pos[i];
+	}
 }
 
 //=============================================================================
@@ -278,7 +263,7 @@ void CRailLine::Draw(void)
 	}
 
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuffLPoints, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	for(int i = 0 ; i < (int)m_Spline.nNum ; i++)
+	for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 	{
 		// マトリックス設定
 		CRendererDX::SetMatrixBB(&m_mtxWorld, m_Spline.Pos[i]);
@@ -303,7 +288,7 @@ void CRailLine::Draw(void)
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	for(int i = 0 ; i < m_Spline.nNum ; i++)
+	for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 	{
 		CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
 	}
@@ -361,6 +346,7 @@ void CRailLine::LoadSpline(int line)
 			D3DXVECTOR3 pos;
 			fscanf(fp, " = %f %f %f\n", &pos.x, &pos.y, &pos.z);
 			m_Spline.Pos.push_back(pos);
+			m_Spline.ifHold.push_back(false);
 		}
 		else if(strcmp(str, "VEC") == 0)
 		{
@@ -389,7 +375,7 @@ void CRailLine::CalcSpline(int line)
 	float rot	= 0.0f;
 	D3DXVECTOR3 vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	
-	if(m_Spline.nNum >= 2)
+	if((int)m_Spline.Pos.size() >= 2)
 	{
 		for(int i = 0 ; i < (int)m_Spline.PosHermite.size() ; i++, t += (1.0f / RAILLINE_SET))
 		{

@@ -8,7 +8,9 @@
 //	作成日		2016/04/19
 //
 //=============================================================================
-#include "d3dx9.h"
+#include "rendererDX.h"
+#include "main.h"
+
 //=============================================================================
 //	マクロ定義
 //=============================================================================
@@ -20,22 +22,23 @@
 class CLightDX
 {
 public:
-	//=========================================================================
-	//	メソッド
-	//=========================================================================
-	CLightDX();
-	~CLightDX();
-
-	HRESULT	Init(void);
-	void	Uninit(void);
-	void	Update(void);
-	void	Draw(void);
+	static HRESULT	Init(void);
+	static void		Uninit(void);
+	static void		Update(void);
+	static void		Draw(void);
 
 private:
-	//=========================================================================
-	//	メンバ変数
-	//=========================================================================
-	D3DLIGHT9 m_aLight[LIGHT_NUM];
+	static void AddHolizontalLight(D3DXVECTOR3 vec, D3DCOLORVALUE dif,
+		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	static void AddPointLight(D3DXVECTOR3 pos, D3DCOLORVALUE dif,
+		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	static void AddSpotLight(D3DXVECTOR3 pos, D3DXVECTOR3 vec, D3DCOLORVALUE dif,
+		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	static D3DLIGHT9 m_Light[3];
+	//static list<D3DLIGHT9> m_Light;
+	static list<D3DLIGHT9>::iterator m_ItrLight;
+	static int m_LightNum;
 
 };
 

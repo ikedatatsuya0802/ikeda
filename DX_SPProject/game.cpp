@@ -64,7 +64,8 @@ void CGame::Init(void)
 
 	CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 	
-	//CSolari::Create(D3DXVECTOR3(0.0f, 200.0f, 0.0f));
+	//CScene3DDX* f = CScene3DDX::Create();
+	//f->SetRot(D3DXVECTOR3(D3DX_PI / 2, 0.0f, 0.0f));
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);

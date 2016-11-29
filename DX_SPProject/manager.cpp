@@ -26,7 +26,6 @@
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 CCameraDX	*CManager::m_Camera;		// カメラのインスタンス
-CLightDX	*CManager::m_Light;			// ライトのインスタンス
 
 //=============================================================================
 //	関数名	:Init
@@ -42,16 +41,15 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 各種インスタンス生成
 	m_Mode			= new CGame();
 	m_Camera		= new CCameraDX();
-	m_Light			= new CLightDX();
 
 	// 初期化処理
 	CInput::Init(hInstance, hWnd);
+	CLightDX::Init();
 	m_Mode->Init();
-	CFade::Init();
-	CDebugProc::Init();
 	m_Camera->Init();
-	m_Light->Init();
+	CFade::Init();
 	CSound::Init();
+	CDebugProc::Init();
 }
 
 //=============================================================================
@@ -76,6 +74,7 @@ void CManager::Uninit(void)
 	CSceneDX::DeleteAll();
 	CSound::Uninit();
 	CFade::Uninit();
+	CLightDX::Uninit();
 }
 
 //=============================================================================
@@ -93,6 +92,7 @@ void CManager::Update(void)
 	CRendererDX::Update();
 	m_Camera->Update();
 	CDebugProc::Update();
+	CLightDX::Update();
 }
 
 //=============================================================================
@@ -107,7 +107,7 @@ void CManager::Draw(void)
 	CRendererDX::Begin();
 
 	// ライトベクトル情報
-	m_Light->Draw();
+	CLightDX::Draw();
 
 	// カメラの設定
 	m_Camera->SetCamera();

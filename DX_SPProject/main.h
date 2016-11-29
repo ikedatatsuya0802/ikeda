@@ -15,6 +15,9 @@
 #include <windows.h>
 #include "input.h"
 #include "readfile.h"
+#include <vector>
+#include <list>
+using namespace std;
 
 //=============================================================================
 //	ƒŠƒ“ƒN

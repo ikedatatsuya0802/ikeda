@@ -18,7 +18,7 @@
 #define	POLYGON3DDX_POSX		(0.0f)	// ポリゴンの横幅
 #define	POLYGON3DDX_POSY		(0.0f)	// ポリゴンの縦幅
 #define	POLYGON3DDX_POSZ		(0.0f)	// ポリゴンの縦幅
-#define	POLYGON3DDX_WIDTH		(30.0f)	// ポリゴンの横幅
+#define	POLYGON3DDX_WIDTH		(300.0f)	// ポリゴンの横幅
 #define	POLYGON3DDX_HEIGHT		(300.0f)	// ポリゴンの縦幅
 #define	POLYGON3DDX_TEXFILENAME000	"field000.jpg"	// ポリゴンのファイル名
 
