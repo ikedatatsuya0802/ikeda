@@ -73,7 +73,6 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	// スプラインの読み込み
 	//LoadSpline(m_RailLine);
 	m_Spline = CGame::GetRailLine()->GetSpline();
-	CalcSpline(0);
 	//SetPos(D3DXVECTOR3(m_Spline->PosHermite[0].x, m_Spline->PosHermite[0].y, m_Spline->PosHermite[0].z));
 }
 
@@ -148,12 +147,12 @@ void CPlayer::UpdateMove(void)
 	}
 
 	// 移動量反映
-	if((m_Per <= (m_Spline->nNum - 1)) && (m_Per >= 0.0f))
+	if((m_Per <= ((int)m_Spline->Pos.size() - 1)) && (m_Per >= 0.0f))
 	{
 		m_Per += m_PerMove;
-		if(m_Per > (m_Spline->nNum - 1))
+		if(m_Per > ((int)m_Spline->Pos.size() - 1))
 		{
-			m_Per -= (m_Spline->nNum - 1);
+			m_Per -= ((int)m_Spline->Pos.size() - 1);
 		}
 	}
 	else if(m_Per < 0.0f)
@@ -162,44 +161,66 @@ void CPlayer::UpdateMove(void)
 	}
 
 	// 位置反映
-	m_Pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].x)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].x);
-	m_Pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].z)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].z);	
-	//m_Pos.y = 1.0f;
+	if(((int)m_Per + 1) > ((int)m_Spline->Pos.size() - 1))
+	{
+		m_Pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].x)
+			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[0].x)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].x)
+			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[0].x);
 
-	D3DXVECTOR3 vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	if((int)(nowt * RAIL_SET) > 0)
-	{
-		vec = D3DXVECTOR3((m_Spline->PosHermite[(int)(nowt * RAIL_SET) + 1].x - m_Spline->PosHermite[(int)(nowt * RAIL_SET) - 1].x),
-			0.0f,
-			(m_Spline->PosHermite[(int)(nowt * RAIL_SET) + 1].z - m_Spline->PosHermite[(int)(nowt * RAIL_SET) - 1].z));
+		m_Pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].z)
+			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[0].z)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].z)
+			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[0].z);
 	}
-	D3DXVec3Normalize(&vec, &vec);
-	vec *= RAIL_MARGIN;
+	else
+	{
+		m_Pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].x)
+			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].x)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].x)
+			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].x);
 
-	if(m_RailLine > 0)
-	{
-		m_Pos.x -= cosf(D3DX_PI * 0.5f) * (m_RailLine * vec.x) - sinf(D3DX_PI * 0.5f) * (m_RailLine * vec.z);
-		m_Pos.z -= sinf(D3DX_PI * 0.5f) * (m_RailLine * vec.x) + cosf(D3DX_PI * 0.5f) * (m_RailLine * vec.z);
-	}
-	else if(m_RailLine < 0)
-	{
-		m_Pos.x += cosf(D3DX_PI * 0.5f) * (m_RailLine * vec.x) - sinf(D3DX_PI * 0.5f) * (m_RailLine * vec.z);
-		m_Pos.z += sinf(D3DX_PI * 0.5f) * (m_RailLine * vec.x) + cosf(D3DX_PI * 0.5f) * (m_RailLine * vec.z);
+		m_Pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].z)
+			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].z)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].z)
+			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].z);
 	}
 	
 	// 回転反映
 	float tDis = nowt + 0.01f;
 	D3DXVECTOR3 vecDis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	vecDis.x = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].x) + (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].x)
-		+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].x) + ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].x);
-	vecDis.z = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].z) + (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].z)
-		+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].z) + ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].z);
+	if(((int)m_Per + 1) > ((int)m_Spline->Pos.size() - 1))
+	{
+		vecDis.x = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].x)
+			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[0].x)
+			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].x)
+			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[0].x);
 
+		vecDis.z = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].z)
+			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[0].z)
+			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].z)
+			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[0].z);
+	}
+	else
+	{
+		vecDis.x = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].x)
+			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].x)
+			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].x)
+			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].x);
+
+		vecDis.z = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].z)
+			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].z)
+			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].z)
+			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].z);
+	}
+
+	// 回転量計算
 	m_Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
 
+	// 減速
 	m_PerMove += (-m_PerMove * PLAYER_SPEED_DOWN);
+
+
 	/*
 	// ジャンプ
 	if(KT_SPACE && !m_bJump)
@@ -530,146 +551,4 @@ void CPlayer::SetMotion(MOTIONTYPE motionType)
 	m_MotionType	= motionType;
 	m_Key			= 0;
 	m_Frame			= 0;
-}
-
-//=============================================================================
-//	関数名	:LoadSpline
-//	引数	:なし
-//	戻り値	:なし
-//	説明	:なし
-//=============================================================================
-void CPlayer::LoadSpline(int line)
-{/*
-	FILE	*fp = NULL;	// ファイルポインタ
-
-	fp = fopen("./data/spline.txt", "r");
-
-	// ファイル終了まで読み込み
-	while(feof(fp) != EOF)
-	{
-		char str[65535] = {NULL};
-		memset(str, NULL, sizeof(str));
-
-		fscanf(fp, "%s", str);
-
-		if(strcmp(str, "NUM_POSITION") == 0)
-		{
-			fscanf(fp, " = %d", &m_Spline->nNum);
-
-			if(m_Spline->nNum > 0)
-			{
-				m_Spline->PosHermite = new D3DXVECTOR3[(m_Spline->nNum - 1) * RAIL_SET];
-				m_Spline->Pos = new D3DXVECTOR3[m_Spline->nNum];
-				m_Spline->Vec = new D3DXVECTOR3[m_Spline->nNum];
-			}
-		}
-		else if(strcmp(str, "POS") == 0)
-		{
-			// エルミート座標読み取り
-			for(int i = 0 ; i < m_Spline->nNum ; i++)
-			{
-				if(i > 0)
-				{
-					if(fscanf(fp, "POS = %f %f %f\n", &m_Spline->Pos[i].x, &m_Spline->Pos[i].y, &m_Spline->Pos[i].z) == EOF)
-					{
-						m_Spline->Pos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-				else
-				{
-					if(fscanf(fp, " = %f %f %f\n", &m_Spline->Pos[i].x, &m_Spline->Pos[i].y, &m_Spline->Pos[i].z) == EOF)
-					{
-						m_Spline->Pos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-			}
-		}
-		else if(strcmp(str, "VEC") == 0)
-		{
-			// エルミートベクトル読み取り
-			for(int i = 0 ; i < m_Spline->nNum ; i++)
-			{
-				if(i > 0)
-				{
-					if(fscanf(fp, "VEC = %f %f %f\n", &m_Spline->Vec[i].x, &m_Spline->Vec[i].y, &m_Spline->Vec[i].z) == EOF)
-					{
-						m_Spline->Vec[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-				else
-				{
-					if(fscanf(fp, " = %f %f %f\n", &m_Spline->Vec[i].x, &m_Spline->Vec[i].y, &m_Spline->Vec[i].z) == EOF)
-					{
-						m_Spline->Vec[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-			}
-
-			// 読み込み終了
-			break;
-		}
-	}
-
-	fclose(fp);*/
-}
-
-//=============================================================================
-//	関数名	:CalcSpline
-//	引数	:なし
-//	戻り値	:なし
-//	説明	:なし
-//=============================================================================
-void CPlayer::CalcSpline(int line)
-{
-	float t		= 0.0f;
-	float rot	= 0.0f;
-	D3DXVECTOR3 vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	
-	if(m_Spline->nNum >= 2)
-	{
-		for(int i = 0 ; i < (int)m_Spline->PosHermite.size() ; i++, t += (1.0f / RAIL_SET))
-		{
-			float nowt = (t - ((int)t));
-
-			m_Spline->PosHermite[i].x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].x)
-								+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].x);
-			m_Spline->PosHermite[i].z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].z)
-								+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].z);	
-			m_Spline->PosHermite[i].y = 1.0f;
-		}
-	}
-
-	
-	for(int i = 0 ; i < (int)m_Spline->PosHermite.size() ; i++, t += (1.0f / RAIL_SET))
-	{
-		float nowt = (t - ((int)t));
-
-		if((int)t == 0)
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t + 1].x - m_Spline->PosHermite[(int)t].x), 0.0f, (m_Spline->PosHermite[(int)t + 1].z - m_Spline->PosHermite[(int)t].z));
-		}
-		else if(i == (RAIL_SET - 1))
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t].x - m_Spline->PosHermite[(int)t - 1].x), 0.0f, (m_Spline->PosHermite[(int)t].z - m_Spline->PosHermite[(int)t - 1].z));
-		}
-		else
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t + 1].x - m_Spline->PosHermite[(int)t - 1].x), 0.0f, (m_Spline->PosHermite[(int)t + 1].z - m_Spline->PosHermite[(int)t - 1].z));
-		}
-		D3DXVec3Normalize(&vec, &vec);
-		vec *= RAIL_MARGIN;
-
-		if(line > 0)
-		{
-			m_Spline->PosHermite[i].x -= cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline->PosHermite[i].z -= sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-		else if(line < 0)
-		{
-			m_Spline->PosHermite[i].x += cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline->PosHermite[i].z += sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-
-		t += (1.0f / RAIL_SET);
-	}
 }

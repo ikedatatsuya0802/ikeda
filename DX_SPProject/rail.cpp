@@ -65,7 +65,6 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 	
 	//LoadSpline(line);
 	m_Spline = CGame::GetRailLine()->GetSpline();
-	CalcSpline(line);
 
 	// 頂点バッファ生成
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * (m_Spline->PosHermite.size() * 2 + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
@@ -82,7 +81,7 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 		rot = atan2f((m_Spline->PosHermite[1].x - m_Spline->PosHermite[0].x), (m_Spline->PosHermite[1].z - m_Spline->PosHermite[0].z));
 		pVtx[0].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x + cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
 		pVtx[1].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x - cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
-		for(int nCntInit = 1 ; nCntInit < ((m_Spline->nNum - 1) * RAIL_SET) ; nCntInit++)
+		for(int nCntInit = 1 ; nCntInit < (int)m_Spline->Pos.size() ; nCntInit++)
 		{
 			// 角度設定
 			if(nCntInit != (m_Spline->PosHermite.size() - 1))
@@ -189,14 +188,14 @@ void CRail::Draw(void)
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, (((m_Spline->nNum - 1) * RAIL_SET) * 2));	// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->Pos.size() * 2));	// 描画
 
 	// ライティング設定をオンに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	for(int i = 0 ; i < m_Spline->nNum ; i++)
+	for(int i = 0 ; i < (int)m_Spline->Pos.size() ; i++)
 	{
 		CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline->Pos[i].x, m_Spline->Pos[i].y, m_Spline->Pos[i].z);
 	}
@@ -218,146 +217,4 @@ CRail *CRail::Create(int line, D3DXVECTOR3 pos)
 	scene3D->Init(line, pos);
 
 	return scene3D;
-}
-
-//=============================================================================
-//	関数名	:LoadSpline
-//	引数	:なし
-//	戻り値	:なし
-//	説明	:なし
-//=============================================================================
-void CRail::LoadSpline(int line)
-{/*
-	FILE	*fp = NULL;	// ファイルポインタ
-
-	fp = fopen("./data/spline.txt", "r");
-
-	// ファイル終了まで読み込み
-	while(feof(fp) != EOF)
-	{
-		char str[65535] = {NULL};
-		memset(str, NULL, sizeof(str));
-
-		fscanf(fp, "%s", str);
-
-		if(strcmp(str, "NUM_POSITION") == 0)
-		{
-			fscanf(fp, " = %d", &m_Spline->nNum);
-
-			if(m_Spline->nNum > 0)
-			{
-				m_Spline->PosHermite = new D3DXVECTOR3[(m_Spline->nNum - 1) * RAIL_SET];
-				m_Spline->Pos = new D3DXVECTOR3[m_Spline->nNum];
-				m_Spline->Vec = new D3DXVECTOR3[m_Spline->nNum];
-			}
-		}
-		else if(strcmp(str, "POS") == 0)
-		{
-			// エルミート座標読み取り
-			for(int i = 0 ; i < m_Spline->nNum ; i++)
-			{
-				if(i > 0)
-				{
-					if(fscanf(fp, "POS = %f %f %f\n", &m_Spline->Pos[i].x, &m_Spline->Pos[i].y, &m_Spline->Pos[i].z) == EOF)
-					{
-						m_Spline->Pos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-				else
-				{
-					if(fscanf(fp, " = %f %f %f\n", &m_Spline->Pos[i].x, &m_Spline->Pos[i].y, &m_Spline->Pos[i].z) == EOF)
-					{
-						m_Spline->Pos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-			}
-		}
-		else if(strcmp(str, "VEC") == 0)
-		{
-			// エルミートベクトル読み取り
-			for(int i = 0 ; i < m_Spline->nNum ; i++)
-			{
-				if(i > 0)
-				{
-					if(fscanf(fp, "VEC = %f %f %f\n", &m_Spline->Vec[i].x, &m_Spline->Vec[i].y, &m_Spline->Vec[i].z) == EOF)
-					{
-						m_Spline->Vec[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-				else
-				{
-					if(fscanf(fp, " = %f %f %f\n", &m_Spline->Vec[i].x, &m_Spline->Vec[i].y, &m_Spline->Vec[i].z) == EOF)
-					{
-						m_Spline->Vec[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-					}
-				}
-			}
-
-			// 読み込み終了
-			break;
-		}
-	}
-
-	fclose(fp);*/
-}
-
-//=============================================================================
-//	関数名	:CalcBezier
-//	引数	:なし
-//	戻り値	:なし
-//	説明	:なし
-//=============================================================================
-void CRail::CalcSpline(int line)
-{
-	float t		= 0.0f;
-	float rot	= 0.0f;
-	D3DXVECTOR3 vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	
-	if(m_Spline->nNum >= 2)
-	{
-		for(int i = 0 ; i < (int)m_Spline->PosHermite.size() ; i++, t += (1.0f / RAIL_SET))
-		{
-			float nowt = (t - ((int)t));
-
-			m_Spline->PosHermite[i].x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].x)
-								+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].x);
-			m_Spline->PosHermite[i].z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].z)
-								+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].z);	
-			m_Spline->PosHermite[i].y = 1.0f;
-		}
-	}
-
-	
-	for(int i = 0 ; i < (int)m_Spline->PosHermite.size() ; i++, t += (1.0f / RAIL_SET))
-	{
-		float nowt = (t - ((int)t));
-
-		if((int)t == 0)
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t + 1].x - m_Spline->PosHermite[(int)t].x), 0.0f, (m_Spline->PosHermite[(int)t + 1].z - m_Spline->PosHermite[(int)t].z));
-		}
-		else if(i == (RAIL_SET - 1))
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t].x - m_Spline->PosHermite[(int)t - 1].x), 0.0f, (m_Spline->PosHermite[(int)t].z - m_Spline->PosHermite[(int)t - 1].z));
-		}
-		else
-		{
-			vec = D3DXVECTOR3((m_Spline->PosHermite[(int)t + 1].x - m_Spline->PosHermite[(int)t - 1].x), 0.0f, (m_Spline->PosHermite[(int)t + 1].z - m_Spline->PosHermite[(int)t - 1].z));
-		}
-		D3DXVec3Normalize(&vec, &vec);
-		vec *= RAIL_MARGIN;
-
-		if(line > 0)
-		{
-			m_Spline->PosHermite[i].x -= cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline->PosHermite[i].z -= sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-		else if(line < 0)
-		{
-			m_Spline->PosHermite[i].x += cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline->PosHermite[i].z += sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-
-		t += (1.0f / RAIL_SET);
-	}
 }

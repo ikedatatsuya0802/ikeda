@@ -85,8 +85,6 @@ private:
 	~CPlayer();
 
 	void UpdateMove(void);
-	void LoadSpline(int line = 0);
-	void CalcSpline(int line = 0);
 	
 	int				m_RailLine;		// ‚Ç‚Ìü˜H‚ğ‘–‚Á‚Ä‚¢‚é‚©
 	bool			m_Pause;		// ƒ|[ƒY

@@ -157,19 +157,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEMOVE:			// マウスが動いた
-		//CInput::m_MState.sPos.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
-		//CInput::m_MState.sPos.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
-		CInput::m_MState.sPos.x = (float)((short)LOWORD(lParam));
-		CInput::m_MState.sPos.y = (float)(((short)HIWORD(lParam)) * -1);
 		break;
 
 	case WM_LBUTTONDOWN:		// マウス左ボタンが押された
 		if(!CInput::m_MState.cButton && !CInput::m_MState.rButton)
 		{
-			//CInput::m_MState.sPos.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
-			//CInput::m_MState.sPos.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
-			CInput::m_MState.sPos.x = (float)((short)LOWORD(lParam));
-			CInput::m_MState.sPos.y = (float)(((short)HIWORD(lParam)) * -1);
 			CInput::m_MState.lButton = true;
 		}
 		break;
@@ -181,10 +173,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_MBUTTONDOWN:		// マウス中央ボタンが押された
 		if(!CInput::m_MState.lButton && !CInput::m_MState.rButton)
 		{
-			//CInput::m_MState.sPos.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
-			//CInput::m_MState.sPos.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
-			CInput::m_MState.sPos.x = (float)((short)LOWORD(lParam));
-			CInput::m_MState.sPos.y = (float)(((short)HIWORD(lParam)) * -1);
 			CInput::m_MState.cButton = true;
 		}
 		break;
@@ -196,10 +184,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONDOWN:		// マウス右ボタンが押された
 		if(!CInput::m_MState.lButton && !CInput::m_MState.cButton)
 		{
-			//CInput::m_MState.sPos.x = ((short)LOWORD(lParam) - SCREEN_WIDTH_HALF);
-			//CInput::m_MState.sPos.y = (((short)HIWORD(lParam) - SCREEN_HEIGHT_HALF) * -1);
-			CInput::m_MState.sPos.x = (float)((short)LOWORD(lParam));
-			CInput::m_MState.sPos.y = (float)(((short)HIWORD(lParam)) * -1);
 			CInput::m_MState.rButton = true;
 		}
 		break;
@@ -238,4 +222,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int GetFPS(void)
 {
 	return g_nCountFPS;
+}
+
+//=============================================================================
+//	関数名	:GethWnd
+//	引数	:無し
+//	戻り値	:HWND
+//	説明	:ウィンドウハンドルをリターンする。
+//=============================================================================
+HWND GethWnd(void)
+{
+	return g_hWnd;
 }

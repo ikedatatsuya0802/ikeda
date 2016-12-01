@@ -88,7 +88,7 @@ void CRailLine::SetSplineVtx(int line)
 
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * (((m_Spline.nNum - 1) * RAILLINE_SET) + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ((int)m_Spline.PosHermite.size() + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -334,12 +334,7 @@ void CRailLine::LoadSpline(int line)
 
 		if(strcmp(str, "NUM_POSITION") == 0)
 		{
-			fscanf(fp, " = %d", &m_Spline.nNum);
 
-			if(m_Spline.nNum > 0)
-			{
-				m_Spline.PosHermite.resize((m_Spline.nNum - 1) * RAILLINE_SET);
-			}
 		}
 		else if(strcmp(str, "POS") == 0)
 		{
@@ -356,6 +351,7 @@ void CRailLine::LoadSpline(int line)
 		}
 		else if(strcmp(str, "END_SCRIPT") == 0)
 		{
+			m_Spline.PosHermite.resize((m_Spline.Pos.size() - 1) * RAILLINE_SET);
 			break;
 		}
 	}

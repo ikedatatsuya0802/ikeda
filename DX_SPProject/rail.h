@@ -42,8 +42,6 @@ public:
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	void	LoadSpline(int line = 0);
-	void	CalcSpline(int line = 0);
 
 protected:
 	CRail(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

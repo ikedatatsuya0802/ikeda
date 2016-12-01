@@ -31,23 +31,6 @@ typedef enum{
 //=============================================================================
 class CSceneDX
 {
-protected:
-//	static CSceneDX *m_pTop[PRIORITY_NUM];	// リストの先頭ポインタ
-//	static CSceneDX *m_pCur[PRIORITY_NUM];	// リストの終端
-	static CSceneDX *m_pTop;	// リストの先頭ポインタ
-	static CSceneDX *m_pCur;	// リストの終端ポインタ
-
-	OBJTYPE		m_ObjType;
-
-	D3DXVECTOR3 m_Pos;		// 位置
-	D3DXVECTOR3 m_Rot;		// 回転角
-	
-	CSceneDX(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
-	~CSceneDX();
-	
-	CSceneDX *m_pPrev;		// 前参照先ポインタ
-	CSceneDX *m_pNext;		// 後参照先ポインタ
-
 public:
 	virtual void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f))		= 0;
 	virtual void	Uninit(void)	= 0;
@@ -67,9 +50,25 @@ public:
 	D3DXVECTOR3	GetPos(void)			{ return m_Pos; }
 	D3DXVECTOR3	GetRot(void)			{ return m_Rot; }
 
-//	static CSceneDX	*GetList(int priority)	{ return m_pTop[priority]; }
-//	CSceneDX		*GetNext(void)			{ return m_pNext; }
-//	OBJTYPE			GetObjType(void)		{ return m_ObjType; }
+
+	void	ChangeDrawFrag(void) { m_flgDraw ? false : true; }
+
+protected:
+	CSceneDX(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	~CSceneDX();
+
+	static CSceneDX *m_pTop;	// リストの先頭ポインタ
+	static CSceneDX *m_pCur;	// リストの終端ポインタ
+
+	OBJTYPE		m_ObjType;	// オブジェクトタイプ
+
+	CSceneDX *m_pPrev;		// 前参照先ポインタ
+	CSceneDX *m_pNext;		// 後参照先ポインタ
+
+	D3DXVECTOR3 m_Pos;		// 位置
+	D3DXVECTOR3 m_Rot;		// 回転角
+
+	bool	m_flgDraw;		// 描画フラグ
 };
 
 #endif

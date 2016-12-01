@@ -56,6 +56,8 @@ CSceneDX::CSceneDX(int priority, OBJTYPE objType)
 	// À•WE‰ñ“]‚Ì‰Šú‰»
 	m_Pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	m_flgDraw = true;
 }
 
 //=============================================================================
@@ -139,7 +141,7 @@ void CSceneDX::DrawAll(void)
 	while(scene != NULL)
 	{
 		// •`‰æ
-		scene->Draw();
+		if(scene->m_flgDraw) scene->Draw();
 
 		// ŽŸ‚Ì€–Ú‚Ö
 		scene = scene->m_pNext;

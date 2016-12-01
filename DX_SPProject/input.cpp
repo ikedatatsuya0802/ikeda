@@ -12,7 +12,7 @@
 #include "input.h"
 #include "main.h"
 #include "manager.h"
-#include "cameraDX.h"
+#include "rendererDX.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -211,9 +211,8 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 {
 	// マウスポインタ情報の初期化
 	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
-	m_MState.sPos.x		= (float)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
+	m_MState.sPos.x		= (LONG)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
 	m_MState.sPos.y		= (float)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
-	m_MState.sPos.z		= 0.0f;								// マウスカーソルのZ座標を初期化
 	m_MState.wPos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ワールド座標の初期化
 	m_MState.lButton	= false;							// 左ボタンの情報を初期化
 	m_MState.rButton	= false;							// 右ボタンの情報を初期化
@@ -237,13 +236,33 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 //=============================================================================
 void CInput::UpdateMouse(void)
 {
-	CCameraDX* camera = CManager::GetCamera();
-	
-	CalcScreenToXZ(&m_MState.wPos, (int)m_MState.sPos.x, (int)m_MState.sPos.y, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, &camera->m_CSEdit.mtxView, &camera->m_CSEdit.mtxProjection);
+	D3DXVECTOR3 pOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+	// マウスのスクリーン座標の取得
+	GetCursorPos(&m_MState.sPos);
 	
+	if((m_MState.sPos.x > 0 && m_MState.sPos.x < SCREEN_WIDTH) && (m_MState.sPos.y > 0 && m_MState.sPos.y < SCREEN_HEIGHT))
+	{// スクリーンの範囲内だった場合
 
-	CDebugProc::DebugProc("マウス(2D):(%.0f, %.0f, %.0f)\n", m_MState.sPos.x, m_MState.sPos.y, m_MState.sPos.z);
+		D3DXMATRIX mtxView, mtxPrj;	// マトリックス
+
+		// マウスのクライアント座標取得
+		ScreenToClient(GethWnd(), &m_MState.sPos);
+
+		// マトリックス取得
+		D3D_DEVICE->GetTransform(D3DTS_VIEW, &mtxView);
+		D3D_DEVICE->GetTransform(D3DTS_PROJECTION, &mtxPrj);
+
+		// マウスのワールド座標計算
+		CalcScreenToXZ(&m_MState.wPos, (int)m_MState.sPos.x, (int)m_MState.sPos.y, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, &mtxView, &mtxPrj);
+	}
+	else
+	{// スクリーンの範囲内でない場合
+
+		m_MState.wPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+	CDebugProc::DebugProc("マウス(2D):(%ld, %ld)\n", m_MState.sPos.x, m_MState.sPos.y);
 	CDebugProc::DebugProc("マウス(3D):(%.2f, %.2f, %.2f)\n", m_MState.wPos.x, m_MState.wPos.y, m_MState.wPos.z);
 	CDebugProc::DebugProc("ホイール:%d, %d\n", CInput::m_MState.Notch, CInput::m_MState.WheelFraction);
 	CDebugProc::DebugProc("MD:(%d, %d, %d)\n", m_MState.lButton, m_MState.cButton, m_MState.rButton);

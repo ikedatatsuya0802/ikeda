@@ -35,7 +35,7 @@
 //=============================================================================
 typedef struct _MSTATE {
 	RECT	moveRect;		// 画面上で動ける範囲
-	D3DXVECTOR3	sPos;		// スクリーン座標
+	POINT	sPos;			// スクリーン座標
 	D3DXVECTOR3	wPos;		// ワールド座標
 	bool	lButton;		// 左ボタン
 	bool	rButton;		// 右ボタン

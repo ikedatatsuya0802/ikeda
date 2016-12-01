@@ -29,7 +29,6 @@ using namespace std;
 //=============================================================================
 
 typedef struct {
-	int			nNum;					// スプラインの誘導点数
 	vector<D3DXVECTOR3>	Pos;			// スプラインの誘導点
 	vector<D3DXVECTOR3>	Vec;			// スプラインの誘導ベクトル
 	vector<D3DXVECTOR3>	PosHermite;		// スプライン分割点
