@@ -1,7 +1,7 @@
 //=============================================================================
 //
-//	タイトル	カメラファイル
-//	ファイル名	light.cpp
+//	タイトル	マネージャ
+//	ファイル名	manager.cpp
 //	作成者		AT13A284_07 池田達哉
 //	作成日		2016/04/26
 //
@@ -64,12 +64,7 @@ void CManager::Uninit(void)
 	CInput::UninitMouse();
 	CRendererDX::Uninit();
 	CDebugProc::Uninit();
-	if(m_Camera != NULL)
-	{
-		m_Camera->Uninit();
-		delete m_Camera;
-		m_Camera = NULL;
-	}
+	SafetyUninit(m_Camera);
 	
 	CSceneDX::DeleteAll();
 	CSound::Uninit();
@@ -85,10 +80,11 @@ void CManager::Uninit(void)
 //=============================================================================
 void CManager::Update(void)
 {
+	CInput::Update();
+
 	m_Mode->Update();
 	CFade::Update();
 	
-	CInput::Update();
 	CRendererDX::Update();
 	m_Camera->Update();
 	CDebugProc::Update();

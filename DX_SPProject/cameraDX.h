@@ -52,7 +52,6 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	SetCamera(void);
-	void	SetCamera2D(void);
 	
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }

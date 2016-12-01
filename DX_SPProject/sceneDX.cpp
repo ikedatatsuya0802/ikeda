@@ -141,7 +141,7 @@ void CSceneDX::DrawAll(void)
 	while(scene != NULL)
 	{
 		// •`‰æ
-		if(scene->m_flgDraw) scene->Draw();
+		scene->Draw();
 
 		// ŽŸ‚Ì€–Ú‚Ö
 		scene = scene->m_pNext;

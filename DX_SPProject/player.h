@@ -100,14 +100,14 @@ private:
 	void		LoadMotion(char *fileName = "./data/motion.txt");
 	void		SetMotion(MOTIONTYPE motionType);
 	void		UpdateMotion(void);
-	MOTION		*m_Motion;
 
-	MOTIONTYPE	m_MotionType;
-	int			m_NumKey;
-	int			m_Key;
-	int			m_Frame;
+	MOTION		*m_Motion;		// モーション情報
+	MOTIONTYPE	m_MotionType;	// モーションタイプ
+	int			m_NumKey;		// キー数
+	int			m_Key;			// 現在のキー
+	int			m_Frame;		// 現在のフレーム値
 
-	SPLINE*	m_Spline;
+	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置
 	float		m_PerMove;		// スプライン上位置の遷移量
 };

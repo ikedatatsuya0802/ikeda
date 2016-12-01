@@ -160,49 +160,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_LBUTTONDOWN:		// マウス左ボタンが押された
-		if(!CInput::m_MState.cButton && !CInput::m_MState.rButton)
+		if(!CInput::GetMousePress(MS_CB) && !CInput::GetMousePress(MS_RB))
 		{
-			CInput::m_MState.lButton = true;
+			CInput::SetMouseLButton(true);
 		}
 		break;
 
 	case WM_LBUTTONUP:			// マウス左ボタンが離された
-		CInput::m_MState.lButton = false;
+		CInput::SetMouseLButton(false);
 		break;
 
 	case WM_MBUTTONDOWN:		// マウス中央ボタンが押された
-		if(!CInput::m_MState.lButton && !CInput::m_MState.rButton)
+		if(!CInput::GetMousePress(MS_LB) && !CInput::GetMousePress(MS_RB))
 		{
-			CInput::m_MState.cButton = true;
+			CInput::SetMouseCButton(true);
 		}
 		break;
 
 	case WM_MBUTTONUP:			// マウス中央ボタンが離された
-		CInput::m_MState.cButton = false;
+		CInput::SetMouseCButton(false);
 		break;
 
 	case WM_RBUTTONDOWN:		// マウス右ボタンが押された
-		if(!CInput::m_MState.lButton && !CInput::m_MState.cButton)
+		if(!CInput::GetMousePress(MS_LB) && !CInput::GetMousePress(MS_CB))
 		{
-			CInput::m_MState.rButton = true;
+			CInput::SetMouseRButton(true);
 		}
 		break;
 
 	case WM_RBUTTONUP:			// マウス右ボタンが離された
-		CInput::m_MState.rButton = false;
+		CInput::SetMouseRButton(false);
 		break;
 	case WM_MOUSEWHEEL:
 		{
-			DWORD fwKeys = GET_KEYSTATE_WPARAM(wParam);	// 同時に押されているキー情報
+			DWORD fwKeys = GET_KEYSTATE_WPARAM(wParam);		// 同時に押されているキー情報
 			int zDelta = GET_WHEEL_DELTA_WPARAM(wParam);	// 回転量
-											// 前回の端数を追加
-			zDelta += CInput::m_MState.WheelFraction;
+			
+			// 前回の端数を追加
+			zDelta += CInput::GetMouseFriction();
 
 			// ノッチ数を求める
-			CInput::m_MState.Notch = zDelta / WHEEL_DELTA;
+			CInput::SetMouseNotch(zDelta / WHEEL_DELTA);
 
 			// 端数を保存する
-			CInput::m_MState.WheelFraction = zDelta % WHEEL_DELTA;
+			CInput::SetMouseFraction(zDelta % WHEEL_DELTA);
 		}
 		break;
 

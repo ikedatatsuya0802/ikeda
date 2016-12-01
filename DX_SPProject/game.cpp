@@ -54,7 +54,8 @@ void CGame::Init(void)
 	CSkybox::Create();
 	CCylinder::Create();
 	m_RailLine = CRailLine::Create(0);
-	//CRail::Create(0);
+	//m_RailLine->ChangeDrawFrag();
+	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
 	COrbit *orbit1 = COrbit::Create();
@@ -82,12 +83,10 @@ void CGame::Uninit(void)
 	// リソースのアンロード
 
 	// 終了処理・インスタンス削除
-	if(m_Meshfield != NULL)
-	{
-		m_Meshfield->Uninit();
-		delete m_Meshfield;
-		m_Meshfield = NULL;
-	}
+	SafetyUninit(m_Meshfield);
+	//SafetyUninit(m_RailLine);
+	//SafetyUninit(m_Player1);
+
 	CSceneDX::DeleteAll();
 }
 
@@ -101,7 +100,7 @@ void CGame::Update(void)
 {
 	// シーン更新
 	CSceneDX::UpdateAll();
-	if(CInput::GetKeyboardTrigger(DIK_RETURN))
+	if(CInput::GetKeyTrigger(DIK_RETURN))
 	{
 		CFade::Start(new CResult, FS_OUT);
 	}

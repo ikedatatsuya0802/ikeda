@@ -84,24 +84,7 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(void)
 {
-	for(int i = 0 ; i < m_NumMotion ; i++)
-	{
-		for(int j = 0 ; j < m_Motion[i].NumKey ; j++)
-		{
-			if(m_Motion[i].KeyInfo[j].Key != NULL)
-			{
-				m_Motion[i].KeyInfo[j].Key = NULL;
-			}
-		}
-		if(m_Motion[i].KeyInfo != NULL)
-		{
-			m_Motion[i].KeyInfo = NULL;
-		}
-	}
-	if(m_Motion != NULL)
-	{
-		m_Motion = NULL;
-	}
+
 }
 
 //=============================================================================
@@ -112,11 +95,13 @@ void CPlayer::Uninit(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
+	// ポーズ
 	if(KT_P)
 	{
 		m_Pause = (m_Pause ? false : true);
 	}
 
+	// 移動処理
 	if(m_Pause == false)
 	{
 		// プレイヤー移動
@@ -140,7 +125,7 @@ void CPlayer::UpdateMove(void)
 
 	float nowt = (m_Per - ((int)m_Per));
 	
-	if(CInput::GetKeyboardPress(DIK_W))				// 奥
+	if(CInput::GetKeyPress(DIK_W))				// 奥
 	{
 		// 移動量を設定
 		m_PerMove += PLAYER_MOVEMENT;

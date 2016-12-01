@@ -15,14 +15,15 @@ using namespace std;
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	RAILLINE_WIDTH			(15.0f)				// 横幅
-#define	RAILLINE_MARGIN			(50.0f)				// レールの間隔
-#define	RAILLINE_SET			(20)				// レールの分割数
-#define	RAILLINE_VECTOR			(4)					// レールのベクトル数
+#define	RAILLINE_WIDTH			(15.0f)					// 横幅
+#define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
+#define	RAILLINE_SET			(20)					// レールの分割数
+#define	RAILLINE_VECTOR			(4)						// レールのベクトル数
 #define	RAILLINE_VERTEX			(RAILLINE_SET * 2 + 2)	// レールの頂点数
-#define	RAILLINE_TEXFILENAME000	"rail000.png"	// ポリゴンのファイル名
-#define	RAILLINE_SPOINT_SIZE	(10.0f)			// 
-#define	RAILLINE_LPOINT_SIZE	(30.0f)			// 
+#define	RAILLINE_TEXFILENAME000	"effect000.jpg"			// テクスチャのファイル名
+#define	RAILLINE_SPOINT_SIZE	(20.0f)					// レール頂点の確認用エフェクトサイズ
+#define	RAILLINE_LPOINT_SIZE	(50.0f)					// スプライン頂点の確認用エフェクトサイズ
+#define	RAILLINE_DRAG_SIZE		(50.0f)					// ドラッグの選択半径
 
 //=============================================================================
 //	構造体
@@ -55,19 +56,21 @@ public:
 	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	SPLINE* GetSpline(void) { return &m_Spline; }
 
-protected:
+private:
 	CRailLine(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRailLine();
 
+	void	SaveSpline();
 	void	LoadSpline(int line = 0);
 	void	CalcSpline(int line = 0);
 	void	SetSplineVtx(int line = 0);
+	void	SetSplineVtxVec(int line = 0);
 	void	SetSplineVtxSPoints(int line = 0);
 	void	SetSplineVtxLPoints(int line = 0);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;			// テクスチャへのポインタ
-	static LPDIRECT3DTEXTURE9	m_pTexturePoints;	// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;			// 頂点バッファへのポインタ
+	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffVec;		// 頂点バッファへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffSPoints;	// 頂点バッファへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffLPoints;	// 頂点バッファへのポインタ
 	

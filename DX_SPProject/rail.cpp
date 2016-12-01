@@ -52,9 +52,7 @@ CRail::~CRail()
 //	説明	:初期化処理を行う。
 //=============================================================================
 void CRail::Init(int line, D3DXVECTOR3 pos)
-{
-	VERTEX_3D			*pVtx;										// 3D頂点情報
-	
+{	
 	char			*str	= NULL;	// ファイル内容格納配列
 	unsigned int	offset	= 0;	// 文字列指定子
 
@@ -72,6 +70,22 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_pTexture);
 	
+	// レール情報セット
+	SetRailData();
+
+	Load();
+}
+
+//=============================================================================
+//	関数名	:SetRailData
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:レールの情報をセットする。
+//=============================================================================
+void CRail::SetRailData(void)
+{
+	VERTEX_3D			*pVtx;		// 3D頂点情報
+
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
 		float rot = 0.0f;
@@ -81,51 +95,58 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 		rot = atan2f((m_Spline->PosHermite[1].x - m_Spline->PosHermite[0].x), (m_Spline->PosHermite[1].z - m_Spline->PosHermite[0].z));
 		pVtx[0].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x + cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
 		pVtx[1].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x - cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
-		for(int nCntInit = 1 ; nCntInit < (int)m_Spline->Pos.size() ; nCntInit++)
+		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
 		{
 			// 角度設定
-			if(nCntInit != (m_Spline->PosHermite.size() - 1))
+			if(i != ((int)m_Spline->PosHermite.size() - 1))
 			{
-				rot = atan2f((m_Spline->PosHermite[nCntInit + 1].x - m_Spline->PosHermite[nCntInit].x), (m_Spline->PosHermite[nCntInit + 1].z - m_Spline->PosHermite[nCntInit].z));
+				rot = atan2f((m_Spline->PosHermite[i + 1].x - m_Spline->PosHermite[i].x), (m_Spline->PosHermite[i + 1].z - m_Spline->PosHermite[i].z));
 			}
 			else
 			{
-				rot = atan2f((m_Spline->PosHermite[nCntInit].x - m_Spline->PosHermite[nCntInit - 1].x), (m_Spline->PosHermite[nCntInit].z - m_Spline->PosHermite[nCntInit - 1].z));
+				rot = atan2f((m_Spline->PosHermite[i].x - m_Spline->PosHermite[i - 1].x), (m_Spline->PosHermite[i].z - m_Spline->PosHermite[i - 1].z));
 			}
 
-			pVtx[nCntInit * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[nCntInit].x + (cosf(rot) * (RAIL_WIDTH * 0.5f)),
-													1.0f,
-													m_Spline->PosHermite[nCntInit].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
-			pVtx[nCntInit * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[nCntInit].x - cosf(rot) * (RAIL_WIDTH * 0.5f),
-													1.0f,
-													m_Spline->PosHermite[nCntInit].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
-
-			//a[nCntInit * 2 + 0] = D3DXVECTOR3(cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, sinf(rot) * (RAIL_WIDTH * 0.5f));
-			//a[nCntInit * 2 + 1] = D3DXVECTOR3(-cosf(rot) * (RAIL_WIDTH * 0.5f), 1.0f, -sinf(rot) * (RAIL_WIDTH * 0.5f));
+			if(i == ((int)m_Spline->PosHermite.size() - 1))
+			{
+				pVtx[i * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x + (cosf(rot) * (RAIL_WIDTH * 0.5f)),
+					0.1f,
+					m_Spline->PosHermite[0].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
+				pVtx[i * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x - cosf(rot) * (RAIL_WIDTH * 0.5f),
+					0.1f,
+					m_Spline->PosHermite[0].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
+			}
+			else
+			{
+				pVtx[i * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x + (cosf(rot) * (RAIL_WIDTH * 0.5f)),
+					0.1f,
+					m_Spline->PosHermite[i].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
+				pVtx[i * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x - cosf(rot) * (RAIL_WIDTH * 0.5f),
+					0.1f,
+					m_Spline->PosHermite[i].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
+			}
 		}
-	
-		for(int nCntInit = 0 ; nCntInit < ((int)m_Spline->PosHermite.size() * 2 + 2) ; nCntInit++)
+
+		for(int i = 0 ; i < ((int)m_Spline->PosHermite.size() * 2 + 2) ; i++)
 		{
 			// 法線設定
-			pVtx[nCntInit].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 			// 色設定
-			pVtx[nCntInit].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}
-	
+
 		// テクスチャ貼付座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		for(int nCntInit = 1 ; nCntInit < (int)m_Spline->PosHermite.size() ; nCntInit++)
+		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
 		{
-			pVtx[nCntInit * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)nCntInit * 2.0f);
-			pVtx[nCntInit * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)nCntInit * 2.0f);
+			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * 2.0f);
+			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * 2.0f);
 		}
 
 	}
 	m_pVtxBuff->Unlock();
-
-	Load();
 }
 
 //=============================================================================
@@ -150,24 +171,11 @@ void CRail::Uninit(void)
 //=============================================================================
 void CRail::Update(void)
 {
-	/*static float t = 0.0f;
-	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	float nowt = (t - ((int)t));
+	// 描画フラグ設定
+	m_flgDraw = CManager::GetCamera()->GetCameraMode() ? false : true;
 
-	pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].x)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].x);
-	pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)t + 0].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)t + 1].z)
-						+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)t + 0].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)t + 1].z);	
-	pos.y = 20.0f;
-
-	CManager::GetCamera()->SetCameraPos(pos, D3DXVECTOR3(0.0f, pos.y + 100.0f, pos.z - 200.0f));
-
-
-	t += (1.0f / RAIL_SET) * 0.1f;
-	if(t > (m_Spline->nNum - 1))
-	{
-		t -= m_Spline->nNum;
-	}*/
+	// レール情報セット
+	SetRailData();
 }
 
 //=============================================================================
@@ -178,28 +186,23 @@ void CRail::Update(void)
 //=============================================================================
 void CRail::Draw(void)
 {
-	// マトリックス設定
-	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
-	
-	// ライティング設定をオフに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
-
-	// 描画処理
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->Pos.size() * 2));	// 描画
-
-	// ライティング設定をオンに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-	// デバッグ情報表示
-#ifdef _DEBUG
-	for(int i = 0 ; i < (int)m_Spline->Pos.size() ; i++)
+	if(m_flgDraw)
 	{
-		CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline->Pos[i].x, m_Spline->Pos[i].y, m_Spline->Pos[i].z);
+		// マトリックス設定
+		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
+
+		// ライティング設定をオフに
+		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+		// 描画処理
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->PosHermite.size() * 2));	// 描画
+
+		// ライティング設定をオンに
+		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
-#endif
 }
 
 //=============================================================================

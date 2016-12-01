@@ -59,8 +59,8 @@ void CCameraDX::Init(void)
 	m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
 
 	// エディット時カメラ設定
-	m_CSEdit.posV = D3DXVECTOR3(0.0f, 300.0f, -1500.0f);
-	m_CSEdit.posR = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
+	m_CSEdit.posV = D3DXVECTOR3(0.0f, 3000.0f, -10.0f);
+	m_CSEdit.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_CSEdit.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CSEdit.Rot = D3DXVECTOR3(0.0f, atan2f((m_CSEdit.posR.x - m_CSEdit.posV.x), (m_CSEdit.posR.z - m_CSEdit.posV.z)), 0.0f);
 	m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
@@ -118,9 +118,6 @@ void CCameraDX::Update(void)
 		m_CS.posR.z = player->GetPos().z;
 		m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
 
-		//camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-		//camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-
 		// 視点設定
 		m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetRot().y) * CAMERA_POSV_TOPLAYER);
 		m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetRot().y) * CAMERA_POSV_TOPLAYER);
@@ -129,10 +126,9 @@ void CCameraDX::Update(void)
 		// 注視点設定
 		//m_CS.posR.x = player->GetPos().x + (sinf(m_CS.Rot.y) * m_CS.fDistance);
 		//m_CS.posR.z = player->GetPos().z + (cosf(m_CS.Rot.y) * m_CS.fDistance);
-		
 	}
 
-	if(CInput::m_MState.Notch > 0)
+	if(CInput::GetMouseNotch() > 0)
 	{
 		// ↑に回転（チルト）した
 		
@@ -144,9 +140,9 @@ void CCameraDX::Update(void)
 		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 
-		CInput::m_MState.Notch = 0;
+		CInput::SetMouseNotch(0);
 	}
-	else if(CInput::m_MState.Notch < 0)
+	else if(CInput::GetMouseNotch() < 0)
 	{
 		// ↓に回転（チルト）した
 		
@@ -158,7 +154,7 @@ void CCameraDX::Update(void)
 		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 
-		CInput::m_MState.Notch = 0;
+		CInput::SetMouseNotch(0);
 	}
 }
 
@@ -170,7 +166,7 @@ void CCameraDX::Update(void)
 //=============================================================================
 void CCameraDX::CameraMove(void)
 {
-	if(CInput::GetKeyboardPress(DIK_UP) && !CInput::GetKeyboardPress(DIK_LEFT) && !CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(奥)
+	if(CInput::GetKeyPress(DIK_UP) && !CInput::GetKeyPress(DIK_LEFT) && !CInput::GetKeyPress(DIK_RIGHT))		// カメラ移動(奥)
 	{
 		// 視点移動
 		m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
@@ -180,7 +176,7 @@ void CCameraDX::CameraMove(void)
 		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
-	else if(CInput::GetKeyboardPress(DIK_DOWN) && !CInput::GetKeyboardPress(DIK_LEFT) && !CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(手前)
+	else if(CInput::GetKeyPress(DIK_DOWN) && !CInput::GetKeyPress(DIK_LEFT) && !CInput::GetKeyPress(DIK_RIGHT))		// カメラ移動(手前)
 	{
 		// 視点移動
 		m_CSEdit.posV.x -= sinf(m_CSEdit.Rot.y) * CAMERA_POSV_MOVEMENT;
@@ -190,9 +186,9 @@ void CCameraDX::CameraMove(void)
 		m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 	}
-	else if(CInput::GetKeyboardPress(DIK_LEFT))		// カメラ移動(左)
+	else if(CInput::GetKeyPress(DIK_LEFT))		// カメラ移動(左)
 	{
-		if(CInput::GetKeyboardPress(DIK_UP))			// 左奥
+		if(CInput::GetKeyPress(DIK_UP))			// 左奥
 		{
 			// 視点移動
 			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y - (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
@@ -202,7 +198,7 @@ void CCameraDX::CameraMove(void)
 			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
-		else if(CInput::GetKeyboardPress(DIK_DOWN))	// 左手前
+		else if(CInput::GetKeyPress(DIK_DOWN))	// 左手前
 		{
 			// 視点移動
 			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y - (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
@@ -223,9 +219,9 @@ void CCameraDX::CameraMove(void)
 			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
 	}
-	else if(CInput::GetKeyboardPress(DIK_RIGHT))		// カメラ移動(右)
+	else if(CInput::GetKeyPress(DIK_RIGHT))		// カメラ移動(右)
 	{
-		if(CInput::GetKeyboardPress(DIK_UP))			// 右奥
+		if(CInput::GetKeyPress(DIK_UP))			// 右奥
 		{
 			// 視点移動
 			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y + (D3DX_PI * 0.25f)) * CAMERA_POSV_MOVEMENT;
@@ -235,7 +231,7 @@ void CCameraDX::CameraMove(void)
 			m_CSEdit.posR.x = m_CSEdit.posV.x + (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 			m_CSEdit.posR.z = m_CSEdit.posV.z + (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
 		}
-		else if(CInput::GetKeyboardPress(DIK_DOWN))	// 右手前
+		else if(CInput::GetKeyPress(DIK_DOWN))	// 右手前
 		{
 			// 視点移動
 			m_CSEdit.posV.x += sinf(m_CSEdit.Rot.y + (D3DX_PI * 0.75f)) * CAMERA_POSV_MOVEMENT;
@@ -442,40 +438,4 @@ void CCameraDX::SetCamera(void)
 	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera->posV.x, camera->posV.y, camera->posV.z);
 	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera->posR.x, camera->posR.y, camera->posR.z);
 #endif
-}
-
-//=============================================================================
-//	関数名	:Draw
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:描画処理を行う。
-//=============================================================================
-void CCameraDX::SetCamera2D(void)
-{
-	// 射影変換行列
-	m_CS.mtxProjection	= D3DXMATRIX(
-     2/SCREEN_WIDTH , 0.0f, 0.0f, 0.0f,
-     0.0f, 2/SCREEN_HEIGHT , 0.0f, 0.0f,
-     0.0f, 0.0f, 0.0f, 0.0f,
-     0.0f, 0.0f, 0.0f, 1.0f
-	);
-	D3DXMATRIX view;
-
-	// プロジェクションマトリクスの初期化
-	//D3DXMatrixIdentity(&proj);
-
-	// Orthoでの射影行列の作成
-	//D3DXMatrixOrthoLH(&proj, SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_NEARZ, CAMERA_FARZ);
-
-	// プロジェクションマトリクスの設定
-	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &m_CS.mtxProjection);
-
-	// ビューマトリクスの初期化
-	D3DXMatrixIdentity(&view);
-
-	// ビューマトリクスの作成
-	D3DXMatrixLookAtLH(&view, &m_CS.posV, &m_CS.posR, &m_CS.vecU);
-
-	// ビューマトリクスの設定
-	D3D_DEVICE->SetTransform(D3DTS_VIEW, &view);
 }

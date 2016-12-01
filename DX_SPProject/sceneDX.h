@@ -49,10 +49,8 @@ public:
 	void		SetRot(D3DXVECTOR3 rot)	{ m_Rot = rot; }
 	D3DXVECTOR3	GetPos(void)			{ return m_Pos; }
 	D3DXVECTOR3	GetRot(void)			{ return m_Rot; }
-
-
-	void	ChangeDrawFrag(void) { m_flgDraw ? false : true; }
-
+	void	ChangeDrawFrag(void) { m_flgDraw = m_flgDraw ? false : true; }
+		
 protected:
 	CSceneDX(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();

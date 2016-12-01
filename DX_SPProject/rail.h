@@ -46,6 +46,8 @@ public:
 protected:
 	CRail(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRail();
+
+	void SetRailData(void);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ

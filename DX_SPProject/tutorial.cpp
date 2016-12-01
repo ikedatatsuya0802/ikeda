@@ -57,7 +57,7 @@ void CTutorial::Update(void)
 {
 	// シーン更新
 	CSceneDX::UpdateAll();
-	if(CInput::GetKeyboardTrigger(DIK_RETURN) || CInput::GetKeyboardTrigger(DIK_SPACE))
+	if(CInput::GetKeyTrigger(DIK_RETURN) || CInput::GetKeyTrigger(DIK_SPACE))
 	{
 		CFade::Start(new CGame, FS_OUT);
 	}

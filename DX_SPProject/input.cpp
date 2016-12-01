@@ -17,26 +17,14 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECTINPUT8			CInput::m_pInput;				// DirectInputオブジェクトへのポインタ
-LPDIRECTINPUTDEVICE8	CInput::m_pDevKeyboard;			// 入力3Dデバイス(キーボード)へのポインタ
+LPDIRECTINPUT8			CInput::m_pInput;			// DirectInputオブジェクトへのポインタ
+LPDIRECTINPUTDEVICE8	CInput::m_pDevKeyboard;		// 入力3Dデバイス(キーボード)へのポインタ
+LPDIRECTINPUTDEVICE8	CInput::m_pDevMouse;		// 入力3Dデバイス(マウス)へのポインタ
 
-BYTE	CInput::m_aKeyState[KEYSTATE_NUM];				// キーボードの入力情報ワーク
-BYTE	CInput::m_aKeyStateTrigger[KEYSTATE_NUM];		// キーボードのトリガ情報
-BYTE	CInput::m_aKeyStateRelease[KEYSTATE_NUM];		// キーボードのリリース情報
-BYTE	CInput::m_aKeyStateRepeat[KEYSTATE_NUM];		// キーボードのリピート情報
+KEYSTATE				CInput::m_KeyState;			// キーボードの入力情報ワーク
 
-int		CInput::m_aKeyStateRepeatCount[KEYSTATE_NUM];	// キーボードのリピートカウント
-int		CInput::m_nRepeatInterval;						// リピート間隔
-
-LPDIRECTINPUTDEVICE8 CInput::m_pDevMouse;				// 入力3Dデバイス(マウス)へのポインタ
-MSTATE	CInput::m_MState;								// マウス情報
-
-BYTE	CInput::m_aMouseState;							// マウスの左ボタン入力情報ワーク
-BYTE	CInput::m_aMouseStateTrigger;					// マウスの左ボタントリガ情報
-BYTE	CInput::m_aMouseStateRelease;					// マウスの左ボタンリリース情報
-BYTE	CInput::m_aMouseStateRepeat;					// マウスの左ボタンリピート情報
-
-int		CInput::m_aMouseRepeatCount;					// キーボードのリピートカウント
+MOUSE_STATUS			CInput::m_MState;			// マウス情報
+MOUSESTATE				CInput::m_MouseState;		// マウスの入力情報ワーク
 
 //=============================================================================
 //	関数名	:InitInput
@@ -50,13 +38,8 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 	m_pInput = NULL;
 	m_pDevKeyboard = NULL;
 
-	memset(m_aKeyState, 0, sizeof(m_aKeyState));
-	memset(m_aKeyStateTrigger, 0, sizeof(m_aKeyStateTrigger));
-	memset(m_aKeyStateRelease, 0, sizeof(m_aKeyStateRelease));
-	memset(m_aKeyStateRepeat, 0, sizeof(m_aKeyStateRepeat));
-
-	memset(m_aKeyStateRepeatCount, 0, sizeof(m_aKeyStateRepeatCount));
-	m_nRepeatInterval = NULL;
+	memset(&m_KeyState, 0, sizeof(m_KeyState));
+	memset(&m_MouseState, 0, sizeof(m_MouseState));
 
 	if(m_pInput == NULL)
 	{
@@ -125,10 +108,10 @@ HRESULT CInput::InitKeyboard(HINSTANCE hInstance, HWND hWnd)
 	m_pDevKeyboard->Acquire();		// アクセス権を取得
 
 	// キーボードのリピートカウント初期化
-	memset(m_aKeyStateRepeatCount, 0, sizeof(m_aKeyStateRepeatCount));
+	memset(m_KeyState.RepeatCount, 0, sizeof(m_KeyState.RepeatCount));
 
 	// リピート間隔の初期化
-	m_nRepeatInterval = REPEAT_INTERVAL_NORMAL;
+	m_KeyState.RepeatInterval = REPEAT_INTERVAL_NORMAL;
 
 	return S_OK;
 }
@@ -148,35 +131,35 @@ void CInput::UpdateKeyboard(void)
 		for(int nCntKey = 0 ; nCntKey < KEYSTATE_NUM ; nCntKey++)
 		{
 			// トリガ処理
-			m_aKeyStateTrigger[nCntKey] = aKeyState[nCntKey] & (m_aKeyState[nCntKey] ^ aKeyState[nCntKey]);
+			m_KeyState.Trigger[nCntKey] = aKeyState[nCntKey] & (m_KeyState.Press[nCntKey] ^ aKeyState[nCntKey]);
 			
 			// リリース処理
-			m_aKeyStateRelease[nCntKey] = m_aKeyState[nCntKey] & (m_aKeyState[nCntKey] ^ aKeyState[nCntKey]);
+			m_KeyState.Release[nCntKey] = m_KeyState.Press[nCntKey] & (m_KeyState.Press[nCntKey] ^ aKeyState[nCntKey]);
 
 			// リピート処理
 			if(aKeyState[nCntKey])
 			{
-				m_aKeyStateRepeatCount[nCntKey]++;
-				if(m_aKeyStateRepeatCount[nCntKey] > REPEAT_TIME)
+				m_KeyState.RepeatCount[nCntKey]++;
+				if(m_KeyState.RepeatCount[nCntKey] > REPEAT_TIME)
 				{
 					// リピート間隔によってリピートを行う
-					if(m_aKeyStateRepeatCount[nCntKey] % m_nRepeatInterval == 0)
+					if(m_KeyState.RepeatCount[nCntKey] % m_KeyState.RepeatInterval == 0)
 					{
-						m_aKeyStateRepeat[nCntKey] = aKeyState[nCntKey];
+						m_KeyState.Repeat[nCntKey] = aKeyState[nCntKey];
 					}
 					else
 					{
-						m_aKeyStateRepeat[nCntKey] = 0;
+						m_KeyState.Repeat[nCntKey] = 0;
 					}
 				}
 			}
-			else if(m_aKeyStateRelease[nCntKey])
+			else if(m_KeyState.Release[nCntKey])
 			{
-				m_aKeyStateRepeatCount[nCntKey] = 0;
-				m_aKeyStateRepeat[nCntKey] = 0;
+				m_KeyState.RepeatCount[nCntKey] = 0;
+				m_KeyState.Repeat[nCntKey] = 0;
 			}
 
-			m_aKeyState[nCntKey] = aKeyState[nCntKey];
+			m_KeyState.Press[nCntKey] = aKeyState[nCntKey];
 		}
 	}
 	else
@@ -212,7 +195,7 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 	// マウスポインタ情報の初期化
 	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
 	m_MState.sPos.x		= (LONG)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
-	m_MState.sPos.y		= (float)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
+	m_MState.sPos.y		= (LONG)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
 	m_MState.wPos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ワールド座標の初期化
 	m_MState.lButton	= false;							// 左ボタンの情報を初期化
 	m_MState.rButton	= false;							// 右ボタンの情報を初期化
@@ -225,6 +208,12 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 	m_MState.WheelFraction	= 0;
 
 
+	// マウスのリピートカウント初期化
+	memset(m_MouseState.RepeatCount, 0, sizeof(m_MouseState.RepeatCount));
+
+	// リピート間隔の初期化
+	m_MouseState.RepeatInterval = REPEAT_INTERVAL_NORMAL;
+
 	return S_OK;
 }
 
@@ -236,36 +225,65 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 //=============================================================================
 void CInput::UpdateMouse(void)
 {
-	D3DXVECTOR3 pOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	static bool aMouseState[MOUSESTATE_NUM]	= { false, false, false };
+	static bool aMouseStateOld[MOUSESTATE_NUM]	= { false, false, false };
+
 
 	// マウスのスクリーン座標の取得
 	GetCursorPos(&m_MState.sPos);
 	
-	if((m_MState.sPos.x > 0 && m_MState.sPos.x < SCREEN_WIDTH) && (m_MState.sPos.y > 0 && m_MState.sPos.y < SCREEN_HEIGHT))
-	{// スクリーンの範囲内だった場合
+	// ワールド座標の取得
+	MouseScreenToWorld(&m_MState.wPos, m_MState.sPos);
+	//m_MState.wPos.x *= 1.01f;
+	//m_MState.wPos.z *= 1.03f;
 
-		D3DXMATRIX mtxView, mtxPrj;	// マトリックス
+	// 情報の退避
+	aMouseStateOld[0] = aMouseState[0];
+	aMouseStateOld[1] = aMouseState[1];
+	aMouseStateOld[2] = aMouseState[2];
 
-		// マウスのクライアント座標取得
-		ScreenToClient(GethWnd(), &m_MState.sPos);
+	// マウス情報取得
+	aMouseState[0] = m_MState.lButton;
+	aMouseState[1] = m_MState.cButton;
+	aMouseState[2] = m_MState.rButton;
 
-		// マトリックス取得
-		D3D_DEVICE->GetTransform(D3DTS_VIEW, &mtxView);
-		D3D_DEVICE->GetTransform(D3DTS_PROJECTION, &mtxPrj);
+	for(int nCntButton = 0 ; nCntButton < MS_MAX ; nCntButton++)
+	{
+		// トリガ処理
+		m_MouseState.Trigger[nCntButton] = (aMouseState[nCntButton] && !aMouseStateOld[nCntButton]) ? true : false;
 
-		// マウスのワールド座標計算
-		CalcScreenToXZ(&m_MState.wPos, (int)m_MState.sPos.x, (int)m_MState.sPos.y, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, &mtxView, &mtxPrj);
+		// リリース処理
+		m_MouseState.Release[nCntButton] = (!aMouseState[nCntButton] && aMouseStateOld[nCntButton]) ? true : false;
+
+		// リピート処理
+		if(aMouseState)
+		{
+			m_MouseState.RepeatCount[nCntButton]++;
+			if(m_MouseState.RepeatCount[nCntButton] > REPEAT_TIME)
+			{
+				// リピート間隔によってリピートを行う
+				if(m_MouseState.RepeatCount[nCntButton] % m_MouseState.RepeatInterval == 0)
+				{
+					m_MouseState.Repeat[nCntButton] = aMouseState[nCntButton];
+				}
+				else
+				{
+					m_MouseState.Repeat[nCntButton] = 0;
+				}
+			}
+		}
+		else if(m_MouseState.Release)
+		{
+			m_MouseState.RepeatCount[nCntButton] = 0;
+			m_MouseState.Repeat[nCntButton] = 0;
+		}
+
+		m_MouseState.Press[nCntButton] = aMouseState[nCntButton];
 	}
-	else
-	{// スクリーンの範囲内でない場合
-
-		m_MState.wPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	}
+	
 
 	CDebugProc::DebugProc("マウス(2D):(%ld, %ld)\n", m_MState.sPos.x, m_MState.sPos.y);
 	CDebugProc::DebugProc("マウス(3D):(%.2f, %.2f, %.2f)\n", m_MState.wPos.x, m_MState.wPos.y, m_MState.wPos.z);
-	CDebugProc::DebugProc("ホイール:%d, %d\n", CInput::m_MState.Notch, CInput::m_MState.WheelFraction);
-	CDebugProc::DebugProc("MD:(%d, %d, %d)\n", m_MState.lButton, m_MState.cButton, m_MState.rButton);
 }
 
 //=============================================================================
@@ -282,6 +300,39 @@ void CInput::UninitMouse(void)
 		m_pDevMouse->Release();
 		m_pDevMouse = NULL;
 	}
+}
+
+//=============================================================================
+//	関数名	:MouseScreenToWorld
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:マウスのスクリーン座標をワールド座標に変換する。
+//=============================================================================
+D3DXVECTOR3* CInput::MouseScreenToWorld(D3DXVECTOR3* pOut, POINT point)
+{
+	if((point.x > 0 && point.x < SCREEN_WIDTH) && (point.y > 0 && point.y < SCREEN_HEIGHT))
+	{// スクリーンの範囲内だった場合
+
+		D3DXMATRIX mtxView, mtxPrj;	// マトリックス
+
+		// マウスのクライアント座標取得
+		ScreenToClient(GethWnd(), &point);
+
+		// マトリックス取得
+		D3D_DEVICE->GetTransform(D3DTS_VIEW, &mtxView);
+		D3D_DEVICE->GetTransform(D3DTS_PROJECTION, &mtxPrj);
+
+		// マウスのワールド座標計算
+		CalcScreenToXZ(pOut, (int)point.x, (int)point.y, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, &mtxView, &mtxPrj);
+	}
+	else
+	{// スクリーンの範囲内でない場合
+
+		*pOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+
+	return pOut;
 }
 
 //=============================================================================
