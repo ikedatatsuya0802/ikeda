@@ -15,13 +15,14 @@
 #define	CAMERA_NEARZ				(10.0f)			// NearZ値
 #define	CAMERA_FARZ					(100000.0f)		// FarZ値
 #define	CAMERA_DEFAULT_DISTANCE		(200.0f)		// 初期の視点―注視点間距離
+#define	CAMERA_WHEEL_CHANGE_Y		(150.0f)			// マウスホイールによる高さの変化量
 
 #define	CAMERA_POSV_MOVEMENT		(5.0f)			// 視点の移動速度
 #define	CAMERA_POSR_MOVEMENT_X		(0.05f)			// 注視点の移動量(左右)
 #define	CAMERA_POSR_MOVEMENT_Y		(2.0f)			// 注視点の移動量(上下)
 
 #define	CAMERA_POSV_TOPLAYER		(200.0f)		// プレイヤーからの距離
-#define	CAMERA_POSV_TOHIGHPLAYER	(70.0f)		// プレイヤーからの距離
+#define	CAMERA_POSV_TOHIGHPLAYER	(70.0f)			// プレイヤーからの距離
 
 //=============================================================================
 //	構造体
@@ -59,6 +60,9 @@ public:
 
 	bool	GetCameraMode(void) { return m_flgCameraMode; }
 	void	ChangeCameraMode(void) { m_flgCameraMode = m_flgCameraMode ? false : true; }
+
+	D3DXVECTOR3	GetCameraPosV(void) { return m_flgCameraMode ? m_CSEdit.posV : m_CS.posV; }
+	D3DXVECTOR3	GetCameraPosR(void) { return m_flgCameraMode ? m_CSEdit.posR : m_CS.posR; }
 
 protected:
 	void CameraMove(void);

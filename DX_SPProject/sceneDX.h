@@ -15,6 +15,7 @@
 //	マクロ定義
 //=============================================================================
 #define	PRIORITY_NUM	(4)
+#define	DEBUGPROC_CNT	(120)	// デバッグ情報の表示時間
 
 //=============================================================================
 //	構造体・列挙体
@@ -55,10 +56,10 @@ protected:
 	CSceneDX(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();
 
+	OBJTYPE		m_ObjType;	// オブジェクトタイプ
+
 	static CSceneDX *m_pTop;	// リストの先頭ポインタ
 	static CSceneDX *m_pCur;	// リストの終端ポインタ
-
-	OBJTYPE		m_ObjType;	// オブジェクトタイプ
 
 	CSceneDX *m_pPrev;		// 前参照先ポインタ
 	CSceneDX *m_pNext;		// 後参照先ポインタ
@@ -67,6 +68,7 @@ protected:
 	D3DXVECTOR3 m_Rot;		// 回転角
 
 	bool	m_flgDraw;		// 描画フラグ
+	int		m_DebugProcCnt;	// デバッグ情報の表示カウンタ
 };
 
 #endif

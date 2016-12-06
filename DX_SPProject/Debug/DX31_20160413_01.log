@@ -1,2 +1,4 @@
-﻿  LINK : 前回のインクリメンタル リンクで C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
+﻿  player.cpp
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\player.cpp(410): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : 'sscanf' の宣言を確認してください。
   DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

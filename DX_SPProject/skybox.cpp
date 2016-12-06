@@ -10,9 +10,8 @@
 //	インクルード
 //=============================================================================
 #include "skybox.h"
-#include "manager.h"
-#include "main.h"
 #include "rendererDX.h"
+#include "cameraDX.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -89,6 +88,9 @@ void CSkybox::Uninit(void)
 //=============================================================================
 void CSkybox::Update(void)
 {
+	// カメラ座標に追従
+	m_Pos = CManager::GetCamera()->GetCameraPosV();
+
 	m_Rot.y -= 0.0001f;
 }
 

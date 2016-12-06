@@ -35,9 +35,8 @@ private:
 	static void AddSpotLight(D3DXVECTOR3 pos, D3DXVECTOR3 vec, D3DCOLORVALUE dif,
 		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
-	static D3DLIGHT9 m_Light[3];
-	//static list<D3DLIGHT9> m_Light;
-	static list<D3DLIGHT9>::iterator m_ItrLight;
+	//static D3DLIGHT9 m_Light[3];
+	static vector<D3DLIGHT9> m_Light;
 	static int m_LightNum;
 
 };

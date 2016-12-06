@@ -131,28 +131,24 @@ void CCameraDX::Update(void)
 	if(CInput::GetMouseNotch() > 0)
 	{
 		// ↑に回転（チルト）した
-		
-		// 視点注視点間距離更新
-		m_CSEdit.fDistance	-= 20.0f;
-		m_CSEdit.posV.y		-= 20.0f;
 
-		// 視点設定
-		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
-		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		if(CInput::GetMouseNotch() > 1)
+		{
+			m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
+		}
+		m_CSEdit.posV.y		-= CAMERA_WHEEL_CHANGE_Y;
 
 		CInput::SetMouseNotch(0);
 	}
 	else if(CInput::GetMouseNotch() < 0)
 	{
 		// ↓に回転（チルト）した
-		
-		// 視点注視点間距離更新
-		m_CSEdit.fDistance	+= 20.0f;
-		m_CSEdit.posV.y		+= 20.0f;
 
-		// 視点設定
-		m_CSEdit.posV.x = m_CSEdit.posR.x - (sinf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
-		m_CSEdit.posV.z = m_CSEdit.posR.z - (cosf(m_CSEdit.Rot.y) * m_CSEdit.fDistance);
+		if(CInput::GetMouseNotch() < -1)
+		{
+			m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
+		}
+		m_CSEdit.posV.y		+= CAMERA_WHEEL_CHANGE_Y;
 
 		CInput::SetMouseNotch(0);
 	}

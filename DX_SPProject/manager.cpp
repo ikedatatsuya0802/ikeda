@@ -60,8 +60,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
-	CInput::UninitKeyboard();
-	CInput::UninitMouse();
+	CInput::Uninit();
 	CRendererDX::Uninit();
 	CDebugProc::Uninit();
 	SafetyUninit(m_Camera);

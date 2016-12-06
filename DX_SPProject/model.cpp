@@ -72,16 +72,8 @@ void CModel::Init(char *filename, D3DXVECTOR3 pos)
 //=============================================================================
 void CModel::Uninit(void)
 {
-	if(m_ModelStatus.pMesh != NULL)
-	{
-		m_ModelStatus.pMesh->Release();
-		m_ModelStatus.pMesh = NULL;
-	}
-	if(m_ModelStatus.pBuffMat != NULL)
-	{
-		m_ModelStatus.pBuffMat->Release();
-		m_ModelStatus.pBuffMat = NULL;
-	}
+	SafetyRelease(m_ModelStatus.pMesh);
+	SafetyRelease(m_ModelStatus.pBuffMat);
 }
 
 //=============================================================================

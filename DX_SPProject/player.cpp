@@ -121,10 +121,12 @@ void CPlayer::Update(void)
 void CPlayer::UpdateMove(void)
 {
 	CCameraDX	*camera		= CManager::GetCamera();	// カメラ
-	CMeshfield	*mesh		= CGame::GetMeshfield();		// メッシュフィールド
-
+	CMeshfield	*mesh		= CGame::GetMeshfield();	// メッシュフィールド
 	float nowt = (m_Per - ((int)m_Per));
 	
+	// スプラインのロード
+	m_Spline = CGame::GetRailLine()->GetSpline();
+
 	if(CInput::GetKeyPress(DIK_W))				// 奥
 	{
 		// 移動量を設定
@@ -510,10 +512,10 @@ void CPlayer::LoadMotion(char *fileName)
 }
 
 //=============================================================================
-//	関数名	:LoadMotion
+//	関数名	:SetMotion
 //	引数	:D3DXVECTOR3 pos(初期位置)
 //	戻り値	:無し
-//	説明	:モーションを読み込み・セットする。
+//	説明	:モーションをセットする。
 //=============================================================================
 void CPlayer::SetMotion(MOTIONTYPE motionType)
 {
