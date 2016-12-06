@@ -19,6 +19,11 @@
 #include "cameraDX.h"
 
 //=============================================================================
+//	静的メンバ
+//=============================================================================
+LPDIRECT3DTEXTURE9 CRailLine::m_pTextures[2];
+
+//=============================================================================
 //	関数名	:CScene3D()
 //	引数	:無し
 //	戻り値	:無し
@@ -54,7 +59,8 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_RailLineLine = line;
+	m_RailLine = line;
+	m_EditType = ET_POS;
 	
 	LoadSpline(line);
 	CalcSpline(line);
@@ -65,7 +71,7 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffSPoints, NULL);
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffLPoints, NULL);
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffPointer, NULL);
-
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffDrift, NULL);
 
 	// 頂点データセット
 	SetSplineVtx();
@@ -73,6 +79,7 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 	SetSplineVtxSPoints();
 	SetSplineVtxLPoints();
 	SetSplineVtxPointer();
+	SetSplineVtxDrift();
 
 	// テクスチャのロード
 	Load();
@@ -261,6 +268,43 @@ void CRailLine::SetSplineVtxPointer(int line)
 }
 
 //=============================================================================
+//	関数名	:SetSplineVtxDrift
+//	引数	:なし
+//	戻り値	:なし
+//	説明	:ドリフトの開始・終点のマーク。
+//=============================================================================
+void CRailLine::SetSplineVtxDrift(int line)
+{
+	VERTEX_3D	*pVtx;	// 頂点情報
+
+
+	m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
+	{
+		// 座標設定
+		pVtx[0].Pos = D3DXVECTOR3(-75.0f, 150.0f, 0.0f);
+		pVtx[1].Pos = D3DXVECTOR3(75.0f, 150.0f, 0.0f);
+		pVtx[2].Pos = D3DXVECTOR3(-75.0f, 0.0f, 0.0f);
+		pVtx[3].Pos = D3DXVECTOR3(75.0f, 0.0f, 0.0f);
+
+		// 法線設定
+		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		{
+			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+			// 色設定
+			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+
+		// テクスチャ貼付座標設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(0.25f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(0.25f, 1.0f);
+	}
+	m_pVtxBuffDrift->Unlock();
+}
+
+//=============================================================================
 //	関数名	:Uninit
 //	引数	:無し
 //	戻り値	:無し
@@ -268,12 +312,12 @@ void CRailLine::SetSplineVtxPointer(int line)
 //=============================================================================
 void CRailLine::Uninit(void)
 {
-	SafetyRelease(m_pTexture);
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pVtxBuffVec);
 	SafetyRelease(m_pVtxBuffSPoints);
 	SafetyRelease(m_pVtxBuffLPoints);
 	SafetyRelease(m_pVtxBuffPointer);
+	SafetyRelease(m_pVtxBuffDrift);
 
 	Unload();
 }
@@ -291,6 +335,14 @@ void CRailLine::Update(void)
 
 	if(CManager::GetCamera()->GetCameraMode())
 	{// エディットモードの場合のみ処理
+
+		// エディットモード変更
+		if(CInput::GetMouseTrigger(MBTN_RIGHT))
+		{
+			if(m_EditType == ET_POS) m_EditType = ET_VEC;
+			else if(m_EditType == ET_VEC) m_EditType = ET_DRIFT;
+			else if(m_EditType == ET_DRIFT) m_EditType = ET_POS;
+		}
 
 		// カメラの高さに応じたスケールを設定
 		m_YScale = (CManager::GetCamera()->GetCameraPosV().y / 2000.0f);
@@ -333,38 +385,172 @@ void CRailLine::Update(void)
 //=============================================================================
 void CRailLine::MouseEdit(void)
 {
-	if(CInput::GetMousePress(MS_LB))
+	if(CInput::GetMousePress(MBTN_LEFT))
 	{// マウスが押されている状態
 
-		if(CInput::GetMouseTrigger(MS_LB))
-		{// ドラッグフラグ設定
 
-			// 後の頂点を優先的に選択し、ドラッグフラグをオンに
-			for(int i = ((int)m_Spline.Pos.size() - 1) ; i >= 0 ; i--)
-			{
-				D3DXVECTOR3 a = CInput::GetMouseWorldPos(), b = m_Spline.Pos[i];
-				float length = D3DXVec3Length(&(D3DXVECTOR3(a.x, 0.0f, a.z) - D3DXVECTOR3(b.x, 0.0f, b.z)));
+		switch(m_EditType)
+		{
+		case ET_POS:
+			if(CInput::GetMouseTrigger(MBTN_LEFT))
+			{// ドラッグフラグ設定
 
-				if(length < RAILLINE_DRAG_SIZE)
+				// 後の頂点を優先的に選択し、ドラッグフラグをオンに
+				for(int i = ((int)m_Spline.Pos.size() - 1) ; i >= 0 ; i--)
 				{
-					m_Spline.ifHold[i] = true;
-					break;
+					D3DXVECTOR3 a = CInput::GetMouseWorldPos(), b = m_Spline.Pos[i];
+					float length = D3DXVec3Length(&(D3DXVECTOR3(a.x, 1.0f, a.z) - D3DXVECTOR3(b.x, 1.0f, b.z)));
+
+					if(length < RAILLINE_DRAG_SIZE)
+					{
+						m_Spline.ifHold[i] = true;
+						break;
+					}
 				}
 			}
+
+			for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
+			{
+				if(m_Spline.ifHold[i])
+				{
+					m_Spline.Pos[i] = CInput::GetMouseWorldPos();
+				}
+			}
+			break;
+		case ET_VEC:
+			if(CInput::GetMouseTrigger(MBTN_LEFT))
+			{// ドラッグフラグ設定
+
+				// 後の頂点を優先的に選択し、ドラッグフラグをオンに
+				for(int i = ((int)m_Spline.Pos.size() - 1) ; i >= 0 ; i--)
+				{
+					D3DXVECTOR3 a = CInput::GetMouseWorldPos();
+					D3DXVECTOR3 b = m_Spline.Pos[i] + m_Spline.Vec[i];
+					float length = D3DXVec3Length(&(D3DXVECTOR3(a.x, 1.0f, a.z) - D3DXVECTOR3(b.x, 1.0f, b.z)));
+
+					if(length < (RAILLINE_DRAG_SIZE * m_YScale))
+					{
+						m_Spline.ifHold[i] = true;
+						break;
+					}
+				}
+			}
+
+			for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
+			{
+				if(m_Spline.ifHold[i])
+				{
+					m_Spline.Vec[i] = CInput::GetMouseWorldPos() - m_Spline.Pos[i];
+				}
+			}
+			break;
+		case ET_DRIFT:
+			if(CInput::GetMouseTrigger(MBTN_LEFT))
+			{// ドラッグフラグ設定
+
+				// 後の頂点を優先的に選択し、ドラッグフラグをオンに
+				for(int i = ((int)m_Spline.Drift.size() - 1) ; i >= 0 ; i--)
+				{
+					D3DXVECTOR3 a = CInput::GetMouseWorldPos();
+					D3DXVECTOR3 b = GetSplinePos(m_Spline.Drift[i].Begin);
+					D3DXVECTOR3 c = GetSplinePos(m_Spline.Drift[i].End);
+					float lengthBegin	= D3DXVec3Length(&(D3DXVECTOR3(a.x, 1.0f, a.z) - D3DXVECTOR3(b.x, 1.0f, b.z)));
+					float lengthEnd		= D3DXVec3Length(&(D3DXVECTOR3(a.x, 1.0f, a.z) - D3DXVECTOR3(c.x, 1.0f, c.z)));
+
+					if(lengthBegin < RAILLINE_DRAG_SIZE)
+					{
+						if(lengthBegin < lengthEnd) m_Spline.Drift[i].ifHoldBegin = true;
+						break;
+					}
+					else if(lengthEnd < RAILLINE_DRAG_SIZE)
+					{
+						if(lengthEnd < lengthBegin) m_Spline.Drift[i].ifHoldEnd = true;
+						break;
+					}
+				}
+			}
+
+			// ドリフト方向切り替え
+			if(CInput::GetKeyTrigger(DIK_F4))
+			{
+				for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
+				{
+					if(m_Spline.Drift[i].ifHoldBegin || m_Spline.Drift[i].ifHoldEnd)
+					{
+						//ChangeFlag(m_Spline.Drift[i].Curve);
+						m_Spline.Drift[i].Curve = m_Spline.Drift[i].Curve ? false : true;
+					}
+				}
+			}
+
+			for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
+			{
+
+				// スプラインの最近点探索
+				float per = 0.0f;
+				int maxHermite = 0;
+				for(int j = 0 ; j < RAILLINE_DRIFT_SEARCH ; j++)
+				{
+					float tMax = (1.0f / RAILLINE_DRIFT_SEARCH * maxHermite);
+					float t = (1.0f / RAILLINE_DRIFT_SEARCH * j);
+					float lengthMin = D3DXVec3Length(&(CInput::GetMouseWorldPos() - GetSplinePos(tMax)));
+					float length = D3DXVec3Length(&(CInput::GetMouseWorldPos() - GetSplinePos(t)));
+					if(lengthMin > length)
+					{
+						maxHermite = j;
+					}
+				}
+
+				if(m_Spline.Drift[i].ifHoldBegin)
+				{
+					m_Spline.Drift[i].Begin = ((1.0f / RAILLINE_DRIFT_SEARCH) * maxHermite);
+
+					// 可動範囲設定
+					if(i > 0)
+					{
+						if(m_Spline.Drift[i].Begin <= m_Spline.Drift[i - 1].End + RAILLINE_DRIFT_DRAG)
+						{
+							m_Spline.Drift[i].Begin = m_Spline.Drift[i - 1].End + RAILLINE_DRIFT_DRAG;
+						}
+					}
+
+					if(i < (int)m_Spline.Drift.size() - 1)
+					{
+						if(m_Spline.Drift[i].Begin >= m_Spline.Drift[i].End - RAILLINE_DRIFT_DRAG)
+						{
+							m_Spline.Drift[i].Begin = m_Spline.Drift[i].End - RAILLINE_DRIFT_DRAG;
+						}
+					}
+				}
+				else if(m_Spline.Drift[i].ifHoldEnd)
+				{
+					m_Spline.Drift[i].End = ((1.0f / RAILLINE_DRIFT_SEARCH) * maxHermite);
+
+					// 可動範囲設定
+					if(i < (int)m_Spline.Drift.size() - 1)
+					{
+						if(m_Spline.Drift[i].End >= m_Spline.Drift[i + 1].Begin - RAILLINE_DRIFT_DRAG)
+						{
+							m_Spline.Drift[i].End = m_Spline.Drift[i + 1].Begin - RAILLINE_DRIFT_DRAG;
+						}
+					}
+					
+					if(m_Spline.Drift[i].End <= m_Spline.Drift[i].Begin + RAILLINE_DRIFT_DRAG)
+					{
+						m_Spline.Drift[i].End = m_Spline.Drift[i].Begin + RAILLINE_DRIFT_DRAG;
+					}
+				}
+			}
+			break;
+		default:
+			break;
 		}
 
-		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
-		{
-			if(m_Spline.ifHold[i])
-			{
-				m_Spline.Pos[i] = CInput::GetMouseWorldPos();
-			}
-		}
 
 		// スプラインの再計算
 		CalcSpline();
 	}
-	else if(CInput::GetMouseRelease(MS_LB))
+	else if(CInput::GetMouseRelease(MBTN_LEFT))
 	{// マウスがリリースされた場合
 
 		// 全頂点のホールドを解除
@@ -372,47 +558,10 @@ void CRailLine::MouseEdit(void)
 		{
 			m_Spline.ifHold[i] = false;
 		}
-	}
-
-	if(CInput::GetMousePress(MS_RB))
-	{// マウスが押されている状態
-
-		if(CInput::GetMouseTrigger(MS_RB))
-		{// ドラッグフラグ設定
-
-			// 後の頂点を優先的に選択し、ドラッグフラグをオンに
-			for(int i = ((int)m_Spline.Pos.size() - 1) ; i >= 0 ; i--)
-			{
-				D3DXVECTOR3 a = CInput::GetMouseWorldPos();
-				D3DXVECTOR3 b = m_Spline.Pos[i] + m_Spline.Vec[i];
-				float length = D3DXVec3Length(&(D3DXVECTOR3(a.x, 0.0f, a.z) - D3DXVECTOR3(b.x, 0.0f, b.z)));
-
-				if(length < (RAILLINE_DRAG_SIZE * m_YScale))
-				{
-					m_Spline.ifHold[i] = true;
-					break;
-				}
-			}
-		}
-
-		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
+		for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
 		{
-			if(m_Spline.ifHold[i])
-			{
-				m_Spline.Vec[i] = CInput::GetMouseWorldPos() - m_Spline.Pos[i];
-			}
-		}
-
-		// スプラインの再計算
-		CalcSpline();
-	}
-	else if(CInput::GetMouseRelease(MS_RB))
-	{// マウスがリリースされた場合
-
-		// 全頂点のホールドを解除
-		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
-		{
-			m_Spline.ifHold[i] = false;
+			m_Spline.Drift[i].ifHoldBegin	= false;
+			m_Spline.Drift[i].ifHoldEnd		= false;
 		}
 	}
 }
@@ -489,6 +638,7 @@ void CRailLine::Draw(void)
 	{
 		// マウス座標に対応するスケール
 		D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+		if(m_YScale < 1.0f) m_YScale = 1.0f;
 		scl *= m_YScale;
 
 		// マトリックス設定
@@ -513,7 +663,7 @@ void CRailLine::Draw(void)
 		D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-		D3D_DEVICE->SetTexture(0, m_pTexture);	// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTextures[0]);	// テクスチャの設定
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuffSPoints, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 		for(int i = 0 ; i < (int)m_Spline.PosHermite.size() ; i++)
 		{
@@ -549,19 +699,59 @@ void CRailLine::Draw(void)
 		// 描画
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 
-		// ライティング設定をオンに
-		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
-
 		// レンダーステート設定を戻す
 		D3D_DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTextures[1]);
+		for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
+		{
+			D3DXVECTOR3 pos;
+			VERTEX_3D *pVtx;
+			float tex;
+
+			// テクスチャ座標の設定
+			m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
+			tex = m_Spline.Drift[i].Curve ? 0.25f : 0.0f;
+			for(int texture = 0 ; texture < VERTEX_NUM ; texture++)
+				pVtx[texture].tex = D3DXVECTOR2(tex + ((texture % 2) * 0.25f), ((float)(texture / 2)));
+			m_pVtxBuffDrift->Unlock();
+			// 頂点フォーマットの設定
+			D3D_DEVICE->SetStreamSource(0, m_pVtxBuffDrift, 0, sizeof(VERTEX_3D));
+			// スプライン座標取得
+			pos = GetSplinePos(m_Spline.Drift[i].Begin);
+			// マトリックス設定
+			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+			// 描画
+			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+
+			// テクスチャ座標の設定
+			m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
+			tex = m_Spline.Drift[i].Curve ? 0.75f : 0.5f;
+			for(int texture = 0 ; texture < VERTEX_NUM ; texture++)
+				pVtx[texture].tex = D3DXVECTOR2(tex + ((texture % 2) * 0.25f), ((float)(texture / 2)));
+			m_pVtxBuffDrift->Unlock();
+			// 頂点フォーマットの設定
+			D3D_DEVICE->SetStreamSource(0, m_pVtxBuffDrift, 0, sizeof(VERTEX_3D));
+			// スプライン座標取得
+			pos = GetSplinePos(m_Spline.Drift[i].End);
+			// マトリックス設定
+			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+			// 描画
+			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+		}
+
+		// ライティング設定をオンに
+		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 
 		// デバッグ情報表示
 #ifdef _DEBUG
 		if(CManager::GetCamera()->GetCameraMode())
 		{
+			CDebugProc::DebugProc("エディットタイプ:%d\n", m_EditType);
 			for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 			{
 				CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
@@ -637,6 +827,16 @@ void CRailLine::SaveSpline(void)
 	}
 	fprintf_s(fp, "\n");
 
+
+	fprintf_s(fp, "//------------------------------------------------------------------------------\n");
+	fprintf_s(fp, "// ドリフト点情報\n");
+	fprintf_s(fp, "//------------------------------------------------------------------------------\n");
+	for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
+	{
+		fprintf_s(fp, "DRIFT = %.4f %.4f %d\n", m_Spline.Drift[i].Begin, m_Spline.Drift[i].End, (int)m_Spline.Drift[i].Curve);
+	}
+	fprintf_s(fp, "\n");
+
 	fprintf_s(fp, "END_SCRIPT			// 消すなよ！絶対消すなよ！");
 
 	fclose(fp);
@@ -677,6 +877,13 @@ void CRailLine::LoadSpline(int line)
 			D3DXVECTOR3 vec;
 			fscanf(fp, " = %f %f %f\n", &vec.x, &vec.y, &vec.z);
 			m_Spline.Vec.push_back(vec);
+		}
+		else if(strcmp(str, "DRIFT") == 0)
+		{// スプライン制御ベクトルを追加
+
+			DRIFT_POINT drift;
+			fscanf(fp, " = %f %f %d\n", &drift.Begin, &drift.End, &drift.Curve);
+			m_Spline.Drift.push_back(drift);
 		}
 		else if(strcmp(str, "END_SCRIPT") == 0)
 		{// スプライン読み込みを終了
@@ -753,4 +960,29 @@ void CRailLine::CalcSpline(int line)
 
 		t += (1.0f / RAILLINE_SET);
 	}*/
+}
+
+//=============================================================================
+//	関数名	:GetSplinePos
+//	引数	:float t	->	スプライン媒介変数
+//	戻り値	:なし
+//	説明	:媒介変数の値に応じたスプライン上の点を返す。
+//=============================================================================
+D3DXVECTOR3 CRailLine::GetSplinePos(float t)
+{
+	D3DXVECTOR3 pos;
+
+	if((int)m_Spline.Pos.size() >= 2)
+	{
+		int		posNum = (int)(t * ((int)m_Spline.Pos.size() - 1));
+		float	nowt = t * ((int)m_Spline.Pos.size() - 1) - posNum;
+
+		pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].x)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].x);
+		pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].z)
+			+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].z);
+		pos.y = 1.0f;
+	}
+
+	return pos;
 }

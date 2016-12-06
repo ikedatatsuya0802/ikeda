@@ -48,9 +48,6 @@ protected:
 	CScene3DDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScene3DDX();
 	
-	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
-	
 	D3DXMATRIX					m_mtxWorld;	// ワールドマトリックス
 };
 

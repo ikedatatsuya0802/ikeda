@@ -21,6 +21,7 @@
 //CSceneDX *CSceneDX::m_pCur[PRIORITY_NUM] = {NULL};
 CSceneDX *CSceneDX::m_pTop = {NULL};
 CSceneDX *CSceneDX::m_pCur = {NULL};
+LPDIRECT3DTEXTURE9 CSceneDX::m_pTexture;
 
 //=============================================================================
 //	ä÷êîñº	:CSceneDX()

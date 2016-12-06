@@ -8,18 +8,23 @@
 //	作成日		2016/04/19
 //
 //=============================================================================
-#include "d3dx9.h"
+#include "rendererDX.h"
 //=============================================================================
 //	マクロ定義
 //=============================================================================
 #define	CAMERA_NEARZ				(10.0f)			// NearZ値
 #define	CAMERA_FARZ					(100000.0f)		// FarZ値
 #define	CAMERA_DEFAULT_DISTANCE		(200.0f)		// 初期の視点―注視点間距離
-#define	CAMERA_WHEEL_CHANGE_Y		(150.0f)			// マウスホイールによる高さの変化量
+#define	CAMERA_WHEEL_CHANGE_Y		(150.0f)		// マウスホイールによる高さの変化量
+#define	CAMERA_EDIT_V1				D3DXVECTOR3(0.0, 3000.0f, -10.0f)	// 注視点の移動量(上下)
+#define	CAMERA_EDIT_R1				D3DXVECTOR3(0.0, 0.0f, 0.0f)		// 注視点の移動量(上下)
+#define	CAMERA_EDIT_V2				D3DXVECTOR3(0.0, 150.0f, -500.0f)	// 注視点の移動量(上下)
+#define	CAMERA_EDIT_R2				D3DXVECTOR3(0.0, 100.0f, -300.0f)	// 注視点の移動量(上下)
 
 #define	CAMERA_POSV_MOVEMENT		(5.0f)			// 視点の移動速度
+#define	CAMERA_POSV_MOVEMENT_Y		(5.0f)			// 視点の移動量(上下)
 #define	CAMERA_POSR_MOVEMENT_X		(0.05f)			// 注視点の移動量(左右)
-#define	CAMERA_POSR_MOVEMENT_Y		(2.0f)			// 注視点の移動量(上下)
+#define	CAMERA_POSR_MOVEMENT_Y		(3.0f)			// 注視点の移動量(上下)
 
 #define	CAMERA_POSV_TOPLAYER		(200.0f)		// プレイヤーからの距離
 #define	CAMERA_POSV_TOHIGHPLAYER	(70.0f)			// プレイヤーからの距離

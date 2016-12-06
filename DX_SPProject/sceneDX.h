@@ -8,7 +8,6 @@
 //	作成日		2016/04/19
 //
 //=============================================================================
-#include "d3dx9.h"
 #include "rendererDX.h"
 
 //=============================================================================
@@ -63,6 +62,9 @@ protected:
 
 	CSceneDX *m_pPrev;		// 前参照先ポインタ
 	CSceneDX *m_pNext;		// 後参照先ポインタ
+
+	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
+	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ
 
 	D3DXVECTOR3 m_Pos;		// 位置
 	D3DXVECTOR3 m_Rot;		// 回転角

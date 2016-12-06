@@ -160,7 +160,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_LBUTTONDOWN:		// マウス左ボタンが押された
-		if(!CInput::GetMousePress(MS_CB) && !CInput::GetMousePress(MS_RB))
+		if(!CInput::GetMousePress(MBTN_CENTER) && !CInput::GetMousePress(MBTN_RIGHT))
 		{
 			CInput::SetMouseLButton(true);
 		}
@@ -171,7 +171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MBUTTONDOWN:		// マウス中央ボタンが押された
-		if(!CInput::GetMousePress(MS_LB) && !CInput::GetMousePress(MS_RB))
+		if(!CInput::GetMousePress(MBTN_LEFT) && !CInput::GetMousePress(MBTN_RIGHT))
 		{
 			CInput::SetMouseCButton(true);
 		}
@@ -182,7 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_RBUTTONDOWN:		// マウス右ボタンが押された
-		if(!CInput::GetMousePress(MS_LB) && !CInput::GetMousePress(MS_CB))
+		if(!CInput::GetMousePress(MBTN_LEFT) && !CInput::GetMousePress(MBTN_CENTER))
 		{
 			CInput::SetMouseRButton(true);
 		}

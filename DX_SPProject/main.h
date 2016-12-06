@@ -37,6 +37,7 @@ using namespace std;
 //=============================================================================
 int		GetFPS(void);
 HWND	GethWnd(void);
+//void ChangeFlag(bool &Flag) { Flag = Flag ? false : true; } // フラグ変更関数
 
 // インスタンス削除関数
 template <class INSTANCE>
@@ -70,7 +71,6 @@ void SwapData(SWAPDATA &data1, SWAPDATA &data2)
 	data1 = data2;
 	data2 = dataBuff;
 }
-
 
 
 #endif

@@ -247,7 +247,7 @@ void CInput::UpdateMouse(void)
 	aMouseState[1] = m_MState.cButton;
 	aMouseState[2] = m_MState.rButton;
 
-	for(int nCntButton = 0 ; nCntButton < MS_MAX ; nCntButton++)
+	for(int nCntButton = 0 ; nCntButton < MBTN_MAX ; nCntButton++)
 	{
 		// ƒgƒŠƒKˆ—
 		m_MouseState.Trigger[nCntButton] = (aMouseState[nCntButton] && !aMouseStateOld[nCntButton]) ? true : false;

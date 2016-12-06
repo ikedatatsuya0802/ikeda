@@ -11,9 +11,6 @@
 //=============================================================================
 #include "cameraDX.h"
 #include <typeinfo>
-#include "manager.h"
-#include "main.h"
-#include "rendererDX.h"
 #include "input.h"
 #include "game.h"
 #include "player.h"
@@ -59,8 +56,8 @@ void CCameraDX::Init(void)
 	m_CS.fDistance = hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
 
 	// エディット時カメラ設定
-	m_CSEdit.posV = D3DXVECTOR3(0.0f, 3000.0f, -10.0f);
-	m_CSEdit.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_CSEdit.posV = CAMERA_EDIT_V1;
+	m_CSEdit.posR = CAMERA_EDIT_R1;
 	m_CSEdit.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CSEdit.Rot = D3DXVECTOR3(0.0f, atan2f((m_CSEdit.posR.x - m_CSEdit.posV.x), (m_CSEdit.posR.z - m_CSEdit.posV.z)), 0.0f);
 	m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
@@ -89,6 +86,20 @@ void CCameraDX::Update(void)
 	if(m_flgCameraMode)
 	{
 		CameraMove();
+
+		// 視点をいい感じに
+		if(CInput::GetKeyTrigger(DIK_2))
+		{
+			m_CSEdit.posV = CAMERA_EDIT_V1;
+			m_CSEdit.posR = CAMERA_EDIT_R1;
+			m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+		}
+		if(CInput::GetKeyTrigger(DIK_3))
+		{
+			m_CSEdit.posV = CAMERA_EDIT_V2;
+			m_CSEdit.posR = CAMERA_EDIT_R2;
+			m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+		}
 	}
 
 	if(KT_L)
@@ -254,19 +265,19 @@ void CCameraDX::CameraMove(void)
 	if(KH_Y && !KH_Z && !KH_C)			// 視点移動(上)
 	{
 		// 視点設定
-		m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posV.y += CAMERA_POSV_MOVEMENT_Y;
 	}
 	else if(KH_N && !KH_Z && !KH_C)	// 視点移動(下)
 	{
 		// 視点設定
-		m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y;
+		m_CSEdit.posV.y -= CAMERA_POSV_MOVEMENT_Y;
 	}
 	else if(KH_Z)		// 視点移動(左)
 	{
 		if(KH_Y)			// 左上
 		{
 			// 視点変更
-			m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y;
+			m_CSEdit.posV.y += CAMERA_POSV_MOVEMENT_Y;
 			
 			// 角度増減
 			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
@@ -274,7 +285,7 @@ void CCameraDX::CameraMove(void)
 		else if(KH_N)	// 左下
 		{
 			// 視点変更
-			m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y;
+			m_CSEdit.posV.y -= CAMERA_POSV_MOVEMENT_Y;
 			
 			// 角度増減
 			m_CSEdit.Rot.y += CAMERA_POSR_MOVEMENT_X;
@@ -297,7 +308,7 @@ void CCameraDX::CameraMove(void)
 		if(KH_Y)			// 右上
 		{
 			// 視点変更
-			m_CSEdit.posV.y += CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posV.y += CAMERA_POSV_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
 			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);
@@ -305,7 +316,7 @@ void CCameraDX::CameraMove(void)
 		else if(KH_N)	// 右下
 		{
 			// 視点変更
-			m_CSEdit.posV.y -= CAMERA_POSR_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
+			m_CSEdit.posV.y -= CAMERA_POSV_MOVEMENT_Y * sinf(D3DX_PI * 0.25);
 			
 			// 角度増減
 			m_CSEdit.Rot.y -= CAMERA_POSR_MOVEMENT_X * sinf(D3DX_PI * 0.25);

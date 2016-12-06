@@ -45,9 +45,6 @@ public:
 	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
-	LPDIRECT3DTEXTURE9		m_pTexture;		// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff;		// 頂点バッファへのポインタ
-
 	float	m_fLength;	// 対角線の長さ
 	float	m_fAngle;	// 角度
 };
