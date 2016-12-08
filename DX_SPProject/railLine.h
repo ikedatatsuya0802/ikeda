@@ -65,7 +65,7 @@ private:
 	static LPDIRECT3DTEXTURE9	m_pTextures[2];	// テクスチャへのポインタ
 
 public:
-	void	Init(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -81,7 +81,7 @@ public:
 		SafetyRelease(m_pTextures[1]);
 	}
 
-	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	SPLINE* GetSpline(void) { return &m_Spline; }
 
 private:

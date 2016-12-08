@@ -38,7 +38,7 @@
 class CSceneXDX : public CScene3DDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -53,7 +53,7 @@ public:
 	static void	Unload(int texNum) { for(int i = 0 ; i < MODEL_TEXTURENUM ; i++){if(m_pTexture != NULL){m_pTexture[texNum]->Release(); m_pTexture[texNum] = NULL;}}
 									if(m_pMesh != NULL){ m_pMesh->Release(); m_pMesh = NULL; }if(m_pBuffMat != NULL){ m_pBuffMat->Release(); m_pBuffMat = NULL;} }
 
-	static CSceneXDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CSceneXDX	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 

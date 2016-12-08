@@ -33,13 +33,14 @@ public:
 	CScene2DDX(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScene2DDX();
 
-	void	Init(D3DXVECTOR3 pos){}
-	void	Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str);
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
+			D3DXVECTOR2 size = D3DXVECTOR2(POLYGON2DDX_WIDTH, POLYGON2DDX_HEIGHT),
+			char *str = ".\\data\\TEXTURE\\"POLYGON2DDX_TEXFILENAME000);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CScene2DDX	*Create(D3DXVECTOR2 pos = D3DXVECTOR2(0.0f, 0.0f),
+	static CScene2DDX	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
 								D3DXVECTOR2 size = D3DXVECTOR2(POLYGON2DDX_WIDTH, POLYGON2DDX_HEIGHT),
 								char *str = ".\\data\\TEXTURE\\"POLYGON2DDX_TEXFILENAME000);
 	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);

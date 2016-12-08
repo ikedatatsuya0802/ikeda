@@ -71,7 +71,7 @@ void CGametime::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
 	//SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	
 	// 回転初期化
-	//SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//SetRot(VEC3_ZERO);
 
 	// 座標設定
 	for(int i = 0 ; i < figure.Upper ; i++)
@@ -99,7 +99,11 @@ void CGametime::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
 //=============================================================================
 void CGametime::Uninit(void)
 {
-
+	// ナンバー削除
+	for(int i = 0 ; i < m_NumFigure ; i++)
+	{
+		m_Number[i]->Draw();
+	}
 }
 
 //=============================================================================
@@ -124,12 +128,11 @@ void CGametime::Update(void)
 //=============================================================================
 void CGametime::Draw(void)
 {
-	/*
 	// ナンバー描画
 	for(int i = 0 ; i < m_NumFigure ; i++)
 	{
 		m_Number[i]->Draw();
-	}*/
+	}
 }
 
 //=============================================================================

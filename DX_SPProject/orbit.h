@@ -45,7 +45,7 @@ public:
 	COrbit(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~COrbit();
 
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -55,7 +55,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static COrbit		*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static COrbit		*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	void	SetOrbitData(void);
 	void	SetLocPos(D3DXVECTOR3 locPos1, D3DXVECTOR3 locPos2) { m_LocPos[0] = locPos1; m_LocPos[1] = locPos2; }

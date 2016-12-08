@@ -40,12 +40,12 @@ void CFade::Init(void)
 
 	// フェード情報の初期設定
 	m_Fade[0].Pos		= D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f);
-	m_Fade[0].Rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Fade[0].Rot		= VEC3_ZERO;
 	m_Fade[0].fLength	= hypotf((SCREEN_WIDTH * 0.5f), SCREEN_HEIGHT) * 0.5f;
 	m_Fade[0].fAngle	= atan2f((SCREEN_WIDTH * 0.5f), SCREEN_HEIGHT);
 	
 	m_Fade[1].Pos		= D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f);
-	m_Fade[1].Rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Fade[1].Rot		= VEC3_ZERO;
 	m_Fade[1].fLength	= hypotf((SCREEN_WIDTH * 0.5f), SCREEN_HEIGHT) * 0.5f;
 	m_Fade[1].fAngle	= atan2f((SCREEN_WIDTH * 0.5f), SCREEN_HEIGHT);
 
@@ -89,7 +89,7 @@ void CFade::Init(void)
 		}
 	
 		// テクスチャ貼付座標設定
-		pVtx[i * VERTEX_NUM + 0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[i * VERTEX_NUM + 0].tex = VEC2_ZERO;
 		pVtx[i * VERTEX_NUM + 1].tex = D3DXVECTOR2(1.0f, 0.0f);
 		pVtx[i * VERTEX_NUM + 2].tex = D3DXVECTOR2(0.0f, 1.0f);
 		pVtx[i * VERTEX_NUM + 3].tex = D3DXVECTOR2(1.0f, 1.0f);

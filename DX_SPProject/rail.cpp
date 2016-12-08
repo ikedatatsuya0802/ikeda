@@ -58,7 +58,7 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 
 	// Šeí‰Šú‰»ˆ—
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetRot(VEC3_ZERO);
 	m_RailLine = line;
 	
 	//LoadSpline(line);

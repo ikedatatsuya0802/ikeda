@@ -27,11 +27,11 @@
 class CNumber : public CSceneDX
 {
 public:
-	CNumber(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CNumber(bool ifListAdd = false, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CNumber();
 	
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)){}
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2 size = D3DXVECTOR2(0.0f, 0.0f), int value = 0);
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO){}
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -41,7 +41,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CNumber	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2 size = D3DXVECTOR2(0.0f, 0.0f), int value = 0);
+	static CNumber	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
 	
 	void	SetNumber(int value = 0);
 

@@ -23,9 +23,10 @@
 //=============================================================================
 void CResult::Init(void)
 {
-	m_ResultBG = CScene2DDX::Create(D3DXVECTOR2((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f)), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT),
+	m_ResultBG = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
+						D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT),
 						".\\data\\TEXTURE\\result000.jpg");
-	m_PushEnter = CScene2DDX::Create(D3DXVECTOR2((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f)),
+	m_PushEnter = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
 						D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)),
 						".\\data\\TEXTURE\\pushbutton000.png");
 

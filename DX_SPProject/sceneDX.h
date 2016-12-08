@@ -32,7 +32,7 @@ typedef enum{
 class CSceneDX
 {
 public:
-	virtual void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f))		= 0;
+	virtual void	Init() {};
 	virtual void	Uninit(void)	= 0;
 	virtual void	Update(void)	= 0;
 	virtual void	Draw(void)		= 0;
@@ -44,9 +44,13 @@ public:
 	void		UnlinkList(void);
 	
 	void		AddPos(D3DXVECTOR3 pos)	{ m_Pos += pos; }
+	void		AddPos(float x, float y, float z) { m_Pos += D3DXVECTOR3(x, y, z); }
 	void		AddRot(D3DXVECTOR3 rot)	{ m_Rot += rot; }
+	void		AddRot(float x, float y, float z) { m_Rot += D3DXVECTOR3(x, y, z); }
 	void		SetPos(D3DXVECTOR3 pos)	{ m_Pos = pos; }
+	void		SetPos(float x, float y, float z) { m_Pos = D3DXVECTOR3(x, y, z); }
 	void		SetRot(D3DXVECTOR3 rot)	{ m_Rot = rot; }
+	void		SetRot(float x, float y, float z) { m_Rot = D3DXVECTOR3(x, y, z); }
 	D3DXVECTOR3	GetPos(void)			{ return m_Pos; }
 	D3DXVECTOR3	GetRot(void)			{ return m_Rot; }
 

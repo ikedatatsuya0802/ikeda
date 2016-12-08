@@ -9,12 +9,9 @@
 //=============================================================================
 //	インクルード
 //=============================================================================
-#include <time.h>
-#include "readfile.h"
 #include "railLine.h"
-#include "manager.h"
 #include "main.h"
-#include "rendererDX.h"
+#include <time.h>
 #include "input.h"
 #include "cameraDX.h"
 
@@ -58,7 +55,7 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetRot(VEC3_ZERO);
 	m_RailLine = line;
 	m_EditType = ET_POS;
 	
@@ -116,7 +113,7 @@ void CRailLine::SetSplineVtx(int line)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 
 			// テクスチャ貼付座標設定
-			pVtx[i].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[i].tex = VEC2_ZERO;
 		}
 	}
 	m_pVtxBuff->Unlock();	
@@ -149,8 +146,8 @@ void CRailLine::SetSplineVtxVec(int line)
 			pVtx[i * 2 + 1].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 1.0f);
 
 			// テクスチャ貼付座標設定
-			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[i * 2 + 1].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[i * 2 + 0].tex = VEC2_ZERO;
+			pVtx[i * 2 + 1].tex = VEC2_ZERO;
 		}
 	}
 	m_pVtxBuffVec->Unlock();
@@ -685,7 +682,7 @@ void CRailLine::Draw(void)
 			pos.y += 1.0f;
 
 			// マトリックス設定
-			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 
 			// 描画
 			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
@@ -695,7 +692,7 @@ void CRailLine::Draw(void)
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuffPointer, 0, sizeof(VERTEX_3D));
 		// マトリックス設定
 		scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f) * (m_YScale / 2);
-		CRendererDX::SetMatrix(&m_mtxWorld, CInput::GetMouseWorldPos(), D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+		CRendererDX::SetMatrix(&m_mtxWorld, CInput::GetMouseWorldPos(), VEC3_ZERO, scl);
 		// 描画
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 
@@ -723,7 +720,7 @@ void CRailLine::Draw(void)
 			// スプライン座標取得
 			pos = GetSplinePos(m_Spline.Drift[i].Begin);
 			// マトリックス設定
-			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 			// 描画
 			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 
@@ -738,7 +735,7 @@ void CRailLine::Draw(void)
 			// スプライン座標取得
 			pos = GetSplinePos(m_Spline.Drift[i].End);
 			// マトリックス設定
-			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), scl);
+			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 			// 描画
 			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 		}
@@ -909,7 +906,7 @@ void CRailLine::CalcSpline(int line)
 {
 	float t		= 0.0f;
 	float rot	= 0.0f;
-	D3DXVECTOR3 vec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vec = VEC3_ZERO;
 	
 	if((int)m_Spline.Pos.size() >= 2)
 	{

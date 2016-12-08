@@ -196,7 +196,7 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
 	m_MState.sPos.x		= (LONG)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
 	m_MState.sPos.y		= (LONG)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
-	m_MState.wPos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ワールド座標の初期化
+	m_MState.wPos		= VEC3_ZERO;	// ワールド座標の初期化
 	m_MState.lButton	= false;							// 左ボタンの情報を初期化
 	m_MState.rButton	= false;							// 右ボタンの情報を初期化
 	m_MState.cButton	= false;							// 中央ボタンの情報を初期化
@@ -328,7 +328,7 @@ D3DXVECTOR3* CInput::MouseScreenToWorld(D3DXVECTOR3* pOut, POINT point)
 	else
 	{// スクリーンの範囲内でない場合
 
-		*pOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		*pOut = VEC3_ZERO;
 	}
 
 

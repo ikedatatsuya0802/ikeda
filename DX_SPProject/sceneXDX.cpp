@@ -62,9 +62,9 @@ void CSceneXDX::Init(D3DXVECTOR3 pos)
 
 	// äeéÌèâä˙âªèàóù
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_Move		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_RotMove	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SetRot(VEC3_ZERO);
+	m_Move		= VEC3_ZERO;
+	m_RotMove	= VEC3_ZERO;
 
 	m_nCntMove = 0;
 }

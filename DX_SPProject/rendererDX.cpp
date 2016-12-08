@@ -205,7 +205,7 @@ LPDIRECT3DVERTEXBUFFER9 CRendererDX::SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *p
 	(*pVtxBuff)->Lock(0, 0, (void**)&pVtx, 0);
 
 	// ï`âÊç¿ïWê›íË
-	pVtx[0].Pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pVtx[0].Pos = VEC3_ZERO;
 	pVtx[1].Pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
 	pVtx[2].Pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
 	pVtx[3].Pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);

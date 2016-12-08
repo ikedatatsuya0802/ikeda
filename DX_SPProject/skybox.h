@@ -8,9 +8,7 @@
 //	作成日		2016/04/20
 //
 //=============================================================================
-#include "sceneDX.h"
-#include "rendererDX.h"
-#include "manager.h"
+#include "scene3DDX.h"
 #include "rendererDX.h"
 
 //=============================================================================
@@ -28,27 +26,26 @@
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CSkybox : public CSceneDX
+class CSkybox : public CScene3DDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CSkybox	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CSkybox	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
 protected:
 	CSkybox(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSkybox();
 
-	void	SetSkyboxData(VERTEX_3D *pVtx);
-	void	DrawSkyboxData(void);
+	void	SetVtxBuff(void);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ

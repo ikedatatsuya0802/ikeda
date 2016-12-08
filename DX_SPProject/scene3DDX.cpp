@@ -44,46 +44,55 @@ CScene3DDX::~CScene3DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene3DDX::Init(D3DXVECTOR3 pos)
+void CScene3DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	VERTEX_3D			*pVtx;										// 3D頂点情報
-	
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
-	
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);	
+}
+
+//=============================================================================
+//	関数名	:SetVtxBuff
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:頂点バッファにデータをセットする。
+//=============================================================================
+void CScene3DDX::SetVtxBuff(void)
+{
+	VERTEX_3D	*pVtx;	// 3D頂点情報
+
+
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 描画座標設定
 	pVtx[0].Pos.x = -(POLYGON3DDX_WIDTH * 0.5f);
 	pVtx[0].Pos.y = (POLYGON3DDX_HEIGHT * 0.5f);
 	pVtx[0].Pos.z = 0.0f;
-	
+
 	pVtx[1].Pos.x = (POLYGON3DDX_WIDTH * 0.5f);
 	pVtx[1].Pos.y = (POLYGON3DDX_HEIGHT * 0.5f);
 	pVtx[1].Pos.z = 0.0f;
-	
+
 	pVtx[2].Pos.x = -(POLYGON3DDX_WIDTH * 0.5f);
 	pVtx[2].Pos.y = -(POLYGON3DDX_HEIGHT * 0.5f);
 	pVtx[2].Pos.z = 0.0f;
-	
+
 	pVtx[3].Pos.x = (POLYGON3DDX_WIDTH * 0.5f);
 	pVtx[3].Pos.y = -(POLYGON3DDX_HEIGHT * 0.5f);
 	pVtx[3].Pos.z = 0.0f;
-	
+
 	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
 	{
 		// 法線設定
 		pVtx[nCntSet].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		
+
 		// 色設定
 		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	
+
 	// テクスチャ貼付座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
@@ -147,13 +156,13 @@ void CScene3DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene3DDX *CScene3DDX::Create(D3DXVECTOR3 pos)
+CScene3DDX *CScene3DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CScene3DDX *scene3D;
 
 	scene3D = new CScene3DDX;
 
-	scene3D->Init(pos);
+	scene3D->Init(pos, rot);
 
 	return scene3D;
 }

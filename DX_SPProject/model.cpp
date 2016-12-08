@@ -55,9 +55,9 @@ void CModel::Init(char *filename, D3DXVECTOR3 pos)
 	// äeéÌèâä˙âªèàóù
 	m_Parent	= NULL;
 	m_PosDef	= D3DXVECTOR3(pos.x, pos.y, pos.z);
-	m_RotDef	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_RotDef	= VEC3_ZERO;
+	m_Pos		= VEC3_ZERO;
+	m_Rot		= VEC3_ZERO;
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	// ÉÇÉfÉãì«Ç›çûÇ›

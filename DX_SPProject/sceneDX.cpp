@@ -38,8 +38,8 @@ CSceneDX::CSceneDX(bool ifListAdd, int priority, OBJTYPE objType)
 	m_ObjType = objType;
 
 	// ç¿ïWÅEâÒì]ÇÃèâä˙âª
-	m_Pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Pos = VEC3_ZERO;
+	m_Rot = VEC3_ZERO;
 
 	m_flgDraw = true;
 }

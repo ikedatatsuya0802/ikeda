@@ -31,6 +31,9 @@
 #define	PRIMITIVE_NUM		(2)							// プリミティブ数
 #define	D3D_DEVICE			CRendererDX::m_pD3DDevice	// 3Dデバイス
 
+#define	VEC2_ZERO			(D3DXVECTOR2(0.0f, 0.0f))		// 2Dベクトルの0
+#define	VEC3_ZERO			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 3Dベクトルの0
+
 //=============================================================================
 //	構造体
 //=============================================================================
@@ -66,8 +69,8 @@ public:
 
 	//static LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
 	static LPDIRECT3DVERTEXBUFFER9 SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *pVtxBuff);
-	static void SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	static void SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	static void SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	static void SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 
 	static LPDIRECT3DDEVICE9		m_pD3DDevice;		// 3Dデバイスへのポインタ
 

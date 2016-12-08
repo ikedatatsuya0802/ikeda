@@ -59,7 +59,7 @@ void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 
 	// äeéÌèâä˙âªèàóù
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetRot(VEC3_ZERO);
 	m_fLength	= hypotf(size.x, size.y) * 0.5f;
 	m_fAngle	= atan2f(size.x, size.y);
 

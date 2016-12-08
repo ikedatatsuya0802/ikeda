@@ -50,8 +50,8 @@ void COrbit::Init(D3DXVECTOR3 pos)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_LocPos[0] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SetRot(VEC3_ZERO);
+	m_LocPos[0] = VEC3_ZERO;
 	m_LocPos[1] = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 	// 頂点バッファ生成
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ORBIT_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
@@ -224,7 +224,7 @@ void COrbit::SetOrbitData(void)
 	{
 		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= ORBIT_HORIZONTAL ; nCntVtxHorizontal++)
 		{
-			pVtx[(nCntVtxVertical * (ORBIT_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			pVtx[(nCntVtxVertical * (ORBIT_HORIZONTAL + 1) + nCntVtxHorizontal)].Pos = VEC3_ZERO;
 		}
 	}
 	

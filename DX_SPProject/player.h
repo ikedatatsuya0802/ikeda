@@ -66,12 +66,12 @@ class CModel;
 class CPlayer : public CSceneXDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CPlayer	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
 	float	GetPerSpline(void) { return m_Per; }					// ƒXƒvƒ‰ƒCƒ“î•ñ‚ğæ“¾

@@ -31,7 +31,7 @@
 class CRail : public CScene3DDX
 {
 public:
-	void	Init(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -41,7 +41,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CRail(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

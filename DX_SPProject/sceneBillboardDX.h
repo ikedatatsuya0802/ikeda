@@ -32,7 +32,7 @@
 class CSceneBillboardDX : public CSceneDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -40,7 +40,7 @@ public:
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGONBILLBOARDDX_TEXFILENAME000, &m_pTexture); }
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CSceneBillboardDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CSceneBillboardDX	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CSceneBillboardDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

@@ -34,18 +34,18 @@ public:
 	CModel(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
-	void	Init(char *filename, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 	
 	void			SetParent(CModel *model) { m_Parent = model; }
-	void			SetPosDef(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_PosDef = pos; }
-	void			SetRotDef(D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_RotDef = rot; }
-	void			SetPos(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_Pos = pos; }
-	void			SetRot(D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_Rot = rot; }
+	void			SetPosDef(D3DXVECTOR3 pos = VEC3_ZERO) { m_PosDef = pos; }
+	void			SetRotDef(D3DXVECTOR3 rot = VEC3_ZERO) { m_RotDef = rot; }
+	void			SetPos(D3DXVECTOR3 pos = VEC3_ZERO) { m_Pos = pos; }
+	void			SetRot(D3DXVECTOR3 rot = VEC3_ZERO) { m_Rot = rot; }
 
-	static CModel	*Create(char *filename, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	static CModel	*Create(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
 	void			LoadModel(char *filename);
 
 private:

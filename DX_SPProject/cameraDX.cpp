@@ -49,7 +49,7 @@ void CCameraDX::Init(void)
 	m_flgCameraMode = false;
 
 	// í èÌéûÉJÉÅÉâê›íË
-	m_CS.posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_CS.posV = VEC3_ZERO;
 	m_CS.posR = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 	m_CS.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot = D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
@@ -90,15 +90,17 @@ void CCameraDX::Update(void)
 		// éãì_ÇÇ¢Ç¢ä¥Ç∂Ç…
 		if(CInput::GetKeyTrigger(DIK_2))
 		{
-			m_CSEdit.posV = CAMERA_EDIT_V1;
-			m_CSEdit.posR = CAMERA_EDIT_R1;
-			m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+			m_CSEdit.posV		= CAMERA_EDIT_V1;
+			m_CSEdit.posR		= CAMERA_EDIT_R1;
+			m_CSEdit.Rot		= VEC3_ZERO;
+			m_CSEdit.fDistance	= hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 		}
 		if(CInput::GetKeyTrigger(DIK_3))
 		{
-			m_CSEdit.posV = CAMERA_EDIT_V2;
-			m_CSEdit.posR = CAMERA_EDIT_R2;
-			m_CSEdit.fDistance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+			m_CSEdit.posV		= CAMERA_EDIT_V2;
+			m_CSEdit.posR		= CAMERA_EDIT_R2;
+			m_CSEdit.Rot		= VEC3_ZERO;
+			m_CSEdit.fDistance	= hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 		}
 	}
 

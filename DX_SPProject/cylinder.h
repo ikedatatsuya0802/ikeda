@@ -47,26 +47,23 @@ public:
 	CCylinder(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CCylinder();
 
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CCylinder	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"CYLINDER_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
-	
-	void				SetCylinderData(void);
-	static CCylinder	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 protected:
 	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_pIdxBuff;	// インデックスバッファへのポインタ
 
-	D3DXMATRIX		m_mtxWorld;					// ワールドマトリックス
-	D3DXVECTOR3		m_Nor[CYLINDER_VERTEX_NUM];	// 法線情報
+	void	SetVtxBuff(void);
 };
 
 #endif

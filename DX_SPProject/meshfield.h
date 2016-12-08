@@ -8,10 +8,7 @@
 //	作成日		2016/04/20
 //
 //=============================================================================
-#include "sceneDX.h"
-#include "rendererDX.h"
-#include "manager.h"
-#include "rendererDX.h"
+#include "scene3DDX.h"
 
 //=============================================================================
 //	マクロ定義
@@ -44,16 +41,18 @@
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CMeshfield : public CSceneDX
+class CMeshfield : public CScene3DDX
 {
 public:
 	CMeshfield(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CMeshfield();
 
-	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CMeshfield	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_pTexture); }
@@ -63,8 +62,6 @@ public:
 	inline int	GetFrontMesh(D3DXVECTOR3 pos);
 	float		GetHeight(D3DXVECTOR3 pos);
 	
-	void				SetMeshfieldData(void);
-	static CMeshfield	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	D3DXVECTOR3			GetMeshfieldPos(void){ return m_Pos; }
 	D3DXVECTOR3			*GetMeshfieldNor(void){ return m_Nor; }
 	static D3DXVECTOR3	GetVtxPos(int nNumVtx);
@@ -72,11 +69,10 @@ public:
 
 protected:
 	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_pIdxBuff;	// インデックスバッファへのポインタ
+	D3DXVECTOR3					m_Nor[MESHFIELD_VERTEX_NUM];	// 法線情報
 
-	D3DXMATRIX		m_mtxWorld;						// ワールドマトリックス
-	D3DXVECTOR3		m_Nor[MESHFIELD_VERTEX_NUM];	// 法線情報
+	void	SetVtxBuff(void);
 };
 
 #endif

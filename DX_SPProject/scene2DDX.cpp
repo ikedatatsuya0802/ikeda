@@ -44,13 +44,13 @@ CScene2DDX::~CScene2DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene2DDX::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
+void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
 {
 	VERTEX_2D	*pVtx;	// 2D頂点情報
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
 	m_fLength	= hypotf(size.x, size.y) * 0.5f;
 	m_fAngle	= atan2f(size.x, size.y);
 
@@ -79,16 +79,13 @@ void CScene2DDX::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
 	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
 	pVtx[3].Pos.z = 0.0f;
 	
-	// 除算係数設定
-	for(int cntRhw = 0 ; cntRhw < VERTEX_NUM ; cntRhw++)
+	for(int i = 0 ; i < VERTEX_NUM ; i++)
 	{
-		pVtx[cntRhw].rhw = 1.0f;
-	}
-	
-	// スコア色設定
-	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
-	{
-		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+		// 除算係数設定
+		pVtx[i].rhw = 1.0f;
+
+		// 頂点色設定
+		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	// テクスチャ貼付座標設定
@@ -132,13 +129,6 @@ void CScene2DDX::Update(void)
 //=============================================================================
 void CScene2DDX::Draw(void)
 {
-	
-
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
-
 	// 頂点フォーマットの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 	// 頂点フォーマットの設定
@@ -147,11 +137,6 @@ void CScene2DDX::Draw(void)
 	D3D_DEVICE->SetTexture(0, m_pTexture);
 	// メーター描画
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
-
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 
 //=============================================================================
@@ -162,7 +147,7 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
+CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
 {
 	CScene2DDX *scene2D;	// インスタンス
 
@@ -170,7 +155,7 @@ CScene2DDX *CScene2DDX::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size, char *str)
 	scene2D = new CScene2DDX;
 
 	// 初期化処理
-	scene2D->Init(pos, size, str);
+	scene2D->Init(pos, rot, size, str);
 
 	// インスタンスを返す
 	return scene2D;
