@@ -58,7 +58,7 @@ public:
 	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 
 protected:
-	CSceneXDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CSceneXDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneXDX();
 
 	static LPDIRECT3DTEXTURE9	m_pTexture[MODEL_TEXTURENUM];	// テクスチャへのポインタ

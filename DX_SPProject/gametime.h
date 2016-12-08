@@ -28,10 +28,10 @@ typedef struct FIGURE{
 //=============================================================================
 //	ƒNƒ‰ƒX’è‹`
 //=============================================================================
-class CGametime : public CNumber
+class CGametime
 {
 public:
-	CGametime(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CGametime(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CGametime();
 	
 	void	Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure);

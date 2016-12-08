@@ -49,21 +49,18 @@ public:
 	void		SetRot(D3DXVECTOR3 rot)	{ m_Rot = rot; }
 	D3DXVECTOR3	GetPos(void)			{ return m_Pos; }
 	D3DXVECTOR3	GetRot(void)			{ return m_Rot; }
-	void	ChangeDrawFrag(void) { m_flgDraw = m_flgDraw ? false : true; }
+
+	void		ChangeDrawFrag(void)	{ m_flgDraw = m_flgDraw ? false : true; }
 		
 protected:
-	CSceneDX(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneDX(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();
 
-	OBJTYPE		m_ObjType;	// オブジェクトタイプ
+	static list<CSceneDX*>	m_SceneList[PRIORITY_NUM];	// リスト
 
-	static CSceneDX *m_pTop;	// リストの先頭ポインタ
-	static CSceneDX *m_pCur;	// リストの終端ポインタ
+	OBJTYPE	m_ObjType;		// オブジェクトタイプ
 
-	CSceneDX *m_pPrev;		// 前参照先ポインタ
-	CSceneDX *m_pNext;		// 後参照先ポインタ
-
-	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
+	LPDIRECT3DTEXTURE9			m_pTexture;		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ
 
 	D3DXVECTOR3 m_Pos;		// 位置

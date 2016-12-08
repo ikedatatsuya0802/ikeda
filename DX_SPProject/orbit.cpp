@@ -24,7 +24,7 @@ LPDIRECT3DTEXTURE9	COrbit::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-COrbit::COrbit(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+COrbit::COrbit(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 
 }

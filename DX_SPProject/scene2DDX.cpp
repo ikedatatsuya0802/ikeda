@@ -21,7 +21,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene2DDX::CScene2DDX(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CScene2DDX::CScene2DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;

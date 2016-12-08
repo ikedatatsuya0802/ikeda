@@ -43,7 +43,7 @@ public:
 	static CSceneBillboardDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 protected:
-	CSceneBillboardDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CSceneBillboardDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneBillboardDX();
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ

@@ -27,7 +27,7 @@
 class CNumber : public CSceneDX
 {
 public:
-	CNumber(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CNumber(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CNumber();
 	
 	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)){}

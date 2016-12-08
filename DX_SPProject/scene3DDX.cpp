@@ -22,7 +22,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene3DDX::CScene3DDX(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CScene3DDX::CScene3DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 
 }

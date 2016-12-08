@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(int priority) : CSceneXDX(priority)
+CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneXDX(ifListAdd, priority, objtype)
 {
 
 }

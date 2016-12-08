@@ -27,7 +27,7 @@ int		CGametime::m_NumFigure;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CGametime::CGametime(int priority, OBJTYPE objtype) : CNumber(priority, objtype)
+CGametime::CGametime(bool ifListAdd, int priority, OBJTYPE objtype)
 {
 
 }
@@ -68,10 +68,10 @@ void CGametime::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
 	m_Number = new CNumber *[m_NumFigure];
 
 	// 座標初期化
-	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
+	//SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	
 	// 回転初期化
-	SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 座標設定
 	for(int i = 0 ; i < figure.Upper ; i++)
@@ -124,11 +124,12 @@ void CGametime::Update(void)
 //=============================================================================
 void CGametime::Draw(void)
 {
+	/*
 	// ナンバー描画
 	for(int i = 0 ; i < m_NumFigure ; i++)
 	{
 		m_Number[i]->Draw();
-	}
+	}*/
 }
 
 //=============================================================================

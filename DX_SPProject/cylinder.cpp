@@ -24,7 +24,7 @@ LPDIRECT3DTEXTURE9	CCylinder::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CCylinder::CCylinder(int priority, OBJTYPE objtype) : CScene3DDX(priority, objtype)
+CCylinder::CCylinder(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(priority, objtype)
 {
 
 }

@@ -85,7 +85,7 @@ public:
 	SPLINE* GetSpline(void) { return &m_Spline; }
 
 private:
-	CRailLine(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CRailLine(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRailLine();
 
 	void	MouseEdit();

@@ -63,7 +63,7 @@ void CGame::Init(void)
 	orbit1->SetLocPos(D3DXVECTOR3(-6.0f, 22.0f, 72.0f), D3DXVECTOR3(-8.0f, 22.0f, 72.0f));
 	orbit2->SetLocPos(D3DXVECTOR3(6.0f, 22.0f, 72.0f), D3DXVECTOR3(8.0f, 22.0f, 72.0f));
 
-	CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
+	//CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 	
 	//CScene3DDX* f = CScene3DDX::Create();
 	//f->SetRot(D3DXVECTOR3(D3DX_PI / 2, 0.0f, 0.0f));
@@ -83,10 +83,6 @@ void CGame::Uninit(void)
 	// リソースのアンロード
 
 	// 終了処理・インスタンス削除
-	SafetyUninit(m_Meshfield);
-	//SafetyUninit(m_RailLine);
-	//SafetyUninit(m_Player1);
-
 	CSceneDX::DeleteAll();
 }
 

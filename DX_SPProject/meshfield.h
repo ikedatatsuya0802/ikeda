@@ -47,7 +47,7 @@
 class CMeshfield : public CSceneDX
 {
 public:
-	CMeshfield(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CMeshfield(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CMeshfield();
 
 	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));

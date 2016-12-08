@@ -29,7 +29,7 @@ LPDIRECT3DTEXTURE9	CRail::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CRail::CRail(int priority, OBJTYPE objtype) : CScene3DDX(priority, objtype)
+CRail::CRail(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 
 }

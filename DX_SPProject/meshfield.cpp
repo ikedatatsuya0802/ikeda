@@ -30,7 +30,7 @@ LPDIRECT3DTEXTURE9	CMeshfield::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CMeshfield::CMeshfield(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CMeshfield::CMeshfield(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 
 }

@@ -29,7 +29,7 @@ LPDIRECT3DTEXTURE9 CRailLine::m_pTextures[2];
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CRailLine::CRailLine(int priority, OBJTYPE objtype) : CScene3DDX(priority, objtype)
+CRailLine::CRailLine(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 
 }

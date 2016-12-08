@@ -31,7 +31,7 @@ DWORD				CSceneXDX::m_NumMat;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneXDX::CSceneXDX(int priority, OBJTYPE objtype) : CScene3DDX(priority, objtype)
+CSceneXDX::CSceneXDX(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 	D3DXMatrixIdentity(&m_mtxWorld);
 	m_pMesh		= NULL;

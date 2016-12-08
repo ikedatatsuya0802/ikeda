@@ -26,7 +26,7 @@ LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CNumber::CNumber(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CNumber::CNumber(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
@@ -52,7 +52,10 @@ CNumber::~CNumber()
 void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 {
 	VERTEX_2D			*pVtx;										// 2D頂点情報
-	
+
+
+	// リストから自身を削除
+	UnlinkList();
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));

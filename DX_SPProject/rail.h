@@ -44,7 +44,7 @@ public:
 	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 protected:
-	CRail(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CRail(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRail();
 
 	void SetRailData(void);

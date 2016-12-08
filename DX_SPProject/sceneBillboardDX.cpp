@@ -27,7 +27,7 @@ LPDIRECT3DTEXTURE9	CSceneBillboardDX::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneBillboardDX::CSceneBillboardDX(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CSceneBillboardDX::CSceneBillboardDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 	
 }

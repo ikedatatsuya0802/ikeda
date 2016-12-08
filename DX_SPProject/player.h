@@ -81,7 +81,7 @@ protected:
 	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
 
 private:
-	CPlayer(int priority = 1);
+	CPlayer(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_PLAYER);
 	~CPlayer();
 
 	void UpdateMove(void);

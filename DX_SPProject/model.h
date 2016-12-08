@@ -31,7 +31,7 @@ class CPlayer;
 class CModel
 {
 public:
-	CModel(int priority = 1);
+	CModel(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
 	void	Init(char *filename, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));

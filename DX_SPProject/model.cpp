@@ -28,7 +28,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CModel::CModel(int priority)
+CModel::CModel(bool ifListAdd, int priority, OBJTYPE objtype)
 {
 
 }

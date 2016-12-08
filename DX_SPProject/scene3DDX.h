@@ -38,14 +38,14 @@ public:
 	void	Draw(void);
 	
 	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGON3DDX_TEXFILENAME000, &m_pTexture); }
+	void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGON3DDX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { SafetyRelease(m_pTexture); }
+	void	Unload(void) { SafetyRelease(m_pTexture); }
 
 	static CScene3DDX	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 protected:
-	CScene3DDX(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CScene3DDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScene3DDX();
 	
 	D3DXMATRIX					m_mtxWorld;	// ワールドマトリックス

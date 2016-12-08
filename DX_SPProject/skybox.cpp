@@ -24,7 +24,7 @@ LPDIRECT3DTEXTURE9	CSkybox::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSkybox::CSkybox(int priority, OBJTYPE objtype) : CSceneDX(priority, objtype)
+CSkybox::CSkybox(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 
 }
