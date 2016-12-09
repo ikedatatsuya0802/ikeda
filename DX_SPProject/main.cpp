@@ -98,7 +98,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				dwFPSLastTime = dwCurrentTime;
 				dwFrameCount = 0;
 			}
-			if((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			if((dwCurrentTime - dwExecLastTime) >= (1000 / GAME_FPS))
 			{
 				dwExecLastTime = dwCurrentTime;
 

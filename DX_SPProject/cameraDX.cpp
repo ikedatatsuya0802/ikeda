@@ -81,7 +81,9 @@ void CCameraDX::Init(void)
 
 	// アニメーション情報初期化
 	LoadCameraAnim();
-	m_Anim.ifAnim = true;
+	LoadCameraAnim2();
+	//m_Anim.ifAnim = true;
+	m_Anim2.ifAnim = true;
 	m_Key	= 0;
 	m_Frame = 0;
 }
@@ -400,52 +402,123 @@ void CCameraDX::CameraMove(void)
 //=============================================================================
 void CCameraDX::CameraAnimation(void)
 {
-	D3DXVECTOR3 posV;
-	D3DXVECTOR3 posR;
-	D3DXVECTOR3 nextVec;
-	int keyNext = 0;
-	float rate = 0.0f;
+	if(0)
+	{// posVとposR指定のアニメーション
 
-	if(m_Key != ((int)m_Anim.Status.size() - 1))
-	{
-		keyNext = m_Key + 1;
+		D3DXVECTOR3 posV;
+		D3DXVECTOR3 posR;
+		D3DXVECTOR3 nextVec;
+		int keyNext = 0;
+		float rate = 0.0f;
+
+		if(m_Key != ((int)m_Anim.Status.size() - 1))
+		{
+			keyNext = m_Key + 1;
+		}
+		else
+		{
+			keyNext = 0;
+		}
+
+		rate = (m_Frame / (float)m_Anim.Status[keyNext].Frame);
+
+
+		// 現在フレームでの視点の計算
+		nextVec = m_Anim.Status[keyNext].PosV - m_Anim.Status[m_Key].PosV;
+		posV.x = m_Anim.Status[m_Key].PosV.x + (nextVec.x * rate);
+		posV.y = m_Anim.Status[m_Key].PosV.y + (nextVec.y * rate);
+		posV.z = m_Anim.Status[m_Key].PosV.z + (nextVec.z * rate);
+
+		// 現在フレームでの注視点の計算
+		nextVec = m_Anim.Status[keyNext].PosR - m_Anim.Status[m_Key].PosR;
+		posR.x = m_Anim.Status[m_Key].PosR.x + (nextVec.x * rate);
+		posR.y = m_Anim.Status[m_Key].PosR.y + (nextVec.y * rate);
+		posR.z = m_Anim.Status[m_Key].PosR.z + (nextVec.z * rate);
+
+		// 座標反映
+		m_CS.posV = posV;
+		m_CS.posR = posR;
+
+		// フレームの増加
+		m_Frame++;
+		if(m_Frame >= m_Anim.Status[keyNext].Frame)
+		{
+			m_Key = (m_Key + 1) % m_Anim.Status.size();
+			m_Frame = 0;
+
+			if(!m_Anim.Loop && (m_Key == (m_Anim.Status.size() - 1)))
+			{
+				m_Anim.ifAnim = false;
+			}
+		}
 	}
 	else
-	{
-		keyNext = 0;
-	}
+	{// posVと角度指定のアニメーション
 
-	rate = (m_Frame / (float)m_Anim.Status[keyNext].Frame);
-	CDebugProc::DebugProc("rate:%f\n", rate);
-	CDebugProc::DebugProc("KEY:%d, FRAME:%d\n", m_Key, m_Frame);
+		D3DXVECTOR3 posV;
+		D3DXVECTOR3 posR;
+		D3DXVECTOR3 nextVec;
+		int keyNext = 0;
+		float rate = 0.0f;
+		D3DXVECTOR3 rot;
+		D3DXVECTOR3 vec;
 
-
-	// 現在フレームでの視点の計算
-	nextVec = m_Anim.Status[keyNext].PosV - m_Anim.Status[m_Key].PosV;
-	posV.x = m_Anim.Status[m_Key].PosV.x + (nextVec.x * rate);
-	posV.y = m_Anim.Status[m_Key].PosV.y + (nextVec.y * rate);
-	posV.z = m_Anim.Status[m_Key].PosV.z + (nextVec.z * rate);
-
-	// 現在フレームでの注視点の計算
-	nextVec = m_Anim.Status[keyNext].PosR - m_Anim.Status[m_Key].PosR;
-	posR.x = m_Anim.Status[m_Key].PosR.x + (nextVec.x * rate);
-	posR.y = m_Anim.Status[m_Key].PosR.y + (nextVec.y * rate);
-	posR.z = m_Anim.Status[m_Key].PosR.z + (nextVec.z * rate);
-
-	// 座標反映
-	m_CS.posV = posV;
-	m_CS.posR = posR;
-
-	// フレームの増加
-	m_Frame++;
-	if(m_Frame >= m_Anim.Status[keyNext].Frame)
-	{
-		m_Key = (m_Key + 1) % m_Anim.Status.size();
-		m_Frame = 0;
-
-		if(!m_Anim.Loop && (m_Key == (m_Anim.Status.size() - 1)))
+		if(m_Key != ((int)m_Anim2.Status.size() - 1))
 		{
-			m_Anim.ifAnim = false;
+			keyNext = m_Key + 1;
+		}
+		else
+		{
+			keyNext = 0;
+		}
+
+		rate = (m_Frame / (float)m_Anim2.Status[keyNext].Frame);
+
+
+		// 現在フレームでの視点の計算
+		nextVec = m_Anim2.Status[keyNext].PosV - m_Anim2.Status[m_Key].PosV;
+		posV.x = m_Anim2.Status[m_Key].PosV.x + (nextVec.x * rate);
+		posV.y = m_Anim2.Status[m_Key].PosV.y + (nextVec.y * rate);
+		posV.z = m_Anim2.Status[m_Key].PosV.z + (nextVec.z * rate);
+
+		// 現在フレームでの角度計算
+		rot = m_Anim2.Status[keyNext].Rot - m_Anim2.Status[m_Key].Rot;
+		rot.x = m_Anim2.Status[m_Key].Rot.x + (rot.x * rate);
+		rot.y = m_Anim2.Status[m_Key].Rot.y + (rot.y * rate);
+		rot.z = m_Anim2.Status[m_Key].Rot.z + (rot.z * rate);
+		CDebugProc::DebugProc("rot:%f %f %f\n", rot.x, rot.y, rot.z);
+		CDebugProc::DebugProc("KEY:%d, FRAME:%d\n", m_Key, m_Frame);
+		
+
+		// 角度を元に注視ベクトル計算
+		vec.x = CAMERA_VIEW_FAR * sinf(rot.y);
+		vec.y = CAMERA_VIEW_FAR * sinf(rot.x);
+		vec.z = CAMERA_VIEW_FAR * cosf(rot.y) + CAMERA_VIEW_FAR * cosf(rot.x);
+
+		// 注視ベクトルを正規化
+		D3DXVec3Normalize(&vec, &vec);
+		vec * CAMERA_VIEW_FAR;
+
+		posR.x = posV.x + vec.x;
+		posR.y = posV.y + vec.y;
+		posR.z = posV.z + vec.z;
+
+
+		// 座標反映
+		m_CS.posV = posV;
+		m_CS.posR = posR;
+
+		// フレームの増加
+		m_Frame++;
+		if(m_Frame >= m_Anim2.Status[keyNext].Frame)
+		{
+			m_Key = (m_Key + 1) % m_Anim2.Status.size();
+			m_Frame = 0;
+
+			if(!m_Anim2.Loop && (m_Key == (m_Anim2.Status.size() - 1)))
+			{
+				m_Anim2.ifAnim = false;
+			}
 		}
 	}
 }
@@ -495,6 +568,63 @@ void CCameraDX::LoadCameraAnim(void)
 			fscanf(fp, "POSV = %f %f %f\n", &m_Anim.Status[aNum].PosV.x, &m_Anim.Status[aNum].PosV.y, &m_Anim.Status[aNum].PosV.z);
 			// 注視点情報を読み込み
 			fscanf(fp, "POSR = %f %f %f\n", &m_Anim.Status[aNum].PosR.x, &m_Anim.Status[aNum].PosR.y, &m_Anim.Status[aNum].PosR.z);
+		}
+		else if(strcmp(str, "END_SCRIPT") == 0)
+		{// スプライン読み込みを終了
+
+			break;
+		}
+	}
+
+	// ファイルクローズ
+	fclose(fp);
+}
+
+//=============================================================================
+//	関数名	:LoadCameraAnim2
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:カメラのアニメーション情報をロードする。
+//=============================================================================
+void CCameraDX::LoadCameraAnim2(void)
+{
+	FILE	*fp = NULL;	// ファイルポインタ
+
+	fp = fopen("./data/camera_anim2.txt", "r");
+
+	m_Anim2.ifAnim	= false;
+	m_Anim2.Loop	= false;
+
+	// END_SCRIPTまで読み込み
+	while(!feof(fp))
+	{
+		char str[65535] = { NULL };
+		memset(str, NULL, sizeof(str));
+
+		// 単語を取得
+		fscanf(fp, "%s", str);
+
+		if(strcmp(str, "LOOP") == 0)
+		{// ループ情報を読み込み
+
+			int a = 0;
+			fscanf(fp, " = %d\n", &a);
+			m_Anim2.Loop = (bool)a;
+		}
+		else if(strcmp(str, "FRAME") == 0)
+		{// スプライン制御点を追加
+
+		 // アニメーションデータを追加
+			m_Anim2.Status.push_back(CAMERA_ANIM_STATUS2());
+
+			uint aNum = m_Anim2.Status.size() - 1;	// 終端の配列番号
+
+			// フレーム数を読み込み
+			fscanf(fp, " = %d\n", &m_Anim2.Status[aNum].Frame);
+			// 視点情報を読み込み
+			fscanf(fp, "POSV = %f %f %f\n", &m_Anim2.Status[aNum].PosV.x, &m_Anim2.Status[aNum].PosV.y, &m_Anim2.Status[aNum].PosV.z);
+			// 注視点情報を読み込み
+			fscanf(fp, "VEC = %f %f %f\n", &m_Anim2.Status[aNum].Rot.x, &m_Anim2.Status[aNum].Rot.y, &m_Anim2.Status[aNum].Rot.z);
 		}
 		else if(strcmp(str, "END_SCRIPT") == 0)
 		{// スプライン読み込みを終了

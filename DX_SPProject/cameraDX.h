@@ -31,6 +31,8 @@
 #define	CAMERA_POSV_TOPLAYER		(200.0f)		// プレイヤーからの距離
 #define	CAMERA_POSV_TOHIGHPLAYER	(70.0f)			// プレイヤーからの距離
 
+#define	CAMERA_VIEW_FAR				(100.0f)		// プレイヤーからの距離
+
 //=============================================================================
 //	構造体
 //=============================================================================
@@ -39,9 +41,9 @@ typedef struct {
 	int			MaxCnt;	// 画面の揺れカウンタ
 	int			Cnt;	// 画面の揺れカウンタ
 	float		Width;	// 画面の揺れの範囲
-} CAMERA_VIBRATE;				// 揺れ情報
+} CAMERA_VIBRATE;	// 揺れ情報
 
-typedef struct{	// カメラ情報
+typedef struct{
 	D3DXVECTOR3	posV;			// 視点
 	D3DXVECTOR3	posR;			// 注視点
 	D3DXVECTOR3	vecU;			// 上方向ベクトル
@@ -50,19 +52,31 @@ typedef struct{	// カメラ情報
 	D3DXVECTOR3 Rot;			// 回転角
 	float		Distance;		// 視点―注視点間距離
 	CAMERA_VIBRATE Vib;			// 揺れ情報
-} CAMERA;
+} CAMERA;// カメラ情報
 
 typedef struct {
-	int			Frame;
+	uint		Frame;
 	D3DXVECTOR3	PosV;	// 視点
 	D3DXVECTOR3	PosR;	// 注視点
 } CAMERA_ANIM_STATUS;	// カメラのアニメーションステータス
+
+typedef struct {
+	uint		Frame;
+	D3DXVECTOR3	PosV;	// 視点
+	D3DXVECTOR3	Rot;	// 注視点の方向
+} CAMERA_ANIM_STATUS2;// カメラのアニメーションステータス
 
 typedef struct {
 	bool						ifAnim;		// アニメーションしているか
 	bool						Loop;		// ループするか
 	vector<CAMERA_ANIM_STATUS>	Status;		// アニメーション情報
 } CAMERA_ANIM;// カメラのアニメーション情報
+
+typedef struct {
+	bool						ifAnim;		// アニメーションしているか
+	bool						Loop;		// ループするか
+	vector<CAMERA_ANIM_STATUS2>	Status;		// アニメーション情報
+} CAMERA_ANIM2;// カメラのアニメーション情報
 
 //=============================================================================
 //	クラス定義
@@ -99,9 +113,11 @@ protected:
 	void CameraVibrate(void);
 
 	void LoadCameraAnim(void);
+	void LoadCameraAnim2(void);
 	CAMERA_ANIM	m_Anim;
-	int m_Key;
-	int m_Frame;
+	CAMERA_ANIM2	m_Anim2;
+	uint m_Key;
+	uint m_Frame;
 
 	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
 };
