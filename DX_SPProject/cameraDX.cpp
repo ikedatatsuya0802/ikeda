@@ -13,7 +13,9 @@
 #include <typeinfo>
 #include "input.h"
 #include "game.h"
+#include "title.h"
 #include "player.h"
+#include "mode.h"
 
 //=============================================================================
 //	関数名	:CCameraDX()
@@ -48,9 +50,18 @@ void CCameraDX::Init(void)
 	// カメラモード設定
 	m_flgCameraMode = false;
 
-	// 通常時カメラ設定
-	m_CS.posV			= VEC3_ZERO;
-	m_CS.posR			= D3DXVECTOR3(0.0f, 50.0f, 0.0f);
+	if(CManager::MatchMode(CTitle()))
+	{
+		// 通常時カメラ設定
+		m_CS.posV = D3DXVECTOR3(0.0f, 50.0f, -100.0f);
+		m_CS.posR = D3DXVECTOR3(0.0f, 30.0f, 0.0f);
+	}
+	else if(CManager::MatchMode(CGame()))
+	{
+		// 通常時カメラ設定
+		m_CS.posV = D3DXVECTOR3(0.0f, 50.0f, 0.0f);
+		m_CS.posR = D3DXVECTOR3(0.0f, 30.0f, 0.0f);
+	}
 	m_CS.vecU			= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot			= D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
 	m_CS.Distance		= hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
@@ -64,9 +75,15 @@ void CCameraDX::Init(void)
 	m_CSEdit.vecU		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CSEdit.Rot		= D3DXVECTOR3(0.0f, atan2f((m_CSEdit.posR.x - m_CSEdit.posV.x), (m_CSEdit.posR.z - m_CSEdit.posV.z)), 0.0f);
 	m_CSEdit.Distance	= hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
-	m_CSEdit.Vib.vPos			= VEC3_ZERO;
-	m_CSEdit.Vib.Cnt		= 0;
+	m_CSEdit.Vib.vPos	= VEC3_ZERO;
+	m_CSEdit.Vib.Cnt	= 0;
 	m_CSEdit.Vib.Width	= 0.0f;
+
+	// アニメーション情報初期化
+	LoadCameraAnim();
+	m_Anim.ifAnim = true;
+	m_Key	= 0;
+	m_Frame = 0;
 }
 
 //=============================================================================
@@ -88,90 +105,87 @@ void CCameraDX::Uninit(void)
 //=============================================================================
 void CCameraDX::Update(void)
 {
-#ifdef _DEBUG
-	if(m_flgCameraMode)
-	{
-		CameraMove();
+	if(CManager::MatchMode(CTitle()))
+	{// タイトルの場合のみ処理実行
 
-		// 視点をいい感じに
-		if(CInput::GetKeyTrigger(DIK_2))
-		{
-			m_CSEdit.posV		= CAMERA_EDIT_V1;
-			m_CSEdit.posR		= CAMERA_EDIT_R1;
-			m_CSEdit.Rot		= VEC3_ZERO;
-			m_CSEdit.Distance	= hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
-		}
-		if(CInput::GetKeyTrigger(DIK_3))
-		{
-			m_CSEdit.posV		= CAMERA_EDIT_V2;
-			m_CSEdit.posR		= CAMERA_EDIT_R2;
-			m_CSEdit.Rot		= VEC3_ZERO;
-			m_CSEdit.Distance	= hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
-		}
-	}
-
-	if(KT_L)
-	{
-		ChangeCameraMode();
-	}
-#endif
-
-	CPlayer	*player	= NULL;			// プレイヤーインスタンス
-		
-	const type_info& this_id = typeid(*CManager::GetMode());
-	//const type_info& client_id = typeid(CGame);
-	if(this_id == typeid(CGame))
+		CameraAnimation();
+	}		
+	else if(CManager::MatchMode(CGame()))
 	{// ゲームモードの場合のみ処理実行
 
-		player	= CGame::GetPlayer1();	// プレイヤー情報の取得
+		CPlayer	*player = NULL;	// プレイヤーインスタンス
+
+		if(m_flgCameraMode)
+		{
+			CameraMove();
+
+			// 視点をいい感じに
+			if(CInput::GetKeyTrigger(DIK_2))
+			{
+				m_CSEdit.posV = CAMERA_EDIT_V1;
+				m_CSEdit.posR = CAMERA_EDIT_R1;
+				m_CSEdit.Rot = VEC3_ZERO;
+				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+			}
+			if(CInput::GetKeyTrigger(DIK_3))
+			{
+				m_CSEdit.posV = CAMERA_EDIT_V2;
+				m_CSEdit.posR = CAMERA_EDIT_R2;
+				m_CSEdit.Rot = VEC3_ZERO;
+				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+			}
+		}
+
+		if(KT_L)
+		{
+			ChangeCameraMode();
+		}
+
+		player = CGame::GetPlayer1();	// プレイヤー情報の取得
 
 		CameraVibrate();
-	}
-	else
-	{
-		player	= NULL;
-	}
-	
-	if(player != NULL)
-	{
-		// 視点設定
-		m_CS.posR.x = player->GetPos().x;
-		m_CS.posR.z = player->GetPos().z;
-		m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
 
-		// 視点設定
-		m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-		m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-		m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
-
-		// 注視点設定
-		//m_CS.posR.x = player->GetPos().x + (sinf(m_CS.Rot.y) * m_CS.Distance);
-		//m_CS.posR.z = player->GetPos().z + (cosf(m_CS.Rot.y) * m_CS.Distance);
-	}
-
-	if(CInput::GetMouseNotch() > 0)
-	{
-		// ↑に回転（チルト）した
-
-		if(CInput::GetMouseNotch() > 1)
+		if(player != NULL)
 		{
+			// 視点設定
+			m_CS.posR.x = player->GetPos().x;
+			m_CS.posR.z = player->GetPos().z;
+			m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
+
+			// 視点設定
+			m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+			m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+			m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
+
+			// 注視点設定
+			//m_CS.posR.x = player->GetPos().x + (sinf(m_CS.Rot.y) * m_CS.Distance);
+			//m_CS.posR.z = player->GetPos().z + (cosf(m_CS.Rot.y) * m_CS.Distance);
+		}
+
+		if(CInput::GetMouseNotch() > 0)
+		{
+			// ↑に回転（チルト）した
+
+			if(CInput::GetMouseNotch() > 1)
+			{
+				m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
+			}
 			m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
+
+			CInput::SetMouseNotch(0);
 		}
-		m_CSEdit.posV.y		-= CAMERA_WHEEL_CHANGE_Y;
-
-		CInput::SetMouseNotch(0);
-	}
-	else if(CInput::GetMouseNotch() < 0)
-	{
-		// ↓に回転（チルト）した
-
-		if(CInput::GetMouseNotch() < -1)
+		else if(CInput::GetMouseNotch() < 0)
 		{
-			m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
-		}
-		m_CSEdit.posV.y		+= CAMERA_WHEEL_CHANGE_Y;
+			// ↓に回転（チルト）した
 
-		CInput::SetMouseNotch(0);
+			if(CInput::GetMouseNotch() < -1)
+			{
+				m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
+			}
+			m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
+
+			CInput::SetMouseNotch(0);
+		}
 	}
 }
 
@@ -379,6 +393,121 @@ void CCameraDX::CameraMove(void)
 }
 
 //=============================================================================
+//	関数名	:CameraAnimation
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:カメラをアニメーションさせる。
+//=============================================================================
+void CCameraDX::CameraAnimation(void)
+{
+	D3DXVECTOR3 posV;
+	D3DXVECTOR3 posR;
+	D3DXVECTOR3 nextVec;
+	int keyNext = 0;
+	float rate = 0.0f;
+
+	if(m_Key != ((int)m_Anim.Status.size() - 1))
+	{
+		keyNext = m_Key + 1;
+	}
+	else
+	{
+		keyNext = 0;
+	}
+
+	rate = (m_Frame / (float)m_Anim.Status[keyNext].Frame);
+	CDebugProc::DebugProc("rate:%f\n", rate);
+	CDebugProc::DebugProc("KEY:%d, FRAME:%d\n", m_Key, m_Frame);
+
+
+	// 現在フレームでの視点の計算
+	nextVec = m_Anim.Status[keyNext].PosV - m_Anim.Status[m_Key].PosV;
+	posV.x = m_Anim.Status[m_Key].PosV.x + (nextVec.x * rate);
+	posV.y = m_Anim.Status[m_Key].PosV.y + (nextVec.y * rate);
+	posV.z = m_Anim.Status[m_Key].PosV.z + (nextVec.z * rate);
+
+	// 現在フレームでの注視点の計算
+	nextVec = m_Anim.Status[keyNext].PosR - m_Anim.Status[m_Key].PosR;
+	posR.x = m_Anim.Status[m_Key].PosR.x + (nextVec.x * rate);
+	posR.y = m_Anim.Status[m_Key].PosR.y + (nextVec.y * rate);
+	posR.z = m_Anim.Status[m_Key].PosR.z + (nextVec.z * rate);
+
+	// 座標反映
+	m_CS.posV = posV;
+	m_CS.posR = posR;
+
+	// フレームの増加
+	m_Frame++;
+	if(m_Frame >= m_Anim.Status[keyNext].Frame)
+	{
+		m_Key = (m_Key + 1) % m_Anim.Status.size();
+		m_Frame = 0;
+
+		if(!m_Anim.Loop && (m_Key == (m_Anim.Status.size() - 1)))
+		{
+			m_Anim.ifAnim = false;
+		}
+	}
+}
+
+//=============================================================================
+//	関数名	:LoadCameraAnim
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:カメラのアニメーション情報をロードする。
+//=============================================================================
+void CCameraDX::LoadCameraAnim(void)
+{
+	FILE	*fp = NULL;	// ファイルポインタ
+
+	fp = fopen("./data/camera_anim.txt", "r");
+
+	m_Anim.ifAnim	= false;
+	m_Anim.Loop		= false;
+
+	// END_SCRIPTまで読み込み
+	while(!feof(fp))
+	{
+		char str[65535] = { NULL };
+		memset(str, NULL, sizeof(str));
+
+		// 単語を取得
+		fscanf(fp, "%s", str);
+
+		if(strcmp(str, "LOOP") == 0)
+		{// ループ情報を読み込み
+
+			int a = 0;
+			fscanf(fp, " = %d\n", &a);
+			m_Anim.Loop = (bool)a;
+		}
+		else if(strcmp(str, "FRAME") == 0)
+		{// スプライン制御点を追加
+
+			// アニメーションデータを追加
+			m_Anim.Status.push_back(CAMERA_ANIM_STATUS());
+
+			uint aNum = m_Anim.Status.size() - 1;	// 終端の配列番号
+
+			// フレーム数を読み込み
+			fscanf(fp, " = %d\n", &m_Anim.Status[aNum].Frame);
+			// 視点情報を読み込み
+			fscanf(fp, "POSV = %f %f %f\n", &m_Anim.Status[aNum].PosV.x, &m_Anim.Status[aNum].PosV.y, &m_Anim.Status[aNum].PosV.z);
+			// 注視点情報を読み込み
+			fscanf(fp, "POSR = %f %f %f\n", &m_Anim.Status[aNum].PosR.x, &m_Anim.Status[aNum].PosR.y, &m_Anim.Status[aNum].PosR.z);
+		}
+		else if(strcmp(str, "END_SCRIPT") == 0)
+		{// スプライン読み込みを終了
+
+			break;
+		}
+	}
+
+	// ファイルクローズ
+	fclose(fp);
+}
+
+//=============================================================================
 //	関数名	:CameraVibrate
 //	引数	:無し
 //	戻り値	:無し
@@ -386,9 +515,9 @@ void CCameraDX::CameraMove(void)
 //=============================================================================
 void CCameraDX::CameraVibrate(void)
 {
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<float> width(-(m_CS.Vib.Width / 2), (m_CS.Vib.Width / 2));
+	random_device rd;
+	mt19937 mt(rd());
+	uniform_int_distribution<float> width(-(m_CS.Vib.Width / 2), (m_CS.Vib.Width / 2));
 
 	// エディットモードでない場合のみ実行
 	if(!m_flgCameraMode)
@@ -397,8 +526,8 @@ void CCameraDX::CameraVibrate(void)
 		if(m_CS.Vib.Cnt != 0)
 		{
 			// ランダムに揺れを決定
-			m_CS.Vib.vPos.x = width(mt);
-			m_CS.Vib.vPos.y = width(mt);
+			m_CS.Vib.vPos.x = width(mt) * (m_CS.Vib.Cnt / (float)m_CS.Vib.MaxCnt);
+			m_CS.Vib.vPos.y = width(mt) * (m_CS.Vib.Cnt / (float)m_CS.Vib.MaxCnt);
 
 			if(m_CS.Vib.Cnt)
 			{
@@ -408,8 +537,9 @@ void CCameraDX::CameraVibrate(void)
 		}
 		else
 		{
-			m_CS.Vib.vPos = VEC3_ZERO;
-			m_CS.Vib.Cnt		= 0;
+			m_CS.Vib.vPos	= VEC3_ZERO;
+			m_CS.Vib.MaxCnt = 0;
+			m_CS.Vib.Cnt	= 0;
 			m_CS.Vib.Width	= 0.0f;
 		}
 	}
@@ -455,7 +585,6 @@ void CCameraDX::SetCamera(void)
 	// デバッグ情報表示
 #ifdef _DEBUG
 	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera->posV.x, camera->posV.y, camera->posV.z);
-	CDebugProc::DebugProc("カメラV視点 (%5.2f:%5.2f:%5.2f)\n", camera->Vib.vPos.x, camera->Vib.vPos.y, camera->Vib.vPos.z);
 	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera->posR.x, camera->posR.y, camera->posR.z);
 #endif
 }

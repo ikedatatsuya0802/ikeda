@@ -123,3 +123,21 @@ void CLightDX::AddSpotLight(D3DXVECTOR3 pos, D3DXVECTOR3 vec, D3DCOLORVALUE dif,
 {
 
 }
+
+//=============================================================================
+//	関数名	:ChangeHolLight
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:平行光源の色を変える。
+//=============================================================================
+void CLightDX::ChangeHolLight(uint num, D3DCOLORVALUE col)
+{
+	if(num < m_Light.size())
+	{
+		// 色変更
+		m_Light[num].Diffuse = D3DXCOLOR(col.r, col.g, col.b, col.a);
+
+		// ライトのセット
+		D3D_DEVICE->SetLight(num, &m_Light[num]);
+	}
+}

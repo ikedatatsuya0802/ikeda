@@ -23,7 +23,8 @@
 #define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.01f)		// プレイヤーのスピード
+#define	PLAYER_MOVEMENT			(0.00001f)		// プレイヤーのスピード
+#define	PLAYER_SPEED_MAX		(0.001f)		// プレイヤーのスピード
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
@@ -112,6 +113,7 @@ private:
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置
 	float		m_PerMove;		// スプライン上位置の遷移量
+	float		m_SplineTime;	// スプライン上位置の遷移量
 };
 
 #endif

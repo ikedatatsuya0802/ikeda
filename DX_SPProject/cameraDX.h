@@ -35,8 +35,9 @@
 //	構造体
 //=============================================================================
 typedef struct {
-	D3DXVECTOR3	vPos;			// 揺れ座標
-	int			Cnt;		// 画面の揺れカウンタ
+	D3DXVECTOR3	vPos;	// 揺れ座標
+	int			MaxCnt;	// 画面の揺れカウンタ
+	int			Cnt;	// 画面の揺れカウンタ
 	float		Width;	// 画面の揺れの範囲
 } CAMERA_VIBRATE;				// 揺れ情報
 
@@ -50,6 +51,18 @@ typedef struct{	// カメラ情報
 	float		Distance;		// 視点―注視点間距離
 	CAMERA_VIBRATE Vib;			// 揺れ情報
 } CAMERA;
+
+typedef struct {
+	int			Frame;
+	D3DXVECTOR3	PosV;	// 視点
+	D3DXVECTOR3	PosR;	// 注視点
+} CAMERA_ANIM_STATUS;	// カメラのアニメーションステータス
+
+typedef struct {
+	bool						ifAnim;		// アニメーションしているか
+	bool						Loop;		// ループするか
+	vector<CAMERA_ANIM_STATUS>	Status;		// アニメーション情報
+} CAMERA_ANIM;// カメラのアニメーション情報
 
 //=============================================================================
 //	クラス定義
@@ -71,7 +84,7 @@ public:
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
 	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
-	void	SetCameraVibrate(int time, float width) { m_CS.Vib.Cnt = time; m_CS.Vib.Width = width; }
+	void	SetCameraVibrate(int time, float width) { m_CS.Vib.MaxCnt = time; m_CS.Vib.Cnt = time; m_CS.Vib.Width = width; }
 	void	DisableCameraVibrate(void) { m_CS.Vib.vPos = VEC3_ZERO; m_CS.Vib.Cnt = 0; m_CS.Vib.Width = 0.0f; }
 
 	bool	GetCameraMode(void) { return m_flgCameraMode; }
@@ -82,7 +95,13 @@ public:
 
 protected:
 	void CameraMove(void);
+	void CameraAnimation(void);
 	void CameraVibrate(void);
+
+	void LoadCameraAnim(void);
+	CAMERA_ANIM	m_Anim;
+	int m_Key;
+	int m_Frame;
 
 	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
 };

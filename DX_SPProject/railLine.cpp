@@ -367,6 +367,17 @@ void CRailLine::Update(void)
 		// マウスによるエディット動作
 		MouseEdit();
 	}
+	else
+	{
+		if(KT_M)
+		{
+			DX_CAMERA->SetCameraVibrate(60, 10.0f);
+			/*
+			(DX_CAMERA->m_CS.Vib.Cnt == 0) ?
+				DX_CAMERA->SetCameraVibrate(-1, 1.0f)
+				: DX_CAMERA->DisableCameraVibrate();*/
+		}
+	}
 }
 
 //=============================================================================
@@ -728,7 +739,7 @@ void CRailLine::Draw(void)
 				CRendererDX::SetMatrixBB(&m_mtxWorld, m_Spline.PosHermite[i], VEC3_ZERO, scl);
 
 				// 描画
-				//D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 			}
 		}
 
@@ -813,6 +824,7 @@ void CRailLine::Draw(void)
 		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 		{
 			CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
+			CDebugProc::DebugProc("スプラインベクトル[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
 		}
 	}
 	CDebugProc::DebugProc("スプライン長:%.1f\n", m_Spline.Length);
@@ -979,16 +991,25 @@ void CRailLine::CalcSpline(int line)
 	if((int)m_Spline.Pos.size() >= 2)
 	{
 		// スプラインを計算する
-		for(int i = 0 ; i < (int)m_Spline.PosHermite.size() ; i++, t += (1.0f / RAILLINE_SET))
+		for(int i = 0 ; i < (int)m_Spline.PosHermite.size() ; i++)
 		{
 			int		posNum	= (int)(t * ((int)m_Spline.Pos.size() - 1));
 			float	nowt	= t * ((int)m_Spline.Pos.size() - 1) - posNum;
 
-			m_Spline.PosHermite[i].x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].x) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].x)
-				+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].x);
-			m_Spline.PosHermite[i].z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].z)
-				+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].z);
+			m_Spline.PosHermite[i].x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].x)
+				+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].x)
+				+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].x)
+				+ ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].x);
+
+			m_Spline.PosHermite[i].z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].z)
+				+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].z)
+				+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].z)
+				+ ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].z);
+			
 			m_Spline.PosHermite[i].y = 1.0f;
+
+			// 実時間を進める
+			t += (1.0f / RAILLINE_SET);
 		}
 
 		// スプライン長を計算する

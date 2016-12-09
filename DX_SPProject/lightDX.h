@@ -27,6 +27,8 @@ public:
 	static void		Update(void);
 	static void		Draw(void);
 
+	static void		ChangeHolLight(uint num, D3DCOLORVALUE col);
+
 private:
 	static void AddHolizontalLight(D3DXVECTOR3 vec, D3DCOLORVALUE dif,
 		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));

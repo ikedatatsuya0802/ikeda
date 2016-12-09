@@ -25,9 +25,6 @@ class CCameraDX;
 class CManager
 {
 public:
-	//=========================================================================
-	//	メソッド
-	//=========================================================================
 	static void	Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 	static void	Uninit(void);
 	static void	Update(void);
@@ -38,10 +35,13 @@ public:
 	static CMode		*GetMode(void){ return m_Mode; }
 	static void			SetMode(CMode *mode);
 
+	template<class M>
+	static bool	MatchMode(M mode) {
+		const type_info& nowMode = typeid(*m_Mode);
+		return (nowMode == typeid(mode)) ? true : false;
+	}
+
 private:
-	//=========================================================================
-	//	メンバ変数
-	//=========================================================================
 	static CMode		*m_Mode;		// モードのインスタンス
 	static CCameraDX	*m_Camera;		// カメラのインスタンス
 

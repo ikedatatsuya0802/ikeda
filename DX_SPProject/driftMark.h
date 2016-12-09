@@ -35,7 +35,7 @@ typedef struct {
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CDriftMark
+class CDriftMark : CScene2DDX
 {
 public:
 	void	Init(void);
@@ -51,6 +51,9 @@ public:
 	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
+	CDriftMark(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	~CDriftMark();
+
 	void SetVtxBuff(void);
 	
 	LPDIRECT3DTEXTURE9		m_pTexture[DRIFTMARK_TYPE];		// テクスチャへのポインタ

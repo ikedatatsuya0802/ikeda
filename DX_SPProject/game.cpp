@@ -61,7 +61,7 @@ void CGame::Init(void)
 	//CGametime::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 
 	// 2D
-	m_DriftMark = CDriftMark::Create();
+	CDriftMark::Create();
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -75,9 +75,6 @@ void CGame::Init(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
-	// リソースのアンロード
-	SafetyUninit(m_DriftMark);
-
 	// 終了処理・インスタンス削除
 	CSceneDX::DeleteAll();
 }
@@ -95,7 +92,6 @@ void CGame::Update(void)
 	CSceneDX::UpdateAll();
 
 	// 2D
-	m_DriftMark->CDriftMark::Update();
 
 	if(CInput::GetKeyTrigger(DIK_RETURN))
 	{
@@ -121,7 +117,4 @@ void CGame::Draw(void)
 {
 	// シーン描画
 	CSceneDX::DrawAll();
-
-	// 2D
-	m_DriftMark->CDriftMark::Draw();
 }

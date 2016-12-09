@@ -74,7 +74,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	// スプラインの読み込み
 	//LoadSpline(m_RailLine);
 	m_Spline = CGame::GetRailLine()->GetSpline();
-	//SetPos(D3DXVECTOR3(m_Spline->PosHermite[0].x, m_Spline->PosHermite[0].y, m_Spline->PosHermite[0].z));
+
+	m_SplineTime = 0.0f;
 }
 
 //=============================================================================
@@ -110,13 +111,6 @@ void CPlayer::Update(void)
 	
 		// 相対回転設定
 		UpdateMotion();
-
-		if(KT_M)
-		{
-			(DX_CAMERA->m_CS.Vib.Cnt == 0) ?
-				DX_CAMERA->SetCameraVibrate(-1, 1.0f)
-				: DX_CAMERA->DisableCameraVibrate();
-		}
 	}
 }
 
@@ -130,7 +124,8 @@ void CPlayer::UpdateMove(void)
 {
 	CCameraDX	*camera		= DX_CAMERA;	// カメラ
 	CMeshfield	*mesh		= CGame::GetMeshfield();	// メッシュフィールド
-	float nowt = (m_Per - ((int)m_Per));
+
+	int		posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
 	
 	// スプラインのロード
 	m_Spline = CGame::GetRailLine()->GetSpline();
@@ -149,18 +144,17 @@ void CPlayer::UpdateMove(void)
 		m_PerMove -= PLAYER_MOVEMENT;
 	}
 #endif
-	int		posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
+	//float speed = m_PerMove / m_Spline->LengthMin[posNum];
 
-
-	// 速度計算
-	CDebugProc::DebugProc("Section:%d->%d\n", posNum, (posNum + 1));
-	//CDebugProc::DebugProc("Speed:%f\n", realMove);
+	if(m_PerMove > PLAYER_SPEED_MAX)
+	{
+		m_PerMove = PLAYER_SPEED_MAX;
+	}
 
 	// 移動量反映
 	if(m_Per >= 0.0f)
 	{
-		float t = (m_PerMove / m_Spline->LengthMin[posNum]);
-		m_Per = t;
+		m_Per += m_PerMove;
 		if(m_Per > 1.0f)
 		{
 			m_Per -= 1.0f;
@@ -172,11 +166,11 @@ void CPlayer::UpdateMove(void)
 	}
 
 	// 位置反映
-	m_Pos.x = CGame::GetRailLine()->GetSplinePos(nowt).x;
-	m_Pos.z = CGame::GetRailLine()->GetSplinePos(nowt).z;
+	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
+	m_Pos.z = CGame::GetRailLine()->GetSplinePos(m_Per).z;
 	
 	// 回転反映
-	float tDis = nowt + 0.01f;
+	float tDis = m_Per + 0.01f;
 	D3DXVECTOR3 vecDis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	vecDis.x = CGame::GetRailLine()->GetSplinePos(tDis).x;
 	vecDis.z = CGame::GetRailLine()->GetSplinePos(tDis).z;
@@ -223,6 +217,9 @@ void CPlayer::UpdateMove(void)
 		// 回転量を逆方向に
 		m_RotMove.y += (D3DX_PI * 2.0f);
 	}
+
+	// tを進める
+	m_SplineTime += (1.0f / 60);
 }
 
 //=============================================================================

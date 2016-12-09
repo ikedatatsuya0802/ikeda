@@ -39,7 +39,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CRendererDX::Init(hInstance, hWnd, TRUE);
 
 	// 各種インスタンス生成
-	m_Mode			= new CGame();
+	m_Mode			= new CTitle();
 	m_Camera		= new CCameraDX();
 
 	// 初期化処理

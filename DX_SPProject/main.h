@@ -28,6 +28,8 @@ using namespace std;
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+#define	uchar				unsigned char
+#define	uint				unsigned int
 #define	SCREEN_WIDTH		(1280.0f)	// ウィンドウの横幅
 #define	SCREEN_HEIGHT		(760.0f)	// ウィンドウの縦幅
 #define	SCREEN_WIDTH_HALF	(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅の半分

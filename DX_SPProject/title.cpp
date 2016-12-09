@@ -14,6 +14,10 @@
 #include "input.h"
 #include "fade.h"
 #include "scene2DDX.h"
+#include "player_title.h"
+#include "rail_title.h"
+#include "skybox.h"
+#include "meshfield.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -27,14 +31,20 @@
 //=============================================================================
 void CTitle::Init(void)
 {
+	/*
 	m_TitleBG = CScene2DDX::Create(true, 2, OBJTYPE_NONE,
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), ".\\data\\TEXTURE\\title000.jpg");
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "title000.jpg");
 	m_PushEnter = CScene2DDX::Create(true, 2, OBJTYPE_NONE,
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), ".\\data\\TEXTURE\\pushbutton000.png");
+		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), "pushbutton000.png");
 
 	m_Alpha = 0.0f;
+	*/
+
+	// 3D
+	CMeshfield::Create();
+	CSkybox::Create();
 }
 
 //=============================================================================
@@ -72,8 +82,8 @@ void CTitle::Update(void)
 //=============================================================================
 void CTitle::Draw(void)
 {
-	m_Alpha += 0.05f;
-	m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
+	// m_Alpha += 0.05f;
+	// m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
 
 	// シーン描画
 	CSceneDX::DrawAll();
