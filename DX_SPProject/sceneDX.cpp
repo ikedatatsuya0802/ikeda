@@ -27,12 +27,8 @@ list<CSceneDX*>	CSceneDX::m_SceneList[PRIORITY_NUM];
 //=============================================================================
 CSceneDX::CSceneDX(bool ifListAdd, int priority, OBJTYPE objType)
 {
-	// リスト追加フラグがオンの場合、リスト追加
-	if(ifListAdd)
-	{
-		// リストに自身を追加
-		m_SceneList[priority].push_back(this);
-	}
+	// リスト追加フラグがオンの場合、リストに自身を追加
+	if(ifListAdd) m_SceneList[priority].push_back(this);
 
 	// オブジェクトタイプを初期化
 	m_ObjType = objType;

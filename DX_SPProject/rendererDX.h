@@ -34,6 +34,9 @@
 #define	VEC2_ZERO			(D3DXVECTOR2(0.0f, 0.0f))		// 2Dベクトルの0
 #define	VEC3_ZERO			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 3Dベクトルの0
 
+#define	TEX_FILEPASS		".\\data\\TEXTURE\\"	// テクスチャ保存ディレクトリ
+#define	WHITE				1.0f, 1.0f, 1.0f		// †白†
+
 //=============================================================================
 //	構造体
 //=============================================================================
@@ -66,6 +69,8 @@ public:
 	static void	Update(void);
 	static void	Begin(void);
 	static void	End(void);
+
+	static char* FileName(char* filename, char* directory = ".\\data\\TEXTURE\\");
 
 	//static LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
 	static LPDIRECT3DVERTEXBUFFER9 SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *pVtxBuff);

@@ -23,7 +23,7 @@
 #define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.0003f)		// プレイヤーのスピード
+#define	PLAYER_MOVEMENT			(0.01f)		// プレイヤーのスピード
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
@@ -71,9 +71,11 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
+	static CPlayer	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+		D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
+	D3DXVECTOR3	SetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
 	float	GetPerSpline(void) { return m_Per; }					// スプライン情報を取得
 	void	SetPerSpline(float perSpline) { m_Per = perSpline; }	// スプライン位置をセット
 

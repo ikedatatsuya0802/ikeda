@@ -42,6 +42,9 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CSceneXDX	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+		D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(int texNum) {	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME000, &m_pTexture[0]);
@@ -53,7 +56,6 @@ public:
 	static void	Unload(int texNum) { for(int i = 0 ; i < MODEL_TEXTURENUM ; i++){if(m_pTexture != NULL){m_pTexture[texNum]->Release(); m_pTexture[texNum] = NULL;}}
 									if(m_pMesh != NULL){ m_pMesh->Release(); m_pMesh = NULL; }if(m_pBuffMat != NULL){ m_pBuffMat->Release(); m_pBuffMat = NULL;} }
 
-	static CSceneXDX	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 

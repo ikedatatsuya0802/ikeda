@@ -81,6 +81,7 @@
     <ClCompile Include="cameraDX.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="debugProc.cpp" />
+    <ClCompile Include="driftMark.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
@@ -99,7 +100,6 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scene2DDX.cpp" />
     <ClCompile Include="scene3DDX.cpp" />
-    <ClCompile Include="sceneBillboardDX.cpp" />
     <ClCompile Include="sceneDX.cpp" />
     <ClCompile Include="sceneXDX.cpp" />
     <ClCompile Include="skybox.cpp" />
@@ -112,6 +112,7 @@
     <ClInclude Include="cameraDX.h" />
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="debugProc.h" />
+    <ClInclude Include="driftMark.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
@@ -131,7 +132,6 @@
     <ClInclude Include="result.h" />
     <ClInclude Include="scene2DDX.h" />
     <ClInclude Include="scene3DDX.h" />
-    <ClInclude Include="sceneBillboardDX.h" />
     <ClInclude Include="sceneDX.h" />
     <ClInclude Include="sceneXDX.h" />
     <ClInclude Include="skybox.h" />

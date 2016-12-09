@@ -500,15 +500,18 @@ float CMeshfield::GetHeight(D3DXVECTOR3 pos)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CMeshfield *CMeshfield::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CMeshfield *CMeshfield::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CMeshfield *meshfield;
-	
-	meshfield = new CMeshfield;
+	CMeshfield *instance;	// インスタンス
 
-	meshfield->Init(pos, rot);
+	// インスタンス生成
+	instance = new CMeshfield(ifListAdd, priority, objtype);
 
-	return meshfield;
+	// 初期化処理
+	instance->Init(pos, rot);
+
+	// インスタンスをリターン
+	return instance;
 }
 
 //=============================================================================

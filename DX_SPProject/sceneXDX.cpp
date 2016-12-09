@@ -77,16 +77,8 @@ void CSceneXDX::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CSceneXDX::Uninit(void)
 {
-	if(m_pMesh != NULL)
-	{
-		m_pMesh->Release();
-		m_pMesh = NULL;
-	}
-	if(m_pBuffMat != NULL)
-	{
-		m_pBuffMat->Release();
-		m_pBuffMat = NULL;
-	}
+	SafetyRelease(m_pMesh);
+	SafetyRelease(m_pBuffMat);
 }
 
 //=============================================================================
@@ -185,13 +177,13 @@ void CSceneXDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CSceneXDX *CSceneXDX::Create(D3DXVECTOR3 pos)
+CSceneXDX *CSceneXDX::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos)
 {
-	CSceneXDX *sceneX;
+	CSceneXDX *instance;
 
-	sceneX = new CSceneXDX;
+	instance = new CSceneXDX(ifListAdd, priority, objtype);
 
-	sceneX->Init(pos);
+	instance->Init(pos);
 
-	return sceneX;
+	return instance;
 }

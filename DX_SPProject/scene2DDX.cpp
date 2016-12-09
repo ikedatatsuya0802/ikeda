@@ -46,8 +46,6 @@ CScene2DDX::~CScene2DDX()
 //=============================================================================
 void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
 	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
@@ -58,27 +56,41 @@ void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
-	D3DXCreateTextureFromFile(D3D_DEVICE, str, &m_pTexture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(str, TEX_FILEPASS), &m_pTexture);
 	
+	SetVtxBuff();
+}
+
+//=============================================================================
+//	関数名	:SetVtxBuff
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:頂点バッファにデータをセットする。
+//=============================================================================
+void CScene2DDX::SetVtxBuff(void)
+{
+	VERTEX_2D	*pVtx;	// 3D頂点情報
+
+
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 描画座標設定
 	pVtx[0].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z) * m_fLength));
 	pVtx[0].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z) * m_fLength));
 	pVtx[0].Pos.z = 0.0f;
-	
+
 	pVtx[1].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z) * m_fLength));
 	pVtx[1].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z) * m_fLength));
 	pVtx[1].Pos.z = 0.0f;
-	
+
 	pVtx[2].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
 	pVtx[2].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
 	pVtx[2].Pos.z = 0.0f;
-	
+
 	pVtx[3].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
 	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
 	pVtx[3].Pos.z = 0.0f;
-	
+
 	for(int i = 0 ; i < VERTEX_NUM ; i++)
 	{
 		// 除算係数設定
@@ -87,7 +99,7 @@ void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *
 		// 頂点色設定
 		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	
+
 	// テクスチャ貼付座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
@@ -147,18 +159,19 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
+CScene2DDX *CScene2DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
+	D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
 {
-	CScene2DDX *scene2D;	// インスタンス
+	CScene2DDX *instance;	// インスタンス
 
 	// インスタンス生成
-	scene2D = new CScene2DDX;
+	instance = new CScene2DDX(ifListAdd, priority, objtype);
 
 	// 初期化処理
-	scene2D->Init(pos, rot, size, str);
+	instance->Init(pos, rot, size, str);
 
-	// インスタンスを返す
-	return scene2D;
+	// インスタンスをリターン
+	return instance;
 }
 
 //=============================================================================

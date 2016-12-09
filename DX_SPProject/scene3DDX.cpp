@@ -156,13 +156,17 @@ void CScene3DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene3DDX *CScene3DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
+	D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CScene3DDX *scene3D;
+	CScene3DDX *instance;	// インスタンス
 
-	scene3D = new CScene3DDX;
+	// インスタンス生成
+	instance = new CScene3DDX(ifListAdd, priority, objtype);
 
-	scene3D->Init(pos, rot);
+	// 初期化処理
+	instance->Init(pos, rot);
 
-	return scene3D;
+	// インスタンスをリターン
+	return instance;
 }

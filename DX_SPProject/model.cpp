@@ -189,7 +189,7 @@ CModel *CModel::Create(char *filename, D3DXVECTOR3 pos)
 	// 初期化処理
 	model->Init(filename, pos);
 
-	// インスタンスを返す
+	// インスタンスをリターン
 	return model;
 }
 

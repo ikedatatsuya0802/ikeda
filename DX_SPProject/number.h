@@ -35,13 +35,14 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CNumber	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
-
-	static CNumber	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
 	
 	void	SetNumber(int value = 0);
 

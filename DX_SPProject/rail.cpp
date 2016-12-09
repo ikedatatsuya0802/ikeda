@@ -71,7 +71,7 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_pTexture);
 	
 	// レール情報セット
-	SetRailData();
+	SetVtxBuff();
 
 	Load();
 }
@@ -82,7 +82,7 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 //	戻り値	:無し
 //	説明	:レールの情報をセットする。
 //=============================================================================
-void CRail::SetRailData(void)
+void CRail::SetVtxBuff(void)
 {
 	VERTEX_3D			*pVtx;		// 3D頂点情報
 
@@ -141,8 +141,8 @@ void CRail::SetRailData(void)
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
 		{
-			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * 2.0f);
-			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * 2.0f);
+			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * 0.75f);
+			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * 0.75f);
 		}
 
 	}
@@ -172,10 +172,10 @@ void CRail::Uninit(void)
 void CRail::Update(void)
 {
 	// 描画フラグ設定
-	m_flgDraw = CManager::GetCamera()->GetCameraMode() ? false : true;
+	m_flgDraw = DX_CAMERA->GetCameraMode() ? false : true;
 
 	// レール情報セット
-	SetRailData();
+	SetVtxBuff();
 }
 
 //=============================================================================

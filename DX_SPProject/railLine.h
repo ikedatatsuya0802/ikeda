@@ -16,7 +16,9 @@ using namespace std;
 //	マクロ定義
 //=============================================================================
 #define	RAILLINE_TEXFILENAME000	"effect000.jpg"			// テクスチャのファイル名
-#define	RAILLINE_TEXFILENAME001	"drift.png"				// テクスチャのファイル名
+#define	RAILLINE_TEXFILENAME001	"drift000.png"			// テクスチャのファイル名
+#define	RAILLINE_TEXFILENAME002	"drift001.png"			// テクスチャのファイル名
+#define	RAILLINE_TEXFILENAME003	"drift002.png"			// テクスチャのファイル名
 
 #define	RAILLINE_WIDTH			(15.0f)					// 横幅
 #define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
@@ -26,15 +28,14 @@ using namespace std;
 #define	RAILLINE_SPOINT_SIZE	(20.0f)					// レール頂点の確認用エフェクトサイズ
 #define	RAILLINE_LPOINT_SIZE	(50.0f)					// スプライン頂点の確認用エフェクトサイズ
 #define	RAILLINE_DRAG_SIZE		(100.0f)				// ドラッグの選択半径
-#define	RAILLINE_DRIFT_SEARCH	(1000)					// ドラッグの選択半径
-#define	RAILLINE_DRIFT_DRAG		(0.05f)					// ドラッグの選択半径
+#define	RAILLINE_DRIFT_SEARCH	(1000)					// マウスからの最近点の探索数
+#define	RAILLINE_DRIFT_DRAG		(0.02f)					// ドリフトマークの可動範囲
 
 //=============================================================================
 //	構造体
 //=============================================================================
 typedef enum {
-	ET_POS = 0,
-	ET_VEC,
+	ET_POSVEC = 0,
 	ET_DRIFT,
 	ET_MAX
 } EDIT_TYPE;		// ドリフト点情報
@@ -48,12 +49,14 @@ typedef struct {
 } DRIFT_POINT;			// ドリフト点情報
 
 typedef struct {
-	vector<D3DXVECTOR3>	Pos;			// スプラインの誘導点
-	vector<D3DXVECTOR3>	Vec;			// スプラインの誘導ベクトル
-	vector<D3DXVECTOR3>	PosHermite;		// スプライン分割点
-	D3DXVECTOR3			Rot;			// スプライン上での(主にY軸の)回転値
-	vector<bool>		ifHold;			// マウスでホールド中かどうか
-	vector<DRIFT_POINT>	Drift;			// ドリフト点情報
+	vector<D3DXVECTOR3>	Pos;		// スプラインの誘導点
+	vector<D3DXVECTOR3>	Vec;		// スプラインの誘導ベクトル
+	vector<D3DXVECTOR3>	PosHermite;	// スプライン分割点
+	D3DXVECTOR3			Rot;		// スプライン上での(主にY軸の)回転値
+	vector<int> 		ifHold;		// マウスでホールド中かどうか
+	vector<DRIFT_POINT>	Drift;		// ドリフト点情報
+	vector<float>		LengthMin;	// スプライン区間長(ざっくり)
+	float				Length;		// スプライン長(ざっくり)
 } SPLINE;
 
 //=============================================================================
@@ -69,6 +72,8 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) {
@@ -81,8 +86,8 @@ public:
 		SafetyRelease(m_pTextures[1]);
 	}
 
-	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	SPLINE* GetSpline(void) { return &m_Spline; }
+	D3DXVECTOR3	GetSplinePos(float t);
 
 private:
 	CRailLine(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
@@ -100,8 +105,6 @@ private:
 	void	SetSplineVtxLPoints(int line = 0);
 	void	SetSplineVtxPointer(int line = 0);
 	void	SetSplineVtxDrift(int line = 0);
-
-	D3DXVECTOR3	GetSplinePos(float t);
 	
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffVec;		// 頂点バッファへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuffSPoints;	// 頂点バッファへのポインタ

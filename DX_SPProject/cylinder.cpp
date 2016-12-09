@@ -184,7 +184,7 @@ void CCylinder::Uninit(void)
 void CCylinder::Update(void)
 {
 	// カメラ座標に追従
-	m_Pos = CManager::GetCamera()->GetCameraPosV();
+	m_Pos = DX_CAMERA->GetCameraPosV();
 }
 
 //=============================================================================
@@ -218,13 +218,16 @@ void CCylinder::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CCylinder *CCylinder::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CCylinder *CCylinder::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CCylinder *cylinder;
-	
-	cylinder = new CCylinder;
+	CCylinder *cylinder;	// インスタンス
 
+	// インスタンス生成
+	cylinder = new CCylinder(ifListAdd, priority, objtype);
+
+	// 初期化処理
 	cylinder->Init(pos, rot);
 
+	// インスタンスをリターン
 	return cylinder;
 }

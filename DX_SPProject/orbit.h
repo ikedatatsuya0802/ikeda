@@ -8,9 +8,8 @@
 //	作成日		2016/04/20
 //
 //=============================================================================
-#include "sceneDX.h"
+#include "scene3DDX.h"
 #include "rendererDX.h"
-#include "manager.h"
 
 //=============================================================================
 //	マクロ定義
@@ -39,7 +38,7 @@
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class COrbit : public CSceneDX
+class COrbit : public CScene3DDX
 {
 public:
 	COrbit(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
@@ -49,13 +48,14 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static COrbit		*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+		D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"ORBIT_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
-
-	static COrbit		*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	void	SetOrbitData(void);
 	void	SetLocPos(D3DXVECTOR3 locPos1, D3DXVECTOR3 locPos2) { m_LocPos[0] = locPos1; m_LocPos[1] = locPos2; }
@@ -63,11 +63,7 @@ public:
 
 protected:
 	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_pIdxBuff;	// インデックスバッファへのポインタ
-
-	D3DXMATRIX		m_mtxWorld;						// ワールドマトリックス
-	D3DXVECTOR3		m_Nor[ORBIT_VERTEX_NUM];	// 法線情報
 
 	D3DXVECTOR3		m_OldPos[ORBIT_VERTEX_NUM];
 	D3DXVECTOR3		m_LocPos[2];

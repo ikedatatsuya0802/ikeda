@@ -153,10 +153,11 @@ void CRendererDX::Uninit(void)
 //=============================================================================
 void CRendererDX::Update(void)
 {
+	/*
 	if(m_flgBlurBigger && KT_B)
 	{
 		m_flgBlur = true;
-	}
+	}*/
 }
 
 //=============================================================================
@@ -187,6 +188,22 @@ void CRendererDX::End(void)
 
 	// 描画確定
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+//=============================================================================
+//	関数名	:FileName
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ディレクトリとファイル名を結合して返す。
+//=============================================================================
+char* CRendererDX::FileName(char* filename, char* directory)
+{
+	char str[1024] = { NULL };
+
+	strcat(str, directory);
+	strcat(str, filename);
+
+	return str;
 }
 
 //=============================================================================

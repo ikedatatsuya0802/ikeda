@@ -24,7 +24,7 @@ LPDIRECT3DTEXTURE9	COrbit::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-COrbit::COrbit(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
+COrbit::COrbit(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 
 }
@@ -256,11 +256,11 @@ void COrbit::SetOrbitData(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-COrbit *COrbit::Create(D3DXVECTOR3 pos)
+COrbit *COrbit::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos)
 {
 	COrbit *orbit;
 	
-	orbit = new COrbit;
+	orbit = new COrbit(ifListAdd, priority, objtype);
 
 	orbit->Init();
 

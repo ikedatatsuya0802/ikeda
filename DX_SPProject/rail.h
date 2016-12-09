@@ -47,12 +47,10 @@ protected:
 	CRail(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRail();
 
-	void SetRailData(void);
+	void SetVtxBuff(void);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ
-	
-	D3DXMATRIX	m_mtxWorld;				// ワールドマトリックス
+
 	int			m_RailLine;				// レールの配置
 	SPLINE*		m_Spline;
 };

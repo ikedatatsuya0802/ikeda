@@ -190,12 +190,12 @@ void CNumber::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CNumber *CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
+CNumber *CNumber::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 {
 	CNumber *number;	// インスタンス
 	
 	// インスタンス生成
-	number = new CNumber;
+	number = new CNumber(ifListAdd, priority, objtype);
 	
 	// 初期化処理
 	number->Init(pos, size, value);

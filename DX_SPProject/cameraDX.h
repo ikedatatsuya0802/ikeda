@@ -12,6 +12,8 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+#define DX_CAMERA					(CManager::GetCamera())
+
 #define	CAMERA_NEARZ				(10.0f)			// NearZ値
 #define	CAMERA_FARZ					(100000.0f)		// FarZ値
 #define	CAMERA_DEFAULT_DISTANCE		(200.0f)		// 初期の視点―注視点間距離
@@ -32,6 +34,12 @@
 //=============================================================================
 //	構造体
 //=============================================================================
+typedef struct {
+	D3DXVECTOR3	vPos;			// 揺れ座標
+	int			Cnt;		// 画面の揺れカウンタ
+	float		Width;	// 画面の揺れの範囲
+} CAMERA_VIBRATE;				// 揺れ情報
+
 typedef struct{	// カメラ情報
 	D3DXVECTOR3	posV;			// 視点
 	D3DXVECTOR3	posR;			// 注視点
@@ -39,7 +47,8 @@ typedef struct{	// カメラ情報
 	D3DXMATRIX	mtxProjection;	// プロジェクションマトリックス
 	D3DXMATRIX	mtxView;		// ビューマトリックス
 	D3DXVECTOR3 Rot;			// 回転角
-	float		fDistance;		// 視点―注視点間距離
+	float		Distance;		// 視点―注視点間距離
+	CAMERA_VIBRATE Vib;			// 揺れ情報
 } CAMERA;
 
 //=============================================================================
@@ -62,6 +71,8 @@ public:
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
 	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
+	void	SetCameraVibrate(int time, float width) { m_CS.Vib.Cnt = time; m_CS.Vib.Width = width; }
+	void	DisableCameraVibrate(void) { m_CS.Vib.vPos = VEC3_ZERO; m_CS.Vib.Cnt = 0; m_CS.Vib.Width = 0.0f; }
 
 	bool	GetCameraMode(void) { return m_flgCameraMode; }
 	void	ChangeCameraMode(void) { m_flgCameraMode = m_flgCameraMode ? false : true; }
@@ -71,6 +82,7 @@ public:
 
 protected:
 	void CameraMove(void);
+	void CameraVibrate(void);
 
 	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
 };

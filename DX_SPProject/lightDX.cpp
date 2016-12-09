@@ -25,7 +25,8 @@ HRESULT CLightDX::Init(void)
 {
 	m_LightNum = 0;
 
-	AddHolizontalLight(D3DXVECTOR3(0.7f, -0.5f, 0.2f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	//AddHolizontalLight(D3DXVECTOR3(0.7f, -0.5f, 0.2f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	AddHolizontalLight(D3DXVECTOR3(0.7f, -0.5f, 0.2f), D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 	AddHolizontalLight(D3DXVECTOR3(-0.75f, -0.55f, -0.25f), D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 	AddHolizontalLight(D3DXVECTOR3(0.0f, 0.0f, -1.0f), D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f));
 	

@@ -16,6 +16,7 @@
 class CMeshfield;
 class CPlayer;
 class CRailLine;
+class CDriftMark;
 
 //=============================================================================
 //	クラス定義
@@ -35,12 +36,14 @@ public:
 	static CRailLine	*GetRailLine(void) { return m_RailLine; }
 	static CPlayer		*GetPlayer1(void){ return m_Player1; }
 	static CPlayer		*GetPlayer2(void){ return m_Player2; }
+	static CDriftMark	*GetDriftMark(void) { return m_DriftMark; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
 	static CRailLine	*m_RailLine;	// レール情報のインスタンス
 	static CPlayer		*m_Player1;		// プレイヤーのインスタンス
 	static CPlayer		*m_Player2;		// プレイヤーのインスタンス
+	static CDriftMark	*m_DriftMark;	// ドリフトマークのインスタンス
 };
 
 #endif

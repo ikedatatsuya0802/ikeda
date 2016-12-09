@@ -174,7 +174,7 @@ void CSkybox::Uninit(void)
 void CSkybox::Update(void)
 {
 	// カメラ座標に追従
-	m_Pos = CManager::GetCamera()->GetCameraPosV();
+	m_Pos = DX_CAMERA->GetCameraPosV();
 
 	m_Rot.y -= 0.0001f;
 }
@@ -232,13 +232,13 @@ void CSkybox::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CSkybox *CSkybox::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CSkybox *CSkybox::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CSkybox *skybox;
+	CSkybox *instance;
 
-	skybox = new CSkybox;
+	instance = new CSkybox(ifListAdd, priority, objtype);
 
-	skybox->Init(pos, rot);
+	instance->Init(pos, rot);
 
-	return skybox;
+	return instance;
 }

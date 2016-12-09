@@ -16,7 +16,6 @@
 #include "sceneDX.h"
 #include "scene2DDX.h"
 #include "scene3DDX.h"
-#include "sceneBillboardDX.h"
 #include "sceneXDX.h"
 #include "meshfield.h"
 #include "cylinder.h"
@@ -26,19 +25,16 @@
 #include "railLine.h"
 #include "rail.h"
 #include "orbit.h"
-
-//=============================================================================
-//	プロトタイプ
-//=============================================================================
-static int		g_nCountFPS;				// FPSカウンタ
+#include "driftMark.h"
 
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CMeshfield	*CGame::m_Meshfield;		// メッシュフィールド
-CRailLine	*CGame::m_RailLine;		// メッシュフィールド
-CPlayer		*CGame::m_Player1;		// 自分のプレイヤー
-CPlayer		*CGame::m_Player2;		// 他の誰かのプレイヤー
+CMeshfield	*CGame::m_Meshfield;
+CRailLine	*CGame::m_RailLine;
+CPlayer		*CGame::m_Player1;
+CPlayer		*CGame::m_Player2;
+CDriftMark	*CGame::m_DriftMark;
 
 //=============================================================================
 //	関数名	:Init
@@ -48,8 +44,7 @@ CPlayer		*CGame::m_Player2;		// 他の誰かのプレイヤー
 //=============================================================================
 void CGame::Init(void)
 {
-	// リソースのロード
-
+	// 3D
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
 	CCylinder::Create();
@@ -63,10 +58,10 @@ void CGame::Init(void)
 	orbit1->SetLocPos(D3DXVECTOR3(-6.0f, 22.0f, 72.0f), D3DXVECTOR3(-8.0f, 22.0f, 72.0f));
 	orbit2->SetLocPos(D3DXVECTOR3(6.0f, 22.0f, 72.0f), D3DXVECTOR3(8.0f, 22.0f, 72.0f));
 
-	//CGametime::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
-	
-	//CScene3DDX* f = CScene3DDX::Create();
-	//f->SetRot(D3DXVECTOR3(D3DX_PI / 2, 0.0f, 0.0f));
+	//CGametime::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
+
+	// 2D
+	m_DriftMark = CDriftMark::Create();
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -81,6 +76,7 @@ void CGame::Init(void)
 void CGame::Uninit(void)
 {
 	// リソースのアンロード
+	SafetyUninit(m_DriftMark);
 
 	// 終了処理・インスタンス削除
 	CSceneDX::DeleteAll();
@@ -94,11 +90,24 @@ void CGame::Uninit(void)
 //=============================================================================
 void CGame::Update(void)
 {
+	// 3D
 	// シーン更新
 	CSceneDX::UpdateAll();
+
+	// 2D
+	m_DriftMark->CDriftMark::Update();
+
 	if(CInput::GetKeyTrigger(DIK_RETURN))
 	{
 		CFade::Start(new CResult, FS_OUT);
+	}
+	if(KT_J)
+	{
+		CDriftMark::VisibleDriftMark(true, true, 60);
+	}
+	if(KT_K)
+	{
+		CDriftMark::InvisibleDriftMark(30);
 	}
 }
 
@@ -112,4 +121,7 @@ void CGame::Draw(void)
 {
 	// シーン描画
 	CSceneDX::DrawAll();
+
+	// 2D
+	m_DriftMark->CDriftMark::Draw();
 }

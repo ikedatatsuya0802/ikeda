@@ -13,6 +13,7 @@
 #include "game.h"
 #include "meshfield.h"
 #include "railLine.h"
+#include "cameraDX.h"
 
 //=============================================================================
 //	関数名	:CPlayer()
@@ -109,6 +110,13 @@ void CPlayer::Update(void)
 	
 		// 相対回転設定
 		UpdateMotion();
+
+		if(KT_M)
+		{
+			(DX_CAMERA->m_CS.Vib.Cnt == 0) ?
+				DX_CAMERA->SetCameraVibrate(-1, 1.0f)
+				: DX_CAMERA->DisableCameraVibrate();
+		}
 	}
 }
 
@@ -120,26 +128,42 @@ void CPlayer::Update(void)
 //=============================================================================
 void CPlayer::UpdateMove(void)
 {
-	CCameraDX	*camera		= CManager::GetCamera();	// カメラ
+	CCameraDX	*camera		= DX_CAMERA;	// カメラ
 	CMeshfield	*mesh		= CGame::GetMeshfield();	// メッシュフィールド
 	float nowt = (m_Per - ((int)m_Per));
 	
 	// スプラインのロード
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
-	if(CInput::GetKeyPress(DIK_W))				// 奥
+	// 奥へ移動
+	if(!DX_CAMERA->GetCameraMode() && CInput::GetKeyPress(DIK_W))
 	{
 		// 移動量を設定
 		m_PerMove += PLAYER_MOVEMENT;
 	}
 
-	// 移動量反映
-	if((m_Per <= ((int)m_Spline->Pos.size() - 1)) && (m_Per >= 0.0f))
+#ifdef _DEBUG
+	if(!DX_CAMERA->GetCameraMode() && CInput::GetKeyPress(DIK_S))
 	{
-		m_Per += m_PerMove;
-		if(m_Per > ((int)m_Spline->Pos.size() - 1))
+		// 移動量を設定
+		m_PerMove -= PLAYER_MOVEMENT;
+	}
+#endif
+	int		posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
+
+
+	// 速度計算
+	CDebugProc::DebugProc("Section:%d->%d\n", posNum, (posNum + 1));
+	//CDebugProc::DebugProc("Speed:%f\n", realMove);
+
+	// 移動量反映
+	if(m_Per >= 0.0f)
+	{
+		float t = (m_PerMove / m_Spline->LengthMin[posNum]);
+		m_Per = t;
+		if(m_Per > 1.0f)
 		{
-			m_Per -= ((int)m_Spline->Pos.size() - 1);
+			m_Per -= 1.0f;
 		}
 	}
 	else if(m_Per < 0.0f)
@@ -148,67 +172,23 @@ void CPlayer::UpdateMove(void)
 	}
 
 	// 位置反映
-	if(((int)m_Per + 1) > ((int)m_Spline->Pos.size() - 1))
-	{
-		m_Pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].x)
-			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[0].x)
-			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].x)
-			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[0].x);
-
-		m_Pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].z)
-			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[0].z)
-			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].z)
-			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[0].z);
-	}
-	else
-	{
-		m_Pos.x = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].x)
-			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].x)
-			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].x)
-			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].x);
-
-		m_Pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline->Pos[(int)m_Per + 0].z)
-			+ (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline->Pos[(int)m_Per + 1].z)
-			+ (pow((1 - nowt), 2) * nowt * m_Spline->Vec[(int)m_Per + 0].z)
-			+ ((nowt - 1) * powf(nowt, 2) * m_Spline->Vec[(int)m_Per + 1].z);
-	}
+	m_Pos.x = CGame::GetRailLine()->GetSplinePos(nowt).x;
+	m_Pos.z = CGame::GetRailLine()->GetSplinePos(nowt).z;
 	
 	// 回転反映
 	float tDis = nowt + 0.01f;
 	D3DXVECTOR3 vecDis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	if(((int)m_Per + 1) > ((int)m_Spline->Pos.size() - 1))
-	{
-		vecDis.x = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].x)
-			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[0].x)
-			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].x)
-			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[0].x);
-
-		vecDis.z = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].z)
-			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[0].z)
-			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].z)
-			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[0].z);
-	}
-	else
-	{
-		vecDis.x = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].x)
-			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].x)
-			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].x)
-			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].x);
-
-		vecDis.z = (pow((tDis - 1), 2) * (2 * tDis + 1) * m_Spline->Pos[(int)m_Per + 0].z)
-			+ (powf(tDis, 2) * (3 - 2 * tDis) * m_Spline->Pos[(int)m_Per + 1].z)
-			+ (pow((1 - tDis), 2) * tDis * m_Spline->Vec[(int)m_Per + 0].z)
-			+ ((tDis - 1) * powf(tDis, 2) * m_Spline->Vec[(int)m_Per + 1].z);
-	}
+	vecDis.x = CGame::GetRailLine()->GetSplinePos(tDis).x;
+	vecDis.z = CGame::GetRailLine()->GetSplinePos(tDis).z;
 
 	// 回転量計算
-	m_Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
+	m_Spline->Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
 
 	// 減速
-	m_PerMove += (-m_PerMove * PLAYER_SPEED_DOWN);
+	//m_PerMove += (-m_PerMove * PLAYER_SPEED_DOWN);
 
 
-	/*
+	
 	// ジャンプ
 	if(KT_SPACE && !m_bJump)
 	{
@@ -230,7 +210,7 @@ void CPlayer::UpdateMove(void)
 	{
 		// ジャンプ量の減衰
 		m_Move.y -= PLAYER_GRAVITY;
-	}*/m_Pos.y = 0.0f;
+	}
 
 	// 回転量補正
 	if(m_RotMove.y > D3DX_PI)				// 回転量がプラス方向に逆向きの場合
@@ -242,24 +222,6 @@ void CPlayer::UpdateMove(void)
 	{
 		// 回転量を逆方向に
 		m_RotMove.y += (D3DX_PI * 2.0f);
-	}
-
-	// カウンタが有効の場合回転する
-	if(m_nCntMove > 0)
-	{
-		m_Rot.y += (m_RotMove.y / PLAYER_ROT_STEP);
-
-		m_nCntMove--;
-	}
-
-	// 回転角の境界補正
-	if(m_Rot.y > D3DX_PI)
-	{
-		m_Rot.y = (-D3DX_PI + (m_Rot.y - D3DX_PI));
-	}
-	else if(m_Rot.y < -D3DX_PI)
-	{
-		m_Rot.y = (D3DX_PI + (m_Rot.y + D3DX_PI));
 	}
 }
 
@@ -311,27 +273,9 @@ void CPlayer::UpdateMotion(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxTrans;					// マトリックス
-
-	
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	//D3DXMatrixRotationQuaternion(&mtxRot, &m_Quaternion);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
 	// ワールドマトリックスの設定
-	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	D3DXVECTOR3 rot = D3DXVECTOR3(m_Rot.x, m_Rot.y + m_Spline->Rot.y, m_Rot.z);
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, rot);
 	
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -364,17 +308,17 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(D3DXVECTOR3 pos)
+CPlayer *CPlayer::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos)
 {
 	CPlayer *player;	// インスタンス
 
 	// インスタンス生成
-	player = new CPlayer;
+	player = new CPlayer(ifListAdd, priority, objtype);
 
 	// 初期化処理
 	player->Init(pos);
 
-	// インスタンスを返す
+	// インスタンスをリターン
 	return player;
 }
 
