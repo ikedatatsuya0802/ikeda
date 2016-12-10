@@ -37,12 +37,15 @@ void CTitle::Init(void)
 	m_TitleBG = CScene2DDX::Create(true, 2, OBJTYPE_NONE,
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
 		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "title000.jpg");
+		*/
 	m_PushEnter = CScene2DDX::Create(true, 2, OBJTYPE_NONE,
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
 		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), "pushbutton000.png");
 
 	m_Alpha = 0.0f;
-	*/
+	
+
+	m_Frame = 0;
 
 	CManager::GetCamera()->Init();
 	CLightDX::ChangeHolLight(0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -90,8 +93,8 @@ void CTitle::Update(void)
 //=============================================================================
 void CTitle::Draw(void)
 {
-	// m_Alpha += 0.05f;
-	// m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
+	m_Alpha += 0.05f;
+	m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
 
 	// ƒV[ƒ“•`‰æ
 	CSceneDX::DrawAll();

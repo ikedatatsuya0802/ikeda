@@ -23,8 +23,8 @@
 #define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.00001f)		// プレイヤーのスピード
-#define	PLAYER_SPEED_MAX		(0.001f)		// プレイヤーのスピード
+#define	PLAYER_MOVEMENT			(0.000001f)		// プレイヤーのスピード
+#define	PLAYER_SPEED_MAX		(0.003f)		// プレイヤーのスピード
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
@@ -72,11 +72,12 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO);
+	static CPlayer	*Create(bool ifListAdd = true, D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
 	D3DXVECTOR3	SetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
+	float	GetSpeed(void) { return m_PerMove; }					// スプライン情報を取得
+	float	GetOldPerSpline(void) { return m_PerOld; }				// スプライン情報を取得
 	float	GetPerSpline(void) { return m_Per; }					// スプライン情報を取得
 	void	SetPerSpline(float perSpline) { m_Per = perSpline; }	// スプライン位置をセット
 
@@ -111,6 +112,7 @@ protected:
 
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置
+	float		m_PerOld;		// スプライン上位置(旧)
 	float		m_PerMove;		// スプライン上位置の遷移量
 	float		m_SplineTime;	// スプライン上位置の遷移量
 };

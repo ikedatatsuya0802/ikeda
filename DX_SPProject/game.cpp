@@ -27,6 +27,7 @@
 #include "rail.h"
 #include "orbit.h"
 #include "driftMark.h"
+#include "speedmeter.h"
 
 //=============================================================================
 //	ê√ìIÉÅÉìÉoïœêî
@@ -56,15 +57,10 @@ void CGame::Init(void)
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
-	COrbit *orbit1 = COrbit::Create();
-	COrbit *orbit2 = COrbit::Create();
-	orbit1->SetLocPos(D3DXVECTOR3(-6.0f, 22.0f, 72.0f), D3DXVECTOR3(-8.0f, 22.0f, 72.0f));
-	orbit2->SetLocPos(D3DXVECTOR3(6.0f, 22.0f, 72.0f), D3DXVECTOR3(8.0f, 22.0f, 72.0f));
-
-	//CGametime::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3((SCREEN_WIDTH * 0.5f + 200.0f), 100.0f, 0.0f), D3DXVECTOR2(250.0f, 100.0f), FIGURE(3));
 
 	// 2D
 	CDriftMark::Create();
+	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.3f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -99,14 +95,6 @@ void CGame::Update(void)
 	if(CInput::GetKeyTrigger(DIK_RETURN))
 	{
 		CFade::Start(new CResult, FS_OUT);
-	}
-	if(KT_J)
-	{
-		CDriftMark::VisibleDriftMark(true, true, 60);
-	}
-	if(KT_K)
-	{
-		CDriftMark::InvisibleDriftMark(30);
 	}
 }
 

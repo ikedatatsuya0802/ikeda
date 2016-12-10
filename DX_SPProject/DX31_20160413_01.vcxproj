@@ -60,7 +60,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>strmbase.lib;strmiids.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);strmbasd.lib;</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,6 +96,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="orbit.cpp" />
+    <ClCompile Include="pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_title.cpp" />
     <ClCompile Include="rail.cpp" />
@@ -111,6 +112,7 @@
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="gametime.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="speedmeter.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
@@ -130,6 +132,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="orbit.h" />
+    <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_title.h" />
     <ClInclude Include="rail.h" />
@@ -145,6 +148,7 @@
     <ClInclude Include="skybox.h" />
     <ClInclude Include="gametime.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="speedmeter.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
   </ItemGroup>

@@ -19,6 +19,9 @@ public:
 	virtual void	Uninit(void)	= 0;
 	virtual void	Update(void)	= 0;
 	virtual void	Draw(void)		= 0;
+
+protected:
+	int			m_Frame;	// 汎用カウンタ
 };
 #include "title.h"
 #include "tutorial.h"

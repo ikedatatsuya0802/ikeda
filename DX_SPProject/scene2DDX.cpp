@@ -141,6 +141,16 @@ void CScene2DDX::Update(void)
 //=============================================================================
 void CScene2DDX::Draw(void)
 {
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+	// アルファテスト開始
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
 	// 頂点フォーマットの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 	// 頂点フォーマットの設定
@@ -149,6 +159,16 @@ void CScene2DDX::Draw(void)
 	D3D_DEVICE->SetTexture(0, m_pTexture);
 	// メーター描画
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+	// アルファテスト終了
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //=============================================================================

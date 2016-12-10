@@ -10,13 +10,15 @@
 //	インクルード
 //=============================================================================
 #include "driftMark.h"
+#include "railLine.h"
+#include "player.h"
+#include "game.h"
 
 bool		CDriftMark::m_VisibleType	= false;
 bool		CDriftMark::m_flgCounter	= true;
 bool		CDriftMark::m_Curve			= true;
 int			CDriftMark::m_Count			= 0;
 int			CDriftMark::m_SetCounter	= 0;
-
 
 //=============================================================================
 //	関数名	:CScene2DDX()
@@ -147,6 +149,31 @@ void CDriftMark::Update(void)
 	static float tex = 0.0f;
 	// テクスチャ座標移動
 	VERTEX_2D	*pVtx;	// 3D頂点情報
+	float oldt	= CGame::GetPlayer1()->GetOldPerSpline();
+	float t		= CGame::GetPlayer1()->GetPerSpline();
+
+	// ドリフトマーク出現判断
+	if(CGame::GetRailLine()->GetDriftStatus(oldt, t).ifDrift)
+	{
+		if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Status == -1)
+		{// ドリフトの始点の場合
+
+			if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Curve)
+			{// 左カーブの警告
+				CDriftMark::VisibleDriftMark(true, true, 60);
+			}
+			else
+			{// 右カーブの警告
+				CDriftMark::VisibleDriftMark(true, false, 60);
+			}
+		}
+		else if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Status == 1)
+		{// ドリフトの終点の場合
+
+			CDriftMark::InvisibleDriftMark(30);
+		}
+	}
+
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	// テクスチャ貼付座標設定
 	pVtx[0].tex = D3DXVECTOR2(tex, 0.0f);
@@ -242,7 +269,7 @@ void CDriftMark::Draw(void)
 	// 頂点フォーマットの設定
 	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
 	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, (m_Curve ? m_pTexture[0] : m_pTexture[1]));
+	D3D_DEVICE->SetTexture(0, (m_Curve ? m_pTexture[1] : m_pTexture[0]));
 	// メーター描画
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
 	// メーター描画

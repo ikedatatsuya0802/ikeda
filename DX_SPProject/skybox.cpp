@@ -123,39 +123,74 @@ void CSkybox::SetVtxBuff(bool ifLight)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(0.2f, 0.2f, 0.4f, 1.0f);
 		}
 	}
-
-	// テクスチャ貼付座標設定
-	// 天面
-	pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
-	pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
-	pVtx[2].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[3].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	// 底面
-	pVtx[4].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[5].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[6].tex = D3DXVECTOR2((1 * 0.25f), 1.0f);
-	pVtx[7].tex = D3DXVECTOR2((2 * 0.25f), 1.0f);
-	// 前面
-	pVtx[8].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[9].tex = D3DXVECTOR2((4 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[10].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	pVtx[11].tex = D3DXVECTOR2((4 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	// 背面
-	pVtx[12].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[13].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[14].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	pVtx[15].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	// 左側面
-	pVtx[16].tex = D3DXVECTOR2((0 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[17].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
-	pVtx[18].tex = D3DXVECTOR2((0 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	pVtx[19].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
-	// 右側面
-	pVtx[20].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
-	pVtx[21].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
-	pVtx[22].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
-	pVtx[23].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
-
+	if(1)
+	{
+		// テクスチャ貼付座標設定
+		// 天面
+		pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
+		pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
+		pVtx[2].tex = D3DXVECTOR2((1 * 0.25f), 0.25f);
+		pVtx[3].tex = D3DXVECTOR2((2 * 0.25f), 0.25f);
+		// 底面
+		pVtx[4].tex = D3DXVECTOR2((1 * 0.25f), 0.5f);
+		pVtx[5].tex = D3DXVECTOR2((2 * 0.25f), 0.5f);
+		pVtx[6].tex = D3DXVECTOR2((1 * 0.25f), 0.75f);
+		pVtx[7].tex = D3DXVECTOR2((2 * 0.25f), 0.75f);
+		// 前面
+		pVtx[8].tex = D3DXVECTOR2((3 * 0.25f), 0.25f);
+		pVtx[9].tex = D3DXVECTOR2((4 * 0.25f), 0.25f);
+		pVtx[10].tex = D3DXVECTOR2((3 * 0.25f), 0.5f);
+		pVtx[11].tex = D3DXVECTOR2((4 * 0.25f), 0.5f);
+		// 背面
+		pVtx[12].tex = D3DXVECTOR2((1 * 0.25f), 0.25f);
+		pVtx[13].tex = D3DXVECTOR2((2 * 0.25f), 0.25f);
+		pVtx[14].tex = D3DXVECTOR2((1 * 0.25f), 0.5f);
+		pVtx[15].tex = D3DXVECTOR2((2 * 0.25f), 0.5f);
+		// 左側面
+		pVtx[16].tex = D3DXVECTOR2((0 * 0.25f), 0.25f);
+		pVtx[17].tex = D3DXVECTOR2((1 * 0.25f), 0.25f);
+		pVtx[18].tex = D3DXVECTOR2((0 * 0.25f), 0.5f);
+		pVtx[19].tex = D3DXVECTOR2((1 * 0.25f), 0.5f);
+		// 右側面
+		pVtx[20].tex = D3DXVECTOR2((2 * 0.25f), 0.25f);
+		pVtx[21].tex = D3DXVECTOR2((3 * 0.25f), 0.25f);
+		pVtx[22].tex = D3DXVECTOR2((2 * 0.25f), 0.5f);
+		pVtx[23].tex = D3DXVECTOR2((3 * 0.25f), 0.5f);
+	}
+	else
+	{
+		// テクスチャ貼付座標設定
+		// 天面
+		pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
+		pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
+		pVtx[2].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[3].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		// 底面
+		pVtx[4].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[5].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[6].tex = D3DXVECTOR2((1 * 0.25f), 1.0f);
+		pVtx[7].tex = D3DXVECTOR2((2 * 0.25f), 1.0f);
+		// 前面
+		pVtx[8].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[9].tex = D3DXVECTOR2((4 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[10].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		pVtx[11].tex = D3DXVECTOR2((4 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		// 背面
+		pVtx[12].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[13].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[14].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		pVtx[15].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		// 左側面
+		pVtx[16].tex = D3DXVECTOR2((0 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[17].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+		pVtx[18].tex = D3DXVECTOR2((0 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		pVtx[19].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+		// 右側面
+		pVtx[20].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
+		pVtx[21].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
+		pVtx[22].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
+		pVtx[23].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
+	}
 	m_pVtxBuff->Unlock();
 }
 

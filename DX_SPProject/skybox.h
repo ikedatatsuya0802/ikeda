@@ -14,7 +14,7 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	SKYBOX_TEXFILENAME000	"skybox000.jpg"						// テクスチャのファイル名
+#define	SKYBOX_TEXFILENAME000	"skybox003.jpg"						// テクスチャのファイル名
 #define	SKYBOX_SIZE				(60000.0f)							// ドームの縦ブロック数
 #define	SKYBOX_PRIMITIVE_NUM	(6)									// プリミティブ数
 #define	SKYBOX_VERTEX_NUM		(VERTEX_NUM * SKYBOX_PRIMITIVE_NUM)	// 頂点数

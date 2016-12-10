@@ -30,7 +30,7 @@
 class CScene2DDX : public CSceneDX
 {
 public:
-	CScene2DDX(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CScene2DDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScene2DDX();
 
 	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,

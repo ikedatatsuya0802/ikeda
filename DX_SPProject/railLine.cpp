@@ -1105,3 +1105,66 @@ D3DXVECTOR3 CRailLine::GetSplinePos(float t)
 
 	return pos;
 }
+
+//=============================================================================
+//	関数名	:GetDriftStatus
+//	引数	:float oldt	->	スプライン媒介変数(旧)
+//			:float t	->	スプライン媒介変数(新)
+//	戻り値	:なし
+//	説明	:ドリフト中か否か、またどの状態かを返す。
+//=============================================================================
+DRIFT_STATUS CRailLine::GetDriftStatus(float oldt, float t)
+{
+	DRIFT_STATUS ds = { false, false, 0 };	// ドリフトステータス
+	bool ifOldInDrift = false;		// 前回スプライン座標がドリフト地点に入っているか
+	bool ifNewInDrift = false;		// 今回スプライン座標がドリフト地点に入っているか
+
+	if((int)m_Spline.Pos.size() >= 2)
+	{
+		if((t >= 0.0f) && (t <= 1.0f) && (oldt >= 0.0f) && (oldt <= 1.0f))
+		{
+			for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
+			{
+				if((oldt >= m_Spline.Drift[i].Begin) && (oldt <= m_Spline.Drift[i].End))
+				{// 前回座標がドリフト区間の中にある
+
+					ifOldInDrift = true;
+					ds.Curve = m_Spline.Drift[i].Curve;
+				}
+				if((t >= m_Spline.Drift[i].Begin) && (t <= m_Spline.Drift[i].End))
+				{// 今回座標がドリフト区間の中にある
+
+					ifNewInDrift = true;
+					ds.Curve = m_Spline.Drift[i].Curve;
+				}
+			}
+		}
+
+		if(!ifOldInDrift && !ifNewInDrift)
+		{// ドリフト区間に入っていない
+
+			ds.ifDrift	= false;
+			ds.Status	= 0;
+		}
+		else if(!ifOldInDrift && ifNewInDrift)
+		{// ドリフトの始点
+
+			ds.ifDrift = true;
+			ds.Status = -1;
+		}
+		else if(ifOldInDrift && !ifNewInDrift)
+		{// ドリフトの終点
+
+			ds.ifDrift = true;
+			ds.Status = 1;
+		}
+		else if(ifOldInDrift && ifNewInDrift)
+		{// ドリフト区間の中
+
+			ds.ifDrift = true;
+			ds.Status = 0;
+		}
+	}
+
+	return ds;
+}

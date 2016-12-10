@@ -59,6 +59,12 @@ typedef struct {
 	float				Length;		// スプライン長(ざっくり)
 } SPLINE;
 
+typedef struct {
+	bool	ifDrift;	// ドリフト範囲か
+	bool	Curve;		// どちらのカーブか
+	int		Status;		// ドリフトのどの状態か　-1->始点, 0->ドリフト中, 1->終点
+} DRIFT_STATUS;			// ドリフトステータス
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -88,6 +94,7 @@ public:
 
 	SPLINE* GetSpline(void) { return &m_Spline; }
 	D3DXVECTOR3	GetSplinePos(float t);
+	DRIFT_STATUS GetDriftStatus(float oldt, float t);
 
 private:
 	CRailLine(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

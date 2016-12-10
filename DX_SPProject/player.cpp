@@ -66,9 +66,10 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	SetMotion(MT_NONE);
 	m_Pause		= false;
 	
-	m_RailLine			= 0;
+	m_RailLine	= 0;
 	//m_Spline->nNum		= 0;
 	m_Per		= 0.0f;
+	m_PerOld	= 0.0f;
 	m_PerMove	= 0.0f;
 	
 	// スプラインの読み込み
@@ -106,6 +107,9 @@ void CPlayer::Update(void)
 	// 移動処理
 	if(m_Pause == false)
 	{
+		// スプライン位置を保存
+		m_PerOld = m_Per;
+
 		// プレイヤー移動
 		UpdateMove();
 	
@@ -305,12 +309,12 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos)
+CPlayer *CPlayer::Create(bool ifListAdd, D3DXVECTOR3 pos)
 {
 	CPlayer *player;	// インスタンス
 
 	// インスタンス生成
-	player = new CPlayer(ifListAdd, priority, objtype);
+	player = new CPlayer(ifListAdd);
 
 	// 初期化処理
 	player->Init(pos);
