@@ -81,11 +81,10 @@ public:
 	void	SetPerSpline(float perSpline) { m_Per = perSpline; }	// スプライン位置をセット
 
 protected:
-	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
-
-private:
 	CPlayer(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_PLAYER);
 	~CPlayer();
+
+	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
 
 	void UpdateMove(void);
 	

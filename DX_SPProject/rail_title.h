@@ -28,6 +28,8 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
+	static CRail_Title	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
+
 protected:
 
 	void SetVtxBuff(void);

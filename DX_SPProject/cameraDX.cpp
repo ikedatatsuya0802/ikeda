@@ -25,7 +25,11 @@
 //=============================================================================
 CCameraDX::CCameraDX()
 {
-
+	// アニメーション情報初期化
+	LoadCameraAnim();
+	LoadCameraAnim2();
+	m_Anim.ifAnim = true;
+	//m_Anim2.ifAnim = true;
 }
 
 //=============================================================================
@@ -79,11 +83,6 @@ void CCameraDX::Init(void)
 	m_CSEdit.Vib.Cnt	= 0;
 	m_CSEdit.Vib.Width	= 0.0f;
 
-	// アニメーション情報初期化
-	LoadCameraAnim();
-	LoadCameraAnim2();
-	//m_Anim.ifAnim = true;
-	m_Anim2.ifAnim = true;
 	m_Key	= 0;
 	m_Frame = 0;
 }
@@ -402,7 +401,7 @@ void CCameraDX::CameraMove(void)
 //=============================================================================
 void CCameraDX::CameraAnimation(void)
 {
-	if(0)
+	if(1)
 	{// posVとposR指定のアニメーション
 
 		D3DXVECTOR3 posV;
@@ -717,4 +716,22 @@ void CCameraDX::SetCamera(void)
 	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera->posV.x, camera->posV.y, camera->posV.z);
 	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera->posR.x, camera->posR.y, camera->posR.z);
 #endif
+}
+
+//=============================================================================
+//	関数名	:GetCameraAnimFrame
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:アニメーションの総フレーム数を返す。
+//=============================================================================
+int CCameraDX::GetCameraAnimFrame(void)
+{
+	int frame = 0;
+
+	for(int i = 0 ; i < (int)m_Anim.Status.size() ; i++)
+	{
+		frame += m_Anim.Status[i].Frame;
+	}
+
+	return frame;
 }

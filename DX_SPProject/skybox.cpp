@@ -45,7 +45,7 @@ CSkybox::~CSkybox()
 //	戻り値	:無し
 //	説明	:初期化処理を行う。
 //=============================================================================
-void CSkybox::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CSkybox::Init(bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -54,7 +54,7 @@ void CSkybox::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 頂点バッファ生成
 	D3D_DEVICE->CreateVertexBuffer(((sizeof(VERTEX_3D) * SKYBOX_VERTEX_NUM)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
-	SetVtxBuff();
+	SetVtxBuff(ifLight);
 
 	Load();
 }
@@ -65,7 +65,7 @@ void CSkybox::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //	戻り値	:無し
 //	説明	:頂点バッファにデータをセットする。
 //=============================================================================
-void CSkybox::SetVtxBuff(void)
+void CSkybox::SetVtxBuff(bool ifLight)
 {
 	VERTEX_3D* pVtx;
 
@@ -114,40 +114,47 @@ void CSkybox::SetVtxBuff(void)
 		pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 		// 色設定
-		pVtx[i].col = D3DCOLOR_COLORVALUE(0.2f, 0.2f, 0.4f, 1.0f);
+		if(ifLight)
+		{
+			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		else
+		{
+			pVtx[i].col = D3DCOLOR_COLORVALUE(0.2f, 0.2f, 0.4f, 1.0f);
+		}
 	}
 
 	// テクスチャ貼付座標設定
 	// 天面
-	pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), (0 * (1.0f / 3.0f)));
-	pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), (0 * (1.0f / 3.0f)));
-	pVtx[2].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[3].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f)));
+	pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
+	pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
+	pVtx[2].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[3].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
 	// 底面
-	pVtx[4].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[5].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[6].tex = D3DXVECTOR2((1 * 0.25f), (3 * (1.0f / 3.0f)));
-	pVtx[7].tex = D3DXVECTOR2((2 * 0.25f), (3 * (1.0f / 3.0f)));
+	pVtx[4].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[5].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[6].tex = D3DXVECTOR2((1 * 0.25f), 1.0f);
+	pVtx[7].tex = D3DXVECTOR2((2 * 0.25f), 1.0f);
 	// 前面
-	pVtx[8].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[9].tex = D3DXVECTOR2((4 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[10].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[11].tex = D3DXVECTOR2((4 * 0.25f), (2 * (1.0f / 3.0f)));
+	pVtx[8].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[9].tex = D3DXVECTOR2((4 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[10].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+	pVtx[11].tex = D3DXVECTOR2((4 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
 	// 背面
-	pVtx[12].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[13].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[14].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[15].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f)));
+	pVtx[12].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[13].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[14].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+	pVtx[15].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
 	// 左側面
-	pVtx[16].tex = D3DXVECTOR2((0 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[17].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[18].tex = D3DXVECTOR2((0 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[19].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f)));
+	pVtx[16].tex = D3DXVECTOR2((0 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[17].tex = D3DXVECTOR2((1 * 0.25f), (1 * (1.0f / 3.0f + 0.0001f)));
+	pVtx[18].tex = D3DXVECTOR2((0 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
+	pVtx[19].tex = D3DXVECTOR2((1 * 0.25f), (2 * (1.0f / 3.0f - 0.0001f)));
 	// 右側面
-	pVtx[20].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[21].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f)));
-	pVtx[22].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f)));
-	pVtx[23].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f)));
+	pVtx[20].tex = D3DXVECTOR2((2 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
+	pVtx[21].tex = D3DXVECTOR2((3 * 0.25f), (1 * (1.0f / 3.0f + 0.00001f)));
+	pVtx[22].tex = D3DXVECTOR2((2 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
+	pVtx[23].tex = D3DXVECTOR2((3 * 0.25f), (2 * (1.0f / 3.0f - 0.00001f)));
 
 	m_pVtxBuff->Unlock();
 }
@@ -176,7 +183,7 @@ void CSkybox::Update(void)
 	// カメラ座標に追従
 	m_Pos = DX_CAMERA->GetCameraPosV();
 
-	m_Rot.y -= 0.0001f;
+	m_Rot.y -= 0.00001f;
 }
 
 //=============================================================================
@@ -232,13 +239,13 @@ void CSkybox::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CSkybox *CSkybox::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CSkybox *CSkybox::Create(bool ifListAdd, int priority, OBJTYPE objtype, bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CSkybox *instance;
 
 	instance = new CSkybox(ifListAdd, priority, objtype);
 
-	instance->Init(pos, rot);
+	instance->Init(ifLight, pos, rot);
 
 	return instance;
 }

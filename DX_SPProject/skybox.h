@@ -29,29 +29,26 @@
 class CSkybox : public CScene3DDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	void	Init(bool ifLight, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CSkybox	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+		bool ifLight = false, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_pTexture); }
+	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(SKYBOX_TEXFILENAME000), &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 protected:
-	CSkybox(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CSkybox(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSkybox();
 
-	void	SetVtxBuff(void);
+	void	SetVtxBuff(bool ifLight);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
-	
-	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
 };
 
 #endif

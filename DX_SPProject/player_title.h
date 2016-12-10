@@ -13,7 +13,7 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define PLAYER_TITLE_SPEED	(5.0f)
+#define PLAYER_TITLE_SPEED	(15.0f)
 
 //=============================================================================
 //	構造体
@@ -25,10 +25,15 @@
 class CPlayer_Title : public CPlayer
 {
 public:
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Update(void);
+	void	Draw(void);
 
-protected:
+	static CPlayer_Title	*Create(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE,
+		D3DXVECTOR3 pos = VEC3_ZERO);
+
 private:
+	int m_Frame;
 };
 
 #endif

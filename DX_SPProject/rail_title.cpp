@@ -32,12 +32,14 @@ void CRail_Title::Init(int line, D3DXVECTOR3 pos)
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
-	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_pTexture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(RAIL_TEXFILENAME000), &m_pTexture);
 	
 	// レール情報セット
 	SetVtxBuff();
 
 	Load();
+
+	m_flgDraw = true;
 }
 
 //=============================================================================
@@ -55,20 +57,20 @@ void CRail_Title::SetVtxBuff(void)
 
 	// 描画座標設定
 	pVtx[0].Pos.x = -(RAIL_WIDTH * 0.5f);
-	pVtx[0].Pos.y = (MESHFIELD_TOTALHEIGHT * 0.5f);
-	pVtx[0].Pos.z = 0.0f;
+	pVtx[0].Pos.y = 0.1f;
+	pVtx[0].Pos.z = (MESHFIELD_TOTALHEIGHT * 0.5f);
 
 	pVtx[1].Pos.x = (RAIL_WIDTH * 0.5f);
-	pVtx[1].Pos.y = (MESHFIELD_TOTALHEIGHT * 0.5f);
-	pVtx[1].Pos.z = 0.0f;
+	pVtx[1].Pos.y = 0.1f;
+	pVtx[1].Pos.z = (MESHFIELD_TOTALHEIGHT * 0.5f);
 
 	pVtx[2].Pos.x = -(RAIL_WIDTH * 0.5f);
-	pVtx[2].Pos.y = -(MESHFIELD_TOTALHEIGHT * 0.5f);
-	pVtx[2].Pos.z = 0.0f;
+	pVtx[2].Pos.y = 0.1f;
+	pVtx[2].Pos.z = -(MESHFIELD_TOTALHEIGHT * 0.5f);
 
 	pVtx[3].Pos.x = (RAIL_WIDTH * 0.5f);
-	pVtx[3].Pos.y = -(MESHFIELD_TOTALHEIGHT * 0.5f);
-	pVtx[3].Pos.z = 0.0f;
+	pVtx[3].Pos.y = 0.1f;
+	pVtx[3].Pos.z = -(MESHFIELD_TOTALHEIGHT * 0.5f);
 
 	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
 	{
@@ -82,8 +84,8 @@ void CRail_Title::SetVtxBuff(void)
 	// テクスチャ貼付座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, MESHFIELD_TOTALHEIGHT);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, MESHFIELD_TOTALHEIGHT);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, MESHFIELD_TOTALHEIGHT * 0.02f);
+	pVtx[3].tex = D3DXVECTOR2(1.0f, MESHFIELD_TOTALHEIGHT * 0.02f);
 
 	m_pVtxBuff->Unlock();
 }
@@ -124,4 +126,21 @@ void CRail_Title::Draw(void)
 		// ライティング設定をオンに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
+}
+
+//=============================================================================
+//	関数名	:Create
+//	引数	:D3DXVECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:インスタンス生成を行うと共に、初期位置を設定する。
+//=============================================================================
+CRail_Title *CRail_Title::Create(int line, D3DXVECTOR3 pos)
+{
+	CRail_Title *instance;
+
+	instance = new CRail_Title;
+
+	instance->Init(line, pos);
+
+	return instance;
 }

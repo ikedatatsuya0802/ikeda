@@ -232,6 +232,11 @@ void CDriftMark::Update(void)
 //=============================================================================
 void CDriftMark::Draw(void)
 {
+	// アルファテスト開始
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
 	// 頂点フォーマットの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 	// 頂点フォーマットの設定
@@ -242,6 +247,11 @@ void CDriftMark::Draw(void)
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
 	// メーター描画
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, PRIMITIVE_NUM);
+
+	// アルファテスト終了
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 
 //=============================================================================

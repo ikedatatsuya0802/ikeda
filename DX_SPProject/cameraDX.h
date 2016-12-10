@@ -107,6 +107,10 @@ public:
 	D3DXVECTOR3	GetCameraPosV(void) { return m_flgCameraMode ? m_CSEdit.posV : m_CS.posV; }
 	D3DXVECTOR3	GetCameraPosR(void) { return m_flgCameraMode ? m_CSEdit.posR : m_CS.posR; }
 
+	bool ifCameraAnimInitialized(void) { return m_Anim.Status.size() > 0 ? true : false; }
+	int GetCameraAnimFrame(void);
+	int GetCameraFirstAnimFrame(void) { return m_Anim.Status[0].Frame; }
+
 protected:
 	void CameraMove(void);
 	void CameraAnimation(void);

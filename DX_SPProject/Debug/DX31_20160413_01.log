@@ -1,4 +1,1 @@
-﻿  cameraDX.cpp
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\cameradx.cpp(555): warning C4800: 'int' : ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\cameradx.cpp(612): warning C4800: 'int' : ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
-  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe
+﻿  DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

@@ -11,6 +11,8 @@
 //=============================================================================
 #include "title.h"
 #include "manager.h"
+#include "cameraDX.h"
+#include "lightDX.h"
 #include "input.h"
 #include "fade.h"
 #include "scene2DDX.h"
@@ -42,9 +44,15 @@ void CTitle::Init(void)
 	m_Alpha = 0.0f;
 	*/
 
+	CManager::GetCamera()->Init();
+	CLightDX::ChangeHolLight(0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
 	// 3D
 	CMeshfield::Create();
-	CSkybox::Create();
+	CSkybox::Create(true, 2, OBJTYPE_NONE, true);
+	CRail_Title::Create();
+	CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, -(MESHFIELD_TOTALHEIGHT * 0.5f)));
+	//CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, 100.0f));
 }
 
 //=============================================================================

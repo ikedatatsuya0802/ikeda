@@ -11,6 +11,7 @@
 //=============================================================================
 #include "game.h"
 #include "manager.h"
+#include "lightDX.h"
 #include "input.h"
 #include "fade.h"
 #include "sceneDX.h"
@@ -44,6 +45,8 @@ CDriftMark	*CGame::m_DriftMark;
 //=============================================================================
 void CGame::Init(void)
 {
+	CLightDX::ChangeHolLight(0, D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+
 	// 3D
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
