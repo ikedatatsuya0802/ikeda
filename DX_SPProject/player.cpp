@@ -68,8 +68,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	
 	m_RailLine	= 0;
 	//m_Spline->nNum		= 0;
-	m_Per		= 0.0f;
-	m_PerOld	= 0.0f;
+	m_Per		= PLAYER_START_PER;
+	m_PerOld	= PLAYER_START_PER;
 	m_PerMove	= 0.0f;
 	
 	// ƒXƒvƒ‰ƒCƒ“‚Ì“Ç‚İ‚İ

@@ -10,8 +10,10 @@
 //	インクルード
 //=============================================================================
 #include "pause.h"
+#include "main.h"
 #include "game.h"
 #include "player.h"
+#include "fade.h"
 
 //=============================================================================
 //	関数名	:CPause()
@@ -47,13 +49,38 @@ void CPause::Init(void)
 	// 頂点バッファ生成
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[2], NULL);
 
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME000, &m_pTexture[0]);
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME001, &m_pTexture[1]);
-	
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME002, &m_pTexture[2]);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME003, &m_pTexture[3]);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME004, &m_pTexture[4]);
+
+	m_Pos		= D3DXVECTOR3(PAUSE_POSX, PAUSE_POSY, 0.0f);
+	m_fLength	= hypotf(PAUSE_WIDTH, PAUSE_HEIGHT) * 0.5f;
+	m_fAngle	= atan2f(PAUSE_WIDTH, PAUSE_HEIGHT);
 	SetVtxBuff(&m_pVtxBuff[0]);
+
+	m_Pos = D3DXVECTOR3(PAUSE_MENU_POSX, PAUSE_MENU_POSY, 0.0f);
+	m_fLength = hypotf(PAUSE_MENU_WIDTH, PAUSE_MENU_HEIGHT) * 0.5f;
+	m_fAngle = atan2f(PAUSE_MENU_WIDTH, PAUSE_MENU_HEIGHT);
 	SetVtxBuff(&m_pVtxBuff[1]);
+
+	CRendererDX::SetFullScreenVtx(&m_pVtxBuff[2]);
+	VERTEX_2D	*pVtx;	// 3D頂点情報
+	m_pVtxBuff[2]->Lock(0, 0, (void**)&pVtx, 0);
+	{
+		SIMPLE_FOR(4)
+		{
+			pVtx[i].col = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 0.7f);
+		}
+	}
+	m_pVtxBuff[2]->Unlock();
+
+	m_flgPause	= false;
+	m_PauseMenu	= 0;
 }
 
 //=============================================================================
@@ -113,10 +140,12 @@ void CPause::SetVtxBuff(LPDIRECT3DVERTEXBUFFER9 *vtxBuff)
 void CPause::Uninit(void)
 {
 	// インスタンス削除
+	SIMPLE_FOR(PAUSE_TEXTURE_NUM)
+	{
+		SafetyRelease(m_pTexture[i]);
+	}
 	SafetyRelease(m_pVtxBuff[0]);
 	SafetyRelease(m_pVtxBuff[1]);
-	SafetyRelease(m_pTexture[0]);
-	SafetyRelease(m_pTexture[1]);
 }
 
 //=============================================================================
@@ -127,7 +156,61 @@ void CPause::Uninit(void)
 //=============================================================================
 void CPause::Update(void)
 {
+	VERTEX_2D	*pVtx;	// 3D頂点情報
 
+	if(KT_P)
+	{
+		ChangePause();
+	}
+
+	if(m_flgPause)
+	{
+		// ポーズメニュー操作
+		if(KT_W || KRP_W)
+		{// カーソルを上に
+
+			m_PauseMenu--;
+			if(m_PauseMenu < 0)
+			{
+				m_PauseMenu += (uint)PAUSE_MENU_MAX;
+			}
+		}
+		else if(KT_S || KRP_S)
+		{// カーソルを下に
+
+			m_PauseMenu++;
+			m_PauseMenu = m_PauseMenu % (uint)PAUSE_MENU_MAX;
+		}
+
+		// カーソル位置調整
+		m_pVtxBuff[1]->Lock(0, 0, (void**)&pVtx, 0);
+		{
+			pVtx[0].tex = D3DXVECTOR2(0.0f, (m_PauseMenu / (float)PAUSE_MENU_MAX));
+			pVtx[1].tex = D3DXVECTOR2(1.0f, (m_PauseMenu / (float)PAUSE_MENU_MAX));
+			pVtx[2].tex = D3DXVECTOR2(0.0f, ((m_PauseMenu / (float)PAUSE_MENU_MAX) + (1.0f / (float)PAUSE_MENU_MAX)));
+			pVtx[3].tex = D3DXVECTOR2(1.0f, ((m_PauseMenu / (float)PAUSE_MENU_MAX) + (1.0f / (float)PAUSE_MENU_MAX)));
+		}
+		m_pVtxBuff[1]->Unlock();
+
+		// ポーズメニュー決定
+		if(KT_ENTER)
+		{
+			switch(m_PauseMenu)
+			{
+			case PAUSE_MENU_CONTINUE:	// 続ける
+				ChangePause();
+				break;
+			case PAUSE_MENU_RETRY:		// 最初から
+				ChangePause();
+				CFade::Start(new CGame, FS_OUT);
+				break;
+			case PAUSE_MENU_QUIT:		// 終了
+				ChangePause();
+				CFade::Start(new CTitle, FS_OUT);
+				break;
+			}
+		}
+	}
 }
 
 //=============================================================================
@@ -138,31 +221,47 @@ void CPause::Update(void)
 //=============================================================================
 void CPause::Draw(void)
 {
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	if(m_flgPause)
+	{
+		// アルファテスト開始
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
-	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
-	// 頂点バッファの設定
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));
-	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture[0]);
-	// プリミティブ描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		// 頂点フォーマットの設定
+		D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
 
-	// 頂点バッファの設定
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[1], 0, sizeof(VERTEX_2D));
-	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture[1]);
-	// プリミティブ描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		// 頂点バッファの設定
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[2], 0, sizeof(VERTEX_2D));
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, NULL);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
 
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+		// 頂点バッファの設定
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture[0]);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture[m_PauseMenu + 2]);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+		// 頂点バッファの設定
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[1], 0, sizeof(VERTEX_2D));
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture[1]);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+		// アルファテスト終了
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	}
 }
 
 //=============================================================================

@@ -25,6 +25,7 @@
 
 #define	PLAYER_MOVEMENT			(0.000001f)		// プレイヤーのスピード
 #define	PLAYER_SPEED_MAX		(0.003f)		// プレイヤーのスピード
+#define	PLAYER_START_PER		(0.01f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ

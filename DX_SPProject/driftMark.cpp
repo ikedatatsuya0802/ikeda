@@ -151,14 +151,16 @@ void CDriftMark::Update(void)
 	VERTEX_2D	*pVtx;	// 3D頂点情報
 	float oldt	= CGame::GetPlayer1()->GetOldPerSpline();
 	float t		= CGame::GetPlayer1()->GetPerSpline();
+	float futureoldt = CGame::GetPlayer1()->GetOldPerSpline() + DRIFTMARK_FUTURE;
+	float futuret = CGame::GetPlayer1()->GetPerSpline() + DRIFTMARK_FUTURE;
 
 	// ドリフトマーク出現判断
-	if(CGame::GetRailLine()->GetDriftStatus(oldt, t).ifDrift)
+	if(CGame::GetRailLine()->GetDriftStatus(futureoldt, futuret).ifDrift)
 	{
-		if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Status == -1)
+		if(CGame::GetRailLine()->GetDriftStatus(futureoldt, futuret).Status == -1)
 		{// ドリフトの始点の場合
 
-			if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Curve)
+			if(CGame::GetRailLine()->GetDriftStatus(futureoldt, futuret).Curve)
 			{// 左カーブの警告
 				CDriftMark::VisibleDriftMark(true, true, 60);
 			}
@@ -167,7 +169,12 @@ void CDriftMark::Update(void)
 				CDriftMark::VisibleDriftMark(true, false, 60);
 			}
 		}
-		else if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Status == 1)
+	}
+
+	// ドリフトマーク消去判断
+	if(CGame::GetRailLine()->GetDriftStatus(oldt, t).ifDrift)
+	{
+		if(CGame::GetRailLine()->GetDriftStatus(oldt, t).Status == 1)
 		{// ドリフトの終点の場合
 
 			CDriftMark::InvisibleDriftMark(30);

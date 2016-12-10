@@ -18,6 +18,7 @@
 #include "scene2DDX.h"
 #include "scene3DDX.h"
 #include "sceneXDX.h"
+#include "pause.h"
 #include "meshfield.h"
 #include "cylinder.h"
 #include "skybox.h"
@@ -61,6 +62,7 @@ void CGame::Init(void)
 	// 2D
 	CDriftMark::Create();
 	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.3f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	CPause::Create();
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -91,11 +93,11 @@ void CGame::Update(void)
 	CSceneDX::UpdateAll();
 
 	// 2D
-
+	/*
 	if(CInput::GetKeyTrigger(DIK_RETURN))
 	{
 		CFade::Start(new CResult, FS_OUT);
-	}
+	}*/
 }
 
 //=============================================================================
