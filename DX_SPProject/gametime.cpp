@@ -76,15 +76,15 @@ void CGametime::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
 	// 座標設定
 	for(int i = 0 ; i < figure.Upper ; i++)
 	{// 整数部設定
-		m_Number[i] = CNumber::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3((pos.x - ((size.x * 0.5f) / m_NumFigure * 2.0f * (figure.Upper - i))), pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y));
+		m_Number[i] = CNumber::Create(0, D3DXVECTOR3((pos.x - ((size.x * 0.5f) / m_NumFigure * 2.0f * (figure.Upper - i))), pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y));
 	}
 	if(figure.Dot)
 	{// 小数点設定
-		m_Number[figure.Upper] = CNumber::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3(pos.x, pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y), -1);
+		m_Number[figure.Upper] = CNumber::Create(-1, D3DXVECTOR3(pos.x, pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y));
 	}
 	for(int i = figure.Upper + figure.Dot ; i < m_NumFigure ; i++)
 	{// 小数部設定
-		m_Number[i] = CNumber::Create(true, 2, OBJTYPE_NONE, D3DXVECTOR3((pos.x + ((size.x * 0.5f) / m_NumFigure * 2.0f * ((i - figure.Upper - figure.Dot) + 1))), pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y));
+		m_Number[i] = CNumber::Create(0, D3DXVECTOR3((pos.x + ((size.x * 0.5f) / m_NumFigure * 2.0f * ((i - figure.Upper - figure.Dot) + 1))), pos.y, pos.z), D3DXVECTOR2((size.x / m_NumFigure), size.y));
 	}
 
 	// タイマー初期化

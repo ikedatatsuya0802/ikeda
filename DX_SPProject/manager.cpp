@@ -20,6 +20,7 @@
 #include "lightDX.h"
 #include "sceneDX.h"
 #include "sound.h"
+#include "number.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -37,6 +38,9 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// レンダラ―読み込み
 	CRendererDX::Init(hInstance, hWnd, TRUE);
+
+	// リソースのロード
+	CNumber::Load();
 
 	// 各種インスタンス生成
 	m_Mode			= new CGame();
@@ -60,6 +64,10 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
+	// リソースの開放
+	CNumber::Unload();
+
+
 	CInput::Uninit();
 	CRendererDX::Uninit();
 	CDebugProc::Uninit();

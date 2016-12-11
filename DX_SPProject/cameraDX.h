@@ -98,6 +98,7 @@ public:
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
 	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
+	int		GetCameraVibrateCnt(void) { return m_CS.Vib.Cnt; }
 	void	SetCameraVibrate(int time, float width) { m_CS.Vib.MaxCnt = time; m_CS.Vib.Cnt = time; m_CS.Vib.Width = width; }
 	void	DisableCameraVibrate(void) { m_CS.Vib.vPos = VEC3_ZERO; m_CS.Vib.Cnt = 0; m_CS.Vib.Width = 0.0f; }
 

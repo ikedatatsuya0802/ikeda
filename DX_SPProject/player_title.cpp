@@ -12,6 +12,8 @@
 #include "player_title.h"
 #include "cameraDX.h"
 #include "meshfield.h"
+#include "sceneXDX.h"
+#include "model.h"
 
 //=============================================================================
 //	ä÷êîñº	:Init

@@ -8,7 +8,7 @@
 //	作成日		2016/06/21
 //
 //=============================================================================
-#include "sceneDX.h"
+#include "scene2DDX.h"
 #include "manager.h"
 #include "rendererDX.h"
 
@@ -24,20 +24,18 @@
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CNumber : public CSceneDX
+class CNumber : public CScene2DDX
 {
 public:
-	CNumber(bool ifListAdd = false, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CNumber(int value = 0);
 	~CNumber();
 	
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO){}
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
+	void	Init(int value, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CNumber	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, int value = 0);
+	static CNumber	*Create(int value = 0, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
@@ -48,10 +46,6 @@ public:
 
 protected:
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ
-
-	float	m_fLength;	// 対角線の長さ
-	float	m_fAngle;	// 角度
 };
 
 #endif

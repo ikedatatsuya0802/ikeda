@@ -10,7 +10,6 @@
 //=============================================================================
 #include "sceneDX.h"
 #include "scene3DDX.h"
-#include "model.h"
 
 //=============================================================================
 //	マクロ定義
@@ -31,6 +30,11 @@
 //=============================================================================
 //	構造体
 //=============================================================================
+typedef struct {
+	LPD3DXMESH		pMesh;		// メッシュ情報
+	LPD3DXBUFFER	pBuffMat;	// マテリアル情報
+	DWORD			NumMat;		// マテリアル数
+} MODELSTATUS;					// 3Dモデル情報
 
 //=============================================================================
 //	クラス定義
@@ -38,42 +42,27 @@
 class CSceneXDX : public CScene3DDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
+	void	Init(char* fileName, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneXDX	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO);
+	static CSceneXDX	*Create(char* fileName, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
-	static void	Load(int texNum) {	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME000, &m_pTexture[0]);
-									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME001, &m_pTexture[1]);
-									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME002, &m_pTexture[2]);
-									D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MODEL_TEXFILENAME003, &m_pTexture[3]);
-									D3DXLoadMeshFromX("./data/MODEL/box.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL, &m_pBuffMat, NULL, &m_NumMat, &m_pMesh);}
+	static void	Load(void);
 	// リソースのアンロード
-	static void	Unload(int texNum) { for(int i = 0 ; i < MODEL_TEXTURENUM ; i++){if(m_pTexture != NULL){m_pTexture[texNum]->Release(); m_pTexture[texNum] = NULL;}}
-									if(m_pMesh != NULL){ m_pMesh->Release(); m_pMesh = NULL; }if(m_pBuffMat != NULL){ m_pBuffMat->Release(); m_pBuffMat = NULL;} }
+	static void	Unload(void);
 
-
-	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
+	void LoadModel(char *filename);
 
 protected:
 	CSceneXDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneXDX();
 
+	MODELSTATUS	m_ModelStatus;	// 3Dモデル情報
+
 	static LPDIRECT3DTEXTURE9	m_pTexture[MODEL_TEXTURENUM];	// テクスチャへのポインタ
-
-	D3DXMATRIX			m_mtxWorld;		// ワールドマトリックス
-	static LPD3DXMESH	m_pMesh;		// メッシュ情報
-	static LPD3DXBUFFER	m_pBuffMat;		// マテリアル情報
-	static DWORD		m_NumMat;		// マテリアル数
-
-	int					m_nCntMove;		// 移動カウンタ
-	D3DXVECTOR3			m_Move;			// プレイヤーの相対移動量
-	D3DXVECTOR3			m_RotMove;		// プレイヤーの相対回転量
-	bool				m_bJump;		// ジャンプ状態
 };
 
 #endif

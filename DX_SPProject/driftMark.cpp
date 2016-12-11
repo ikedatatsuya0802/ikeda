@@ -161,11 +161,16 @@ void CDriftMark::Update(void)
 		{// ドリフトの始点の場合
 
 			if(CGame::GetRailLine()->GetDriftStatus(futureoldt, futuret).Curve)
-			{// 左カーブの警告
+			{// 右カーブの警告
+
+				m_DriftMark.Pos = D3DXVECTOR3((SCREEN_WIDTH * 0.2f), (SCREEN_HEIGHT * 0.3f), 0.0f);
+				SetVtxBuff();
 				CDriftMark::VisibleDriftMark(true, true, 60);
 			}
 			else
-			{// 右カーブの警告
+			{// 左カーブの警告
+				m_DriftMark.Pos = D3DXVECTOR3((SCREEN_WIDTH * 0.8f), (SCREEN_HEIGHT * 0.3f), 0.0f);
+				SetVtxBuff();
 				CDriftMark::VisibleDriftMark(true, false, 60);
 			}
 		}
@@ -188,7 +193,7 @@ void CDriftMark::Update(void)
 	pVtx[2].tex = D3DXVECTOR2(tex, 0.6f);
 	pVtx[3].tex = D3DXVECTOR2(tex + 1.0f, 0.6f);
 	m_pVtxBuff->Unlock();
-	tex += m_Curve ? DRIFTMARK_SRIDESPEED : -DRIFTMARK_SRIDESPEED;
+	tex += m_Curve ? -DRIFTMARK_SRIDESPEED : DRIFTMARK_SRIDESPEED;
 
 	if(m_VisibleType)
 	{// 点滅

@@ -10,6 +10,7 @@
 //=============================================================================
 #include "sceneDX.h"
 #include "sceneXDX.h"
+#include "model.h"
 #include "rail.h"
 #include "railLine.h"
 
@@ -25,11 +26,13 @@
 
 #define	PLAYER_MOVEMENT			(0.000001f)		// プレイヤーのスピード
 #define	PLAYER_SPEED_MAX		(0.003f)		// プレイヤーのスピード
-#define	PLAYER_START_PER		(0.01f)			// プレイヤーの回転ステップ
+#define	PLAYER_START_PER		(0.02f)			// プレイヤーの回転ステップ
+#define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
+#define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.2f)		// プレイヤーの回転ステップ
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
-#define	PLAYER_JUMP				(15.0f)			// プレイヤーの回転ステップ
+#define	PLAYER_JUMP				(3.0f)			// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY			(0.5f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROTMOTION		(0.2f)			// プレイヤーの回転ステップ
 #define	PLAYER_MOTION_SPEED		(1.0f / 15)		// プレイヤーのモーションスピード
@@ -89,6 +92,7 @@ protected:
 	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
 
 	void UpdateMove(void);
+	void UpdateDrift(void);
 	
 	int				m_RailLine;		// どの線路を走っているか
 	bool			m_Pause;		// ポーズ
@@ -116,6 +120,9 @@ protected:
 	float		m_PerOld;		// スプライン上位置(旧)
 	float		m_PerMove;		// スプライン上位置の遷移量
 	float		m_SplineTime;	// スプライン上位置の遷移量
+	float		m_RealSpeed;	// 絶対移動量
+	int			m_DriftCurve;	// どちらにドリフト中か
+	int			m_CntDrift;		// ドリフトカウンタ
 };
 
 #endif

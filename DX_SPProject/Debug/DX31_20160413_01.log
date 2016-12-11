@@ -1,2 +1,4 @@
-﻿  game.cpp
+﻿  farGoal.cpp
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\fargoal.cpp(51): warning C4244: '=' : 'unsigned int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\fargoal.cpp(107): warning C4244: '=' : 'float' から 'int' への変換です。データが失われる可能性があります。
   DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

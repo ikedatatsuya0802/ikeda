@@ -21,9 +21,6 @@
 //	静的メンバ変数
 //=============================================================================
 LPDIRECT3DTEXTURE9	CSceneXDX::m_pTexture[MODEL_TEXTURENUM];
-LPD3DXMESH			CSceneXDX::m_pMesh;
-LPD3DXBUFFER		CSceneXDX::m_pBuffMat;
-DWORD				CSceneXDX::m_NumMat;
 
 //=============================================================================
 //	関数名	:CSceneX()
@@ -34,9 +31,6 @@ DWORD				CSceneXDX::m_NumMat;
 CSceneXDX::CSceneXDX(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 	D3DXMatrixIdentity(&m_mtxWorld);
-	m_pMesh		= NULL;
-	m_pBuffMat	= NULL;
-	m_NumMat	= 0;
 }
 
 //=============================================================================
@@ -56,17 +50,35 @@ CSceneXDX::~CSceneXDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CSceneXDX::Init(D3DXVECTOR3 pos)
+void CSceneXDX::Init(char* fileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VEC3_ZERO);
-	m_Move		= VEC3_ZERO;
-	m_RotMove	= VEC3_ZERO;
 
-	m_nCntMove = 0;
+	LoadModel(fileName);
+}
+
+//=============================================================================
+//	関数名	:Load
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:。
+//=============================================================================
+void CSceneXDX::Load(void)
+{
+
+}
+
+//=============================================================================
+//	関数名	:Load
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:。
+//=============================================================================
+void CSceneXDX::Unload(void)
+{
+
 }
 
 //=============================================================================
@@ -77,8 +89,7 @@ void CSceneXDX::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CSceneXDX::Uninit(void)
 {
-	SafetyRelease(m_pMesh);
-	SafetyRelease(m_pBuffMat);
+
 }
 
 //=============================================================================
@@ -116,10 +127,10 @@ void CSceneXDX::Draw(void)
 	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
 
 	// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_pBuffMat->GetBufferPointer();	
+	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
 	
 	// プレイヤー描画
-	for(int nCntMat = 0 ; nCntMat < (int)m_NumMat ; nCntMat++)
+	for(int nCntMat = 0 ; nCntMat < (int)m_ModelStatus.NumMat ; nCntMat++)
 	{
 		D3D_DEVICE->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
 
@@ -152,7 +163,7 @@ void CSceneXDX::Draw(void)
 			D3D_DEVICE->SetTexture(0, NULL);
 		}
 
-		m_pMesh->DrawSubset(nCntMat);
+		m_ModelStatus.pMesh->DrawSubset(nCntMat);
 	}
 
 	// マテリアルを元に戻す
@@ -177,13 +188,42 @@ void CSceneXDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CSceneXDX *CSceneXDX::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos)
+CSceneXDX *CSceneXDX::Create(char* fileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CSceneXDX *instance;
 
-	instance = new CSceneXDX(ifListAdd, priority, objtype);
+	instance = new CSceneXDX(true);
 
-	instance->Init(pos);
+	instance->Init(fileName, pos, rot);
 
 	return instance;
+}
+
+//=============================================================================
+//	関数名	:LoadModel
+//	引数	:char *filename -> ファイル名
+//			:LPDIRECT3DDEVICE9 D3D_DEVICE -> 3Dデバイス
+//			:MODELSTATUS ms -> 3Dモデルの各種情報
+//	戻り値	:無し
+//	説明	:モデルを読み込む。エラー回避付き。
+//=============================================================================
+void CSceneXDX::LoadModel(char *filename)
+{
+	FILE *fp;	// ファイルポインタ
+	char str[1024] = ".\\data\\MODEL\\";
+	strcat(str, filename);
+
+	// もし3Dモデルファイルのファイル名が間違っていた場合、ダミーのモデルを読み込む。
+	if(fopen_s(&fp, str, "r") == NULL)
+	{// ファイル名が正常
+		fclose(fp);
+		D3DXLoadMeshFromX(str, D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
+			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
+	}
+	else
+	{// 指定したファイルが存在していない
+		D3DXLoadMeshFromX(".\\data\\MODEL\\dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
+			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
+	}
+
 }

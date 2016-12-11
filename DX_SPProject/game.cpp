@@ -29,6 +29,8 @@
 #include "orbit.h"
 #include "driftMark.h"
 #include "speedmeter.h"
+#include "farGoal.h"
+#include "goal.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -38,6 +40,8 @@ CRailLine	*CGame::m_RailLine;
 CPlayer		*CGame::m_Player1;
 CPlayer		*CGame::m_Player2;
 CDriftMark	*CGame::m_DriftMark;
+
+int			CGame::m_GoalCount = GOAL_COUNT;
 
 //=============================================================================
 //	関数名	:Init
@@ -58,11 +62,14 @@ void CGame::Init(void)
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
-
+	CGoal::Create();
+	
 	// 2D
 	CDriftMark::Create();
 	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.3f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 	CPause::Create();
+	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.1f, 0.0f),
+		D3DXVECTOR2((SCREEN_WIDTH * 0.2f), ((SCREEN_WIDTH * 0.2f) * (6.0f / 25.0f))));
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -92,12 +99,14 @@ void CGame::Update(void)
 	// シーン更新
 	CSceneDX::UpdateAll();
 
-	// 2D
-	/*
-	if(CInput::GetKeyTrigger(DIK_RETURN))
+	if(m_Player1->GetPerSpline() >= RAILLINE_GOAL)
 	{
-		CFade::Start(new CResult, FS_OUT);
-	}*/
+		// ゴールしていたらカウンタを減らす
+		if(m_GoalCount > 0) m_GoalCount--;
+
+		// リザルトにフェード
+		if(m_GoalCount == 0) CFade::Start(new CResult, FS_OUT);
+	}
 }
 
 //=============================================================================

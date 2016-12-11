@@ -67,8 +67,8 @@ void CResult::Update(void)
 //=============================================================================
 void CResult::Draw(void)
 {
-	m_Alpha += 0.1f;
-	m_PushEnter->SetColor(sinf(m_Alpha), 1.0f, 1.0f, 1.0f);
+	//m_Alpha += 0.1f;
+	//m_PushEnter->SetColor(sinf(m_Alpha), 1.0f, 1.0f, 1.0f);
 
 	// ƒV[ƒ“•`‰æ
 	CSceneDX::DrawAll();

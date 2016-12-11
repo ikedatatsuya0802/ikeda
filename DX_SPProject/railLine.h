@@ -20,6 +20,8 @@ using namespace std;
 #define	RAILLINE_TEXFILENAME002	"drift001.png"			// テクスチャのファイル名
 #define	RAILLINE_TEXFILENAME003	"drift002.png"			// テクスチャのファイル名
 
+#define	RAILLINE_GOAL			(0.98f)					// 横幅
+#define	RAILLINE_LENGTH			(10000.0f)				// 横幅
 #define	RAILLINE_WIDTH			(15.0f)					// 横幅
 #define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
 #define	RAILLINE_SET			(80)					// レールの分割数

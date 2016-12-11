@@ -14,6 +14,7 @@
 #include "meshfield.h"
 #include "railLine.h"
 #include "cameraDX.h"
+#include "driftMark.h"
 
 //=============================================================================
 //	関数名	:CPlayer()
@@ -77,6 +78,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	m_SplineTime = 0.0f;
+	m_DriftCurve = 0;
+	m_CntDrift = 0;
 }
 
 //=============================================================================
@@ -98,23 +101,68 @@ void CPlayer::Uninit(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
-	// ポーズ
-	if(KT_P)
-	{
-		m_Pause = (m_Pause ? false : true);
-	}
-
 	// 移動処理
 	if(m_Pause == false)
 	{
 		// スプライン位置を保存
 		m_PerOld = m_Per;
 
-		// プレイヤー移動
-		UpdateMove();
-	
-		// 相対回転設定
-		UpdateMotion();
+		if(m_Per <= RAILLINE_GOAL)
+		{// ゴールに到着するまで
+
+			// プレイヤー移動
+			UpdateMove();
+
+			// 相対回転設定
+			UpdateMotion();
+
+
+			// ドリフトマーク開始判断
+			if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
+			{
+				if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == -1)
+				{// ドリフトの開始
+
+					if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
+					{// 左カーブ
+
+						if(m_DriftCurve >= 0)
+						{// ドリフトしていなかった場合
+
+							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+							m_PerMove -= PLAYER_NOT_DRIFT;
+							if(m_PerMove < 0.0f) m_PerMove = 0;
+						}
+					}
+					else
+					{// 右カーブ
+
+						if(m_DriftCurve <= 0)
+						{// ドリフトしていなかった場合
+
+							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+							m_PerMove -= PLAYER_NOT_DRIFT;
+							if(m_PerMove < 0.0f) m_PerMove = 0;
+						}
+					}
+				}
+			}
+		}
+		else
+		{// ゴール到達後
+
+			D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL);
+			D3DXVECTOR3 vecDis = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL + 0.01f);
+
+			// 回転量計算
+			m_Spline->Rot.y = atan2f((pos.x - vecDis.x), (pos.z - vecDis.z));
+
+			// 位置反映
+			m_Pos.x -= m_RealSpeed * sinf(m_Spline->Rot.y);
+			m_Pos.z -= m_RealSpeed * cosf(m_Spline->Rot.y);
+		}
+
+		UpdateDrift();
 	}
 }
 
@@ -127,51 +175,45 @@ void CPlayer::Update(void)
 void CPlayer::UpdateMove(void)
 {
 	CCameraDX	*camera		= DX_CAMERA;	// カメラ
-	CMeshfield	*mesh		= CGame::GetMeshfield();	// メッシュフィールド
-
 	int		posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
 	
+
 	// スプラインのロード
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
-	// 奥へ移動
-	if(!DX_CAMERA->GetCameraMode() && CInput::GetKeyPress(DIK_W))
-	{
-		// 移動量を設定
+	
+	if(!DX_CAMERA->GetCameraMode() && KH_W)
+	{// 加速
+
 		m_PerMove += PLAYER_MOVEMENT;
 	}
+	else if(!DX_CAMERA->GetCameraMode() && KH_S)
+	{// 減速
 
-#ifdef _DEBUG
-	if(!DX_CAMERA->GetCameraMode() && CInput::GetKeyPress(DIK_S))
-	{
-		// 移動量を設定
 		m_PerMove -= PLAYER_MOVEMENT;
+		if(m_PerMove < 0.0f)
+		{
+			m_PerMove = 0.0f;
+		}
 	}
-#endif
-	//float speed = m_PerMove / m_Spline->LengthMin[posNum];
 
+	// 速度制限
 	if(m_PerMove > PLAYER_SPEED_MAX)
 	{
 		m_PerMove = PLAYER_SPEED_MAX;
 	}
 
 	// 移動量反映
-	if(m_Per >= 0.0f)
-	{
-		m_Per += m_PerMove;
-		if(m_Per > 1.0f)
-		{
-			m_Per -= 1.0f;
-		}
-	}
-	else if(m_Per < 0.0f)
-	{
-		m_Per = 0.0f;
-	}
+	m_Per += m_PerMove;
+
+	// 絶対移動量の計測
+	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));
+	CDebugProc::DebugProc("RealSpeed:%f\n", m_RealSpeed);
 
 	// 位置反映
 	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
 	m_Pos.z = CGame::GetRailLine()->GetSplinePos(m_Per).z;
+
 	
 	// 回転反映
 	float tDis = m_Per + 0.01f;
@@ -181,24 +223,98 @@ void CPlayer::UpdateMove(void)
 
 	// 回転量計算
 	m_Spline->Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
+	CDebugProc::DebugProc("SPLINE_ROT:%f\n", m_Spline->Rot.y);
+}
 
-	// 減速
-	//m_PerMove += (-m_PerMove * PLAYER_SPEED_DOWN);
-
-
-	
-	// ジャンプ
-	if(KT_SPACE && !m_bJump)
+//=============================================================================
+//	関数名	:UpdateDrift
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ドリフトの実行管理。
+//=============================================================================
+void CPlayer::UpdateDrift(void)
+{
+	// ドリフト
+	if(!m_CntDrift && KT_LEFT && !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == 2)))
 	{
 		m_Move.y += PLAYER_JUMP;
 
 		m_bJump = true;
+
+		if(!m_DriftCurve) m_DriftCurve--;
+		m_DriftCurve--;
+		m_CntDrift = PLAYER_ROT_STEP;
+	}
+	else if(!m_CntDrift && KT_RIGHT && !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == -2)))
+	{
+		m_Move.y += PLAYER_JUMP;
+
+		m_bJump = true;
+
+		if(!m_DriftCurve) m_DriftCurve++;
+		m_DriftCurve++;
+		m_CntDrift = PLAYER_ROT_STEP;
+	}
+
+	// ドリフトマーク終了判断
+	if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
+	{
+		if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == 1)
+		{// ドリフトの終点の場合
+
+			if(m_DriftCurve == 2)
+			{
+				m_DriftCurve--;
+				m_CntDrift = PLAYER_ROT_STEP;
+				m_Move.y += PLAYER_JUMP;
+
+				m_bJump = true;
+			}
+			else if(m_DriftCurve == -2)
+			{
+				m_DriftCurve++;
+				m_CntDrift = PLAYER_ROT_STEP;
+				m_Move.y += PLAYER_JUMP;
+
+				m_bJump = true;
+			}
+		}
+	}
+
+	if(m_CntDrift > 0)
+	{
+		switch(m_DriftCurve)
+		{
+		case -2:
+			m_Rot.y -= PLAYER_ROT_SPEED;
+			break;
+		case -1:
+			m_Rot.y += PLAYER_ROT_SPEED;
+			break;
+		case 0:
+			break;
+		case 1:
+			m_Rot.y -= PLAYER_ROT_SPEED;
+			break;
+		case 2:
+			m_Rot.y += PLAYER_ROT_SPEED;
+			break;
+		default:
+			break;
+		}
+
+		m_CntDrift--;
+		if(((m_DriftCurve == -1) || (m_DriftCurve == 1)) && !m_CntDrift)
+		{
+			m_DriftCurve = 0;
+		}
 	}
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
-	// プレイヤーの高さを設定
+	CMeshfield	*mesh = CGame::GetMeshfield();	// メッシュフィールド
+												// プレイヤーの高さを設定
 	if(m_Pos.y < (mesh->GetHeight(m_Pos) + 0.0f))
 	{
 		m_Pos.y = mesh->GetHeight(m_Pos) + 0.0f;
@@ -221,9 +337,6 @@ void CPlayer::UpdateMove(void)
 		// 回転量を逆方向に
 		m_RotMove.y += (D3DX_PI * 2.0f);
 	}
-
-	// tを進める
-	m_SplineTime += (1.0f / 60);
 }
 
 //=============================================================================

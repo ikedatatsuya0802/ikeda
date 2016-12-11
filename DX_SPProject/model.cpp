@@ -218,5 +218,4 @@ void CModel::LoadModel(char *filename)
 		D3DXLoadMeshFromX("./data/MODEL/dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
 			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
 	}
-
 }

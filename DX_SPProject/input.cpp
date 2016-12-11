@@ -368,11 +368,11 @@ D3DXVECTOR3* CInput::CalcScreenToWorld(D3DXVECTOR3* pout, int Sx, int Sy, float 
 D3DXVECTOR3* CInput::CalcScreenToXZ(D3DXVECTOR3* pout, int Sx, int Sy, int Screen_w, int Screen_h, D3DXMATRIX* View, D3DXMATRIX* Prj)
 {
 	D3DXVECTOR3 nearpos;
-	D3DXVECTOR3 farpos;
+	D3DXVECTOR3 farGoalpos;
 	D3DXVECTOR3 ray;
 	CalcScreenToWorld(&nearpos, Sx, Sy, 0.0f, Screen_w, Screen_h, View, Prj);
-	CalcScreenToWorld(&farpos, Sx, Sy, 1.0f, Screen_w, Screen_h, View, Prj);
-	ray = farpos - nearpos;
+	CalcScreenToWorld(&farGoalpos, Sx, Sy, 1.0f, Screen_w, Screen_h, View, Prj);
+	ray = farGoalpos - nearpos;
 	D3DXVec3Normalize(&ray, &ray);
 
 	// °‚Æ‚ÌŒğ·‚ª‹N‚«‚Ä‚¢‚éê‡‚ÍŒğ“_‚ğ
@@ -386,7 +386,7 @@ D3DXVECTOR3* CInput::CalcScreenToXZ(D3DXVECTOR3* pout, int Sx, int Sy, int Scree
 	}
 	else
 	{
-		*pout = farpos;
+		*pout = farGoalpos;
 	}
 
 	return pout;

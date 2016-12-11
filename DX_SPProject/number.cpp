@@ -26,7 +26,7 @@ LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CNumber::CNumber(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
+CNumber::CNumber(int value) : CScene2DDX(true)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
@@ -49,13 +49,10 @@ CNumber::~CNumber()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
+void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	VERTEX_2D			*pVtx;										// 2D頂点情報
 
-
-	// リストから自身を削除
-	UnlinkList();
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -107,7 +104,7 @@ void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 		value = 9;
 	}
 	
-	if(value != -1)
+	if(value >= 0)
 	{// 値が数の場合
 
 		// テクスチャ貼付座標設定
@@ -127,8 +124,6 @@ void CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
 	}
 
 	m_pVtxBuff->Unlock();
-
-	Load();
 }
 
 //=============================================================================
@@ -141,8 +136,6 @@ void CNumber::Uninit(void)
 {
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
-
-	Unload();
 }
 
 //=============================================================================
@@ -190,15 +183,15 @@ void CNumber::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CNumber *CNumber::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR2 size, int value)
+CNumber *CNumber::Create(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	CNumber *number;	// インスタンス
 	
 	// インスタンス生成
-	number = new CNumber(ifListAdd, priority, objtype);
+	number = new CNumber();
 	
 	// 初期化処理
-	number->Init(pos, size, value);
+	number->Init(value, pos, size);
 	
 	// インスタンスをリターン
 	return number;
