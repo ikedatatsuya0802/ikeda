@@ -154,3 +154,33 @@ void CManager::SetMode(CMode *mode)
 		m_Mode->Init();
 	}
 }
+
+//=============================================================================
+//	関数名	:GetClientWindowSize
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ウィンドウのクライアントサイズを取得する。
+//=============================================================================
+D3DXVECTOR2 CManager::GetClientWindowSize(void)
+{
+	D3DXVECTOR2 size;
+	RECT rect;
+	GetClientRect(GethWnd(), &rect);
+	size.x = (float)(rect.right - rect.left);
+	size.y = (float)(rect.bottom - rect.top);
+	return size;
+}
+
+//=============================================================================
+//	関数名	:GetCWAspect
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:想定している初期ウィンドウサイズに対しての比率を返す。
+//=============================================================================
+D3DXVECTOR2 CManager::GetCWAspect(void)
+{
+	D3DXVECTOR2 size;
+	size.x = GetClientWindowSize().x / DEFAULT_SCREEN_WIDTH;
+	size.y = GetClientWindowSize().y / DEFAULT_SCREEN_HEIGHT;
+	return size;
+}

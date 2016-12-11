@@ -13,6 +13,12 @@
 #include "sound.h"
 
 //=============================================================================
+//	マクロ定義
+//=============================================================================
+#define	WINDOW_ASPECT_X	CManager::GetCWAspect().x
+#define	WINDOW_ASPECT_Y	CManager::GetCWAspect().y
+
+//=============================================================================
 //	前方宣言
 //=============================================================================
 class CMode;
@@ -40,6 +46,10 @@ public:
 		const type_info& nowMode = typeid(*m_Mode);
 		return (nowMode == typeid(mode)) ? true : false;
 	}
+
+	static D3DXVECTOR2 GetClientWindowSize(void);
+
+	static D3DXVECTOR2 GetCWAspect(void);
 
 private:
 	static CMode		*m_Mode;		// モードのインスタンス

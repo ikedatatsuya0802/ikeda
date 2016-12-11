@@ -15,10 +15,10 @@
 //=============================================================================
 #define	MESHFIELD_TEXFILENAME000	"field000.jpg"	// 地面ポリゴンのファイル名
 
-#define	MESHFIELD_VERTICAL		(30)				// メッシュフィールドの縦ブロック数
-#define	MESHFIELD_HORIZONTAL	(30)				// メッシュフィールドの横ブロック数
-#define	MESHFIELD_WIDTH			(2000.0f)			// 地面の横幅
-#define	MESHFIELD_HEIGHT		(2000.0f)			// 地面の縦幅
+#define	MESHFIELD_VERTICAL		(20)				// メッシュフィールドの縦ブロック数
+#define	MESHFIELD_HORIZONTAL	(20)				// メッシュフィールドの横ブロック数
+#define	MESHFIELD_WIDTH			(10000.0f)			// 地面の横幅
+#define	MESHFIELD_HEIGHT		(10000.0f)			// 地面の縦幅
 
 #define	MESHFIELD_TOTALWIDTH	(MESHFIELD_HORIZONTAL * MESHFIELD_WIDTH)	// メッシュフィールドの合計の横幅
 #define	MESHFIELD_TOTALHEIGHT	(MESHFIELD_VERTICAL * MESHFIELD_HEIGHT)		// メッシュフィールドの合計の縦幅

@@ -126,8 +126,8 @@ void CPlayer::Update(void)
 					if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
 					{// 左カーブ
 
-						if(m_DriftCurve >= 0)
-						{// ドリフトしていなかった場合
+						if((m_DriftCurve >= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+						{// ドリフトしていなかった場合、80km/hを超えていたら減速
 
 							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
 							m_PerMove -= PLAYER_NOT_DRIFT;
@@ -137,8 +137,8 @@ void CPlayer::Update(void)
 					else
 					{// 右カーブ
 
-						if(m_DriftCurve <= 0)
-						{// ドリフトしていなかった場合
+						if((m_DriftCurve <= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+						{// ドリフトしていなかった場合、80km/hを超えていたら減速
 
 							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
 							m_PerMove -= PLAYER_NOT_DRIFT;
@@ -208,7 +208,6 @@ void CPlayer::UpdateMove(void)
 
 	// 絶対移動量の計測
 	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));
-	CDebugProc::DebugProc("RealSpeed:%f\n", m_RealSpeed);
 
 	// 位置反映
 	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
@@ -223,7 +222,6 @@ void CPlayer::UpdateMove(void)
 
 	// 回転量計算
 	m_Spline->Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
-	CDebugProc::DebugProc("SPLINE_ROT:%f\n", m_Spline->Rot.y);
 }
 
 //=============================================================================
@@ -390,6 +388,11 @@ void CPlayer::Draw(void)
 	// ワールドマトリックスの設定
 	D3DXVECTOR3 rot = D3DXVECTOR3(m_Rot.x, m_Rot.y + m_Spline->Rot.y, m_Rot.z);
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, rot);
+
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -401,17 +404,22 @@ void CPlayer::Draw(void)
 	{
 		m_Model[i]->Draw();
 	}
-
+	
 	// アルファテスト終了
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	/*
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);*/
 	
 	// デバッグ情報表示
-#ifdef _DEBUG
+#ifdef _DEBUG/*
 	CDebugProc::DebugProc("スプライン座標:(%.4f)\n", m_Per);
 	CDebugProc::DebugProc("モデル座標:(%5.2f:%5.2f:%5.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
-	CDebugProc::DebugProc("モデル回転:(%5.2f:%5.2f:%5.2f)\n", m_Rot.x, m_Rot.y, m_Rot.z);
+	CDebugProc::DebugProc("モデル回転:(%5.2f:%5.2f:%5.2f)\n", m_Rot.x, m_Rot.y, m_Rot.z);*/
 	//CDebugProc::DebugProc("Key:%d, Frame:%d\n", m_Key, m_Frame);
 #endif
 }

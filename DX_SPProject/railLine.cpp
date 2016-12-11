@@ -112,7 +112,7 @@ void CRailLine::SetSplineVtx(int line)
 			// 色設定
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 
-			// テクスチャ貼付座標設定
+			// テクスチャ座標設定
 			pVtx[i].tex = VEC2_ZERO;
 		}
 	}
@@ -145,7 +145,7 @@ void CRailLine::SetSplineVtxVec(int line)
 			pVtx[i * 2 + 0].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 1.0f);
 			pVtx[i * 2 + 1].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 1.0f);
 
-			// テクスチャ貼付座標設定
+			// テクスチャ座標設定
 			pVtx[i * 2 + 0].tex = VEC2_ZERO;
 			pVtx[i * 2 + 1].tex = VEC2_ZERO;
 		}
@@ -181,7 +181,7 @@ void CRailLine::SetSplineVtxSPoints(int line)
 		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 1.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -218,7 +218,7 @@ void CRailLine::SetSplineVtxLPoints(int line)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -255,7 +255,7 @@ void CRailLine::SetSplineVtxPointer(int line)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -292,7 +292,7 @@ void CRailLine::SetSplineVtxDrift(int line)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(0.25f, 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -823,14 +823,14 @@ void CRailLine::Draw(void)
 		CDebugProc::DebugProc("エディットタイプ:%d\n", m_EditType);
 		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 		{
-			CDebugProc::DebugProc("スプライン座標[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
-			CDebugProc::DebugProc("スプラインベクトル[%d]:(%5.2f:%5.2f:%5.2f)\n", i, m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
+			CDebugProc::DebugProc("spl_pos[%d]:(%.1f:%.1f:%.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
+			CDebugProc::DebugProc("vec:(%.1f:%.1f:%.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
 		}
 	}
 	CDebugProc::DebugProc("スプライン長:%.1f\n", m_Spline.Length);
-	for(int i = 0 ; i < (int)m_Spline.LengthMin.size() ; i++)
+	for(int i = 0 ; i < (int)m_Spline.LengthMin.size() - 1 ; i++)
 	{
-		CDebugProc::DebugProc("スプライン区間長[%d]:%.1f\n", i, m_Spline.LengthMin[i]);
+		CDebugProc::DebugProc("スプライン区間長[%d -> %d]:%.1f\n", i, (i + 1), m_Spline.LengthMin[i]);
 	}
 
 	if(m_DebugProcCnt > 0)

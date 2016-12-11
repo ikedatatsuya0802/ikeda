@@ -107,7 +107,7 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	if(value >= 0)
 	{// 値が数の場合
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 0.5f);
@@ -116,7 +116,7 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	else
 	{// 小数点の場合
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.5f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.5f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -222,7 +222,7 @@ void CNumber::SetNumber(int value)
 	if(value != -1)
 	{// 値が数の場合
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 0.5f);
@@ -231,7 +231,7 @@ void CNumber::SetNumber(int value)
 	else
 	{// 小数点の場合
 
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.5f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.5f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);

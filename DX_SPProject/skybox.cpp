@@ -125,7 +125,7 @@ void CSkybox::SetVtxBuff(bool ifLight)
 	}
 	if(1)
 	{
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		// 天面
 		pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
 		pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
@@ -159,7 +159,7 @@ void CSkybox::SetVtxBuff(bool ifLight)
 	}
 	else
 	{
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		// 天面
 		pVtx[0].tex = D3DXVECTOR2((1 * 0.25f), 0.0f);
 		pVtx[1].tex = D3DXVECTOR2((2 * 0.25f), 0.0f);
@@ -253,11 +253,11 @@ void CSkybox::Draw(void)
 	{
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_NUM), PRIMITIVE_NUM);	// 描画
 	}
-
+	/*
 	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);*/
 
 	// アルファテスト終了
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

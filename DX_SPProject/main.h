@@ -28,14 +28,16 @@ using namespace std;
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define SIMPLE_FOR(max)		for(int i=0;i<max;i++)	// 単純複数回処理
-#define	uchar				unsigned char
-#define	uint				unsigned int
-#define	GAME_FPS			(60)
-#define	SCREEN_WIDTH		(1280.0f)	// ウィンドウの横幅
-#define	SCREEN_HEIGHT		(760.0f)	// ウィンドウの縦幅
-#define	SCREEN_WIDTH_HALF	(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅の半分
-#define	SCREEN_HEIGHT_HALF	(SCREEN_HEIGHT * 0.5f)	// ウィンドウの縦幅の半分
+#define SIMPLE_FOR(max)			for(int i=0;i<max;i++)	// 単純複数回処理
+#define	uchar					unsigned char
+#define	uint					unsigned int
+#define	GAME_FPS				(60)
+#define	DEFAULT_SCREEN_WIDTH	(1280.0f)	// ウィンドウの横幅
+#define	DEFAULT_SCREEN_HEIGHT	(760.0f)	// ウィンドウの縦幅
+#define	SCREEN_WIDTH			(1280.0f)	// ウィンドウの横幅
+#define	SCREEN_HEIGHT			(760.0f)	// ウィンドウの縦幅
+#define	SCREEN_WIDTH_HALF		(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅の半分
+#define	SCREEN_HEIGHT_HALF		(SCREEN_HEIGHT * 0.5f)	// ウィンドウの縦幅の半分
 
 //=============================================================================
 //	プロトタイプ

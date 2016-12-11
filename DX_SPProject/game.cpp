@@ -31,6 +31,7 @@
 #include "speedmeter.h"
 #include "farGoal.h"
 #include "goal.h"
+#include "map.h"
 
 //=============================================================================
 //	ê√ìIÉÅÉìÉoïœêî
@@ -66,10 +67,11 @@ void CGame::Init(void)
 	
 	// 2D
 	CDriftMark::Create();
-	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.3f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	//CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 	CPause::Create();
-	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.1f, 0.0f),
-		D3DXVECTOR2((SCREEN_WIDTH * 0.2f), ((SCREEN_WIDTH * 0.2f) * (6.0f / 25.0f))));
+	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
+		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
+	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.8f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);

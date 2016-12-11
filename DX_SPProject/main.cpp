@@ -60,8 +60,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassEx(&wcex);
 	g_hWnd = CreateWindowEx(
 		0, "NullWindow", "Everlasting Rail", WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, (rect.right - rect.left + GetSystemMetrics(SM_CXFIXEDFRAME) * 2),
-		(rect.bottom - rect.top + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
+		CW_USEDEFAULT, CW_USEDEFAULT, (rect.right - rect.left + frx * 2),
+		(rect.bottom - rect.top + fry * 2 + cpy),
 		NULL, NULL, hInstance, NULL);
 
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);

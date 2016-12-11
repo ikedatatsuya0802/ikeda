@@ -110,7 +110,7 @@ void CDriftMark::SetVtxBuff(void)
 		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 0.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 0.6f);
@@ -187,7 +187,7 @@ void CDriftMark::Update(void)
 	}
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(tex, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(tex + 1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(tex, 0.6f);
@@ -271,6 +271,11 @@ void CDriftMark::Update(void)
 //=============================================================================
 void CDriftMark::Draw(void)
 {
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
@@ -291,6 +296,11 @@ void CDriftMark::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	/*
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);*/
 }
 
 //=============================================================================

@@ -94,6 +94,7 @@
     <ClCompile Include="lightDX.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="map.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="number.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="lightDX.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="mode.h" />
     <ClInclude Include="model.h" />

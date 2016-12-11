@@ -204,13 +204,13 @@ void CMeshfield::SetVtxBuff(void)
 		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	for(int nCntVtxVertical = 0 ; nCntVtxVertical <= MESHFIELD_VERTICAL ; nCntVtxVertical++)
 	{
 		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= MESHFIELD_HORIZONTAL ; nCntVtxHorizontal++)
 		{
-			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.x = (float)nCntVtxHorizontal * 0.5f;
-			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.y = (float)nCntVtxVertical * 0.5f;
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.x = (float)nCntVtxHorizontal * 10.0f;
+			pVtx[(nCntVtxVertical * (MESHFIELD_HORIZONTAL + 1) + nCntVtxHorizontal)].tex.y = (float)nCntVtxVertical * 10.0f;
 		}
 	}
 

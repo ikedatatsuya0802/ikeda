@@ -40,8 +40,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CScene2DDX	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
+	static CScene2DDX	*Create(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
 		D3DXVECTOR2 size = D3DXVECTOR2(POLYGON2DDX_WIDTH, POLYGON2DDX_HEIGHT),
 		char *str = strcat(POLYGON2DDX_TEXFILENAME000, TEX_FILEPASS));
 	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);

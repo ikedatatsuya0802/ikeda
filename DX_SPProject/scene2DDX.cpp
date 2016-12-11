@@ -100,7 +100,7 @@ void CScene2DDX::SetVtxBuff(void)
 		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -179,13 +179,12 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
-	D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
+CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
 {
 	CScene2DDX *instance;	// インスタンス
 
 	// インスタンス生成
-	instance = new CScene2DDX(ifListAdd, priority, objtype);
+	instance = new CScene2DDX();
 
 	// 初期化処理
 	instance->Init(pos, rot, size, str);

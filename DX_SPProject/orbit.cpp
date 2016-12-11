@@ -237,7 +237,7 @@ void COrbit::SetOrbitData(void)
 		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.7f, (((float)nCntVertex / (float)ORBIT_VERTEX_NUM) * 0.5f));
 	}
 	
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	for(int nCntVtxVertical = 0 ; nCntVtxVertical <= ORBIT_VERTICAL ; nCntVtxVertical++)
 	{
 		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= ORBIT_HORIZONTAL ; nCntVtxHorizontal++)

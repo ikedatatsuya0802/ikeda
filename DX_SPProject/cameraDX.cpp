@@ -135,6 +135,15 @@ void CCameraDX::Update(void)
 				m_CSEdit.Rot = VEC3_ZERO;
 				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 			}
+			if(CInput::GetKeyTrigger(DIK_4))
+			{
+				D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL);
+
+				m_CSEdit.posV = D3DXVECTOR3(pos.x, pos.y + 3000.0f, pos.z - 10.0f);
+				m_CSEdit.posR = D3DXVECTOR3(pos.x, pos.y, pos.z);
+				m_CSEdit.Rot = VEC3_ZERO;
+				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
+			}
 		}
 
 		if(KT_L)
@@ -713,8 +722,8 @@ void CCameraDX::SetCamera(void)
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera->posV.x, camera->posV.y, camera->posV.z);
-	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera->posR.x, camera->posR.y, camera->posR.z);
+	//CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", camera->posV.x, camera->posV.y, camera->posV.z);
+	//CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", camera->posR.x, camera->posR.y, camera->posR.z);
 #endif
 }
 

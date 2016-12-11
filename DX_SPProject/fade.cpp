@@ -88,7 +88,7 @@ void CFade::Init(void)
 			pVtx[i * VERTEX_NUM + nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	
-		// テクスチャ貼付座標設定
+		// テクスチャ座標設定
 		pVtx[i * VERTEX_NUM + 0].tex = VEC2_ZERO;
 		pVtx[i * VERTEX_NUM + 1].tex = D3DXVECTOR2(1.0f, 0.0f);
 		pVtx[i * VERTEX_NUM + 2].tex = D3DXVECTOR2(0.0f, 1.0f);

@@ -146,7 +146,7 @@ void CCylinder::SetVtxBuff(void)
 		pVtx[nCntVertex].col = D3DCOLOR_COLORVALUE(0.8f, 0.8f, 0.8f, 0.8f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	for(int nCntVtxVertical = 0 ; nCntVtxVertical <= CYLINDER_VERTICAL ; nCntVtxVertical++)
 	{
 		for(int nCntVtxHorizontal = 0 ; nCntVtxHorizontal <= CYLINDER_HORIZONTAL ; nCntVtxHorizontal++)

@@ -93,7 +93,7 @@ void CScene3DDX::SetVtxBuff(void)
 		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);

@@ -85,8 +85,6 @@ void CGoal::SetVtxBuff(void)
 	posFar.z = m_Pos.z + m_Vec.z * RAIL_LENGTH;
 
 	rot = atan2f(m_Vec.x, m_Vec.z);
-	//rot -= (D3DX_PI);
-	CDebugProc::DebugProc("RAILROT:%f\n", rot);
 
 	m_pVtxBuff[0]->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -116,7 +114,7 @@ void CGoal::SetVtxBuff(void)
 		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	// テクスチャ貼付座標設定
+	// テクスチャ座標設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	pVtx[2].tex = D3DXVECTOR2(0.0f, 100.0f);
