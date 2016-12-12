@@ -33,6 +33,7 @@ void CTutorial::Init(void)
 		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), "pushbutton000.png");
 
 	m_Alpha = 0.0f;
+	m_Frame = -1;
 }
 
 //=============================================================================
@@ -60,6 +61,8 @@ void CTutorial::Update(void)
 	{
 		CFade::Start(new CGame, FS_OUT);
 	}
+
+	m_Frame++;
 }
 
 //=============================================================================
@@ -70,8 +73,18 @@ void CTutorial::Update(void)
 //=============================================================================
 void CTutorial::Draw(void)
 {
-	m_Alpha += 0.05f;
-	m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
+	// ボタン押下表示を点滅
+	if(m_Frame % PUSHBUTTON_BRIGHT > (PUSHBUTTON_BRIGHT / 2))
+	{
+		m_Alpha += (1.0f / (PUSHBUTTON_BRIGHT / 2));
+		if(m_Alpha > 1.0f) m_Alpha = 1.0f;
+	}
+	else
+	{
+		m_Alpha -= (1.0f / (PUSHBUTTON_BRIGHT / 2));
+		if(m_Alpha < 0.0f) m_Alpha = 0.0f;
+	}
+	m_PushEnter->SetColor(m_Alpha, 1.0f, 1.0f, 1.0f);
 
 	// シーン描画
 	CSceneDX::DrawAll();

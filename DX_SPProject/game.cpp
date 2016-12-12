@@ -67,14 +67,14 @@ void CGame::Init(void)
 	
 	// 2D
 	CDriftMark::Create();
-	//CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 	CPause::Create();
 	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
-	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.8f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.9f), (SCREEN_HEIGHT * 0.9f), 0.0f));
 
 	// BGMçƒê∂
-	CSound::Play(SOUNDLABEL_BGM000);
+	//CSound::Play(SOUNDLABEL_BGM000);
 }
 
 //=============================================================================

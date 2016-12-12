@@ -71,11 +71,19 @@ public:
 	static void	End(void);
 
 	static char* FileName(char* filename, char* directory = ".\\data\\TEXTURE\\");
-
-	//static LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }
 	static LPDIRECT3DVERTEXBUFFER9 SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *pVtxBuff);
 	static void SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	static void SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	static void EnableZTest(void) {
+		D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+		D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	}
+	static void DisableZTest(void) {
+		D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+		D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	}
 
 	static LPDIRECT3DDEVICE9		m_pD3DDevice;		// 3Dデバイスへのポインタ
 

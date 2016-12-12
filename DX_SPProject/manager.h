@@ -15,8 +15,9 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	WINDOW_ASPECT_X	CManager::GetCWAspect().x
-#define	WINDOW_ASPECT_Y	CManager::GetCWAspect().y
+#define	WINDOW_ASPECT_X		CManager::GetCWAspect().x
+#define	WINDOW_ASPECT_Y		CManager::GetCWAspect().y
+#define	PUSHBUTTON_BRIGHT	(60)
 
 //=============================================================================
 //	前方宣言

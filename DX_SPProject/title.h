@@ -10,6 +10,7 @@
 //=============================================================================
 #include "mode.h"
 class CScene2DDX;
+#define	TITLE_START_FRAME	(1300)
 //=============================================================================
 //	ƒNƒ‰ƒX’è‹`
 //=============================================================================
@@ -24,9 +25,12 @@ public:
 	void	Update(void);
 	void	Draw(void);
 private:
+	CScene2DDX	*m_Black;
 	CScene2DDX	*m_TitleBG;
 	CScene2DDX	*m_PushEnter;
 	float		m_Alpha;
+	float		m_AlphaBlack;
+	float		m_AlphaButton;
 };
 
 #endif

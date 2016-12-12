@@ -43,7 +43,11 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CNumber::Load();
 
 	// 各種インスタンス生成
-	m_Mode			= new CGame();
+#ifdef _DEBUG
+	m_Mode = new CGame();
+#else
+	m_Mode = new CTitle();
+#endif // DEBUG
 	m_Camera		= new CCameraDX();
 
 	// 初期化処理

@@ -33,18 +33,21 @@
 //=============================================================================
 void CTitle::Init(void)
 {
-	/*
-	m_TitleBG = CScene2DDX::Create(true, 2, OBJTYPE_NONE,
-		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "title000.jpg");
-		*/
+	m_Alpha = 0.0f;
+	m_AlphaBlack = 0.0f;
+	m_AlphaButton = 0.0f;
+
+	m_TitleBG = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "titlelogo.png");
+	m_TitleBG->SetColor(0.0f, 1.0f, 1.0f, 1.0f);
 	m_PushEnter = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
 		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), "pushbutton000.png");
+	m_PushEnter->SetColor(m_AlphaButton, 1.0f, 1.0f, 1.0f);
+	m_Black = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "black.jpg");
+	m_Black->SetColor(0.0f, 1.0f, 1.0f, 1.0f);
 
-	m_Alpha = 0.0f;
-	
-
-	m_Frame = 0;
+	m_Frame = -1;
 
 	CManager::GetCamera()->Init();
 	CLightDX::ChangeHolLight(0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -53,7 +56,7 @@ void CTitle::Init(void)
 	CMeshfield::Create();
 	CSkybox::Create(true, 2, OBJTYPE_NONE, true);
 	CRail_Title::Create();
-	CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, -(MESHFIELD_TOTALHEIGHT * 0.5f)));
+	CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, -(30000.0f)));
 	//CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, 100.0f));
 }
 
@@ -82,6 +85,8 @@ void CTitle::Update(void)
 	{
 		CFade::Start(new CTutorial, FS_OUT);
 	}
+
+	m_Frame++;
 }
 
 //=============================================================================
@@ -92,8 +97,43 @@ void CTitle::Update(void)
 //=============================================================================
 void CTitle::Draw(void)
 {
-	m_Alpha += 0.05f;
-	m_PushEnter->SetColor((cosf(m_Alpha) * 0.5f + 0.5f), 1.0f, 1.0f, 1.0f);
+	if(m_Frame > TITLE_START_FRAME)
+	{
+		m_Alpha += 0.05f;
+		if(m_Alpha > 1.0f) m_Alpha = 1.0f;
+	}
+
+	if(m_Frame % 4141 > 4000)
+	{
+		m_AlphaBlack += 0.05f;
+		if(m_AlphaBlack > 1.0f) m_AlphaBlack = 1.0f;
+		m_Alpha -= 0.05f;
+		if(m_Alpha < 0.0f) m_Alpha = 0.0f;
+	}
+	else
+	{
+		m_AlphaBlack -= 0.05f;
+		if(m_AlphaBlack < 0.0f) m_AlphaBlack = 0.0f;
+	}
+
+	if(m_Frame > TITLE_START_FRAME)
+	{
+		// ボタン押下表示を点滅
+		if(m_Frame % PUSHBUTTON_BRIGHT > (PUSHBUTTON_BRIGHT / 2))
+		{
+			m_AlphaButton += (1.0f / (PUSHBUTTON_BRIGHT / 2));
+			if(m_AlphaButton > 1.0f) m_AlphaButton = 1.0f;
+		}
+		else
+		{
+			m_AlphaButton -= (1.0f / (PUSHBUTTON_BRIGHT / 2));
+			if(m_AlphaButton < 0.0f) m_AlphaButton = 0.0f;
+		}
+	}
+
+	m_Black->SetColor(m_AlphaBlack, 1.0f, 1.0f, 1.0f);
+	m_TitleBG->SetColor(m_Alpha, 1.0f, 1.0f, 1.0f);
+	m_PushEnter->SetColor(m_AlphaButton, 1.0f, 1.0f, 1.0f);
 
 	// シーン描画
 	CSceneDX::DrawAll();

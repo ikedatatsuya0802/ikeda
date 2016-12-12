@@ -281,9 +281,10 @@ void CInput::UpdateMouse(void)
 		m_MouseState.Press[nCntButton] = aMouseState[nCntButton];
 	}
 	
-
+#ifdef _DEBUG
 	CDebugProc::DebugProc("マウス(2D):(%ld, %ld)\n", m_MState.sPos.x, m_MState.sPos.y);
 	CDebugProc::DebugProc("マウス(3D):(%.2f, %.2f, %.2f)\n", m_MState.wPos.x, m_MState.wPos.y, m_MState.wPos.z);
+#endif
 }
 
 //=============================================================================

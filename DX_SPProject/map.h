@@ -14,13 +14,16 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	MAP_WIDTH			(SCREEN_WIDTH * 0.3f * WINDOW_ASPECT_X)	// マップの横幅
+#define	MAP_WIDTH			(SCREEN_WIDTH * 0.4f * WINDOW_ASPECT_X)	// マップの横幅
 #define	MAP_HEIGHT			(MAP_WIDTH)								// マップの縦幅
-#define	MAP_POINT_WIDTH		(MAP_WIDTH * 0.05f)	// マップの横幅
-#define	MAP_POINT_HEIGHT	(MAP_WIDTH * 0.05f)	// マップの
+#define	MAP_POINT_WIDTH		(MAP_WIDTH * 0.025f)	// マップの横幅
+#define	MAP_POINT_HEIGHT	(MAP_WIDTH * 0.025f)	// マップの
 #define	MAP_POINT_ASPECT	(0.01f)		// マップの縦幅
 
 #define	MAP_TEXFILENAME000	"map000.png"	// ポリゴンのファイル名
+
+#define	MAP_START_X			(MAP_WIDTH / 4 + 70.0f)	// マップの
+#define	MAP_START_Y			(MAP_WIDTH / 4 + 70.0f)	// マップの横幅
 
 //=============================================================================
 //	構造体

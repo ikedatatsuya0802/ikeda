@@ -124,6 +124,8 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	}
 
 	m_pVtxBuff->Unlock();
+
+	Load();
 }
 
 //=============================================================================
@@ -136,6 +138,7 @@ void CNumber::Uninit(void)
 {
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
+	Unload();
 }
 
 //=============================================================================

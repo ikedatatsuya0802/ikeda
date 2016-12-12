@@ -110,6 +110,7 @@ void CFarGoal::Update(void)
 
 	float length = ((per / RAILLINE_GOAL) * m_FarLength);
 	value = (int)(m_FarLength - length);
+	if(value < 0) value = 0;
 
 	SetValue(value);
 }

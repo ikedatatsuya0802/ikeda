@@ -167,8 +167,8 @@ void CMap::SetVtxBuff(void)
 
 			pos *= MAP_POINT_ASPECT;
 
-			pVtx[i].Pos.x = (MAP_WIDTH / 4) - m_SplinePos.x + pos.x;
-			pVtx[i].Pos.y = (MAP_WIDTH / 4) - m_SplinePos.y + pos.y;
+			pVtx[i].Pos.x = MAP_START_X + pos.x;
+			pVtx[i].Pos.y = MAP_START_Y + pos.y;
 			pVtx[i].Pos.z = 0.0f;
 
 			// 法線設定
@@ -185,15 +185,26 @@ void CMap::SetVtxBuff(void)
 
 	m_pVtxBuff[3]->Lock(0, 0, (void**)&pVtx, 0);
 	{
+		float fLength = hypotf(MAP_POINT_WIDTH, MAP_POINT_HEIGHT) * 0.5f;
+		float fAngle = atan2f(MAP_POINT_WIDTH, MAP_POINT_HEIGHT);
+		float rot = CGame::GetPlayer1()->GetSplineRot().y + D3DX_PI;
 		// 座標設定
 		/*pVtx[0].Pos = D3DXVECTOR3(m_Pos.x - (MAP_POINT_WIDTH / 2), m_Pos.y - (MAP_POINT_WIDTH / 2), 0.0f);
 		pVtx[1].Pos = D3DXVECTOR3(m_Pos.x + (MAP_POINT_WIDTH / 2), m_Pos.y - (MAP_POINT_WIDTH / 2), 0.0f);
 		pVtx[2].Pos = D3DXVECTOR3(m_Pos.x - (MAP_POINT_WIDTH / 2), m_Pos.y + (MAP_POINT_WIDTH / 2), 0.0f);
 		pVtx[3].Pos = D3DXVECTOR3(m_Pos.x + (MAP_POINT_WIDTH / 2), m_Pos.y + (MAP_POINT_WIDTH / 2), 0.0f);*/
-		pVtx[0].Pos = D3DXVECTOR3((MAP_WIDTH / 4) - (MAP_POINT_WIDTH / 2), (MAP_WIDTH / 4) - (MAP_POINT_WIDTH / 2), 0.0f);
-		pVtx[1].Pos = D3DXVECTOR3((MAP_WIDTH / 4) + (MAP_POINT_WIDTH / 2), (MAP_WIDTH / 4) - (MAP_POINT_WIDTH / 2), 0.0f);
-		pVtx[2].Pos = D3DXVECTOR3((MAP_WIDTH / 4) - (MAP_POINT_WIDTH / 2), (MAP_WIDTH / 4) + (MAP_POINT_WIDTH / 2), 0.0f);
-		pVtx[3].Pos = D3DXVECTOR3((MAP_WIDTH / 4) + (MAP_POINT_WIDTH / 2), (MAP_WIDTH / 4) + (MAP_POINT_WIDTH / 2), 0.0f);
+		pVtx[0].Pos = D3DXVECTOR3((MAP_START_X + m_SplinePos.x) - (sinf(fAngle - rot) * fLength),
+			(MAP_START_Y + m_SplinePos.y) - (cosf(fAngle - rot) * fLength),
+			0.0f);
+		pVtx[1].Pos = D3DXVECTOR3((MAP_START_X + m_SplinePos.x) - (sinf(-fAngle - rot) * fLength),
+			(MAP_START_Y + m_SplinePos.y) - (cosf(-fAngle - rot) * fLength),
+			0.0f);
+		pVtx[2].Pos = D3DXVECTOR3((MAP_START_X + m_SplinePos.x) - (sinf(-fAngle - rot + D3DX_PI) * fLength),
+			(MAP_START_Y + m_SplinePos.y) - (cosf(-fAngle - rot + D3DX_PI) * fLength),
+			0.0f);
+		pVtx[3].Pos = D3DXVECTOR3((MAP_START_X + m_SplinePos.x) - (sinf(fAngle - rot - D3DX_PI) * fLength),
+			(MAP_START_Y + m_SplinePos.y) - (cosf(fAngle - rot - D3DX_PI) * fLength),
+			0.0f);
 
 		// 法線設定
 		for(int i = 0 ; i < VERTEX_NUM ; i++)
@@ -201,7 +212,7 @@ void CMap::SetVtxBuff(void)
 			pVtx[i].rhw = 1.0f;
 
 			// 色設定
-			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 1.0f);
+			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 0.0f, 0.7f);
 		}
 
 		// テクスチャ座標設定
@@ -226,6 +237,9 @@ void CMap::Uninit(void)
 	SafetyRelease(m_pVtxBuff[2]);
 	SafetyRelease(m_pVtxBuff[3]);
 	SafetyRelease(m_pTexture);
+
+	SafetyRelease(m_BackBufferSurf);
+	SafetyRelease(m_pMapSurf);
 
 	Unload();
 }
@@ -271,10 +285,6 @@ void CMap::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 	// 描画処理
-	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);	// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pMapTexture);	// テクスチャの設定
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
 	D3D_DEVICE->SetRenderTarget(0, m_pMapSurf);
 
 	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);	// 頂点フォーマットの設定
@@ -290,6 +300,11 @@ void CMap::Draw(void)
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[3], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
 	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
 	D3D_DEVICE->SetRenderTarget(0, m_BackBufferSurf);
+
+	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);	// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pMapTexture);	// テクスチャの設定
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
 
 	/*
 	// Zテスト方法更新

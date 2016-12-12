@@ -141,11 +141,6 @@ void CScene2DDX::Update(void)
 //=============================================================================
 void CScene2DDX::Draw(void)
 {
-	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
@@ -164,11 +159,6 @@ void CScene2DDX::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
-	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //=============================================================================

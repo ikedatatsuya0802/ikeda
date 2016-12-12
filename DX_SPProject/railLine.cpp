@@ -50,9 +50,6 @@ CRailLine::~CRailLine()
 //=============================================================================
 void CRailLine::Init(int line, D3DXVECTOR3 pos)
 {
-	char			*str	= NULL;	// ファイル内容格納配列
-	unsigned int	offset	= 0;	// 文字列指定子
-
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VEC3_ZERO);
@@ -708,6 +705,14 @@ void CRailLine::Draw(void)
 		// マトリックス設定
 		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
+		// Zテスト開始
+		CRendererDX::EnableZTest();
+
+		// アルファテスト開始
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
+
 		// ライティング設定をオフに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
@@ -765,11 +770,6 @@ void CRailLine::Draw(void)
 		// 描画
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
 
-		// レンダーステート設定を戻す
-		D3D_DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-		D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 		if(m_EditType == ET_DRIFT)
 		{
 			// テクスチャの設定
@@ -814,6 +814,19 @@ void CRailLine::Draw(void)
 
 		// ライティング設定をオンに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+		// レンダーステート設定を戻す
+		D3D_DEVICE->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+		// アルファテスト終了
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+		// Zテスト終了
+		CRendererDX::DisableZTest();
 	}
 
 	// デバッグ情報表示

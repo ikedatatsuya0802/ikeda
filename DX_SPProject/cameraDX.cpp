@@ -163,8 +163,8 @@ void CCameraDX::Update(void)
 			m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
 
 			// Ž‹“_Ý’è
-			m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-			m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->SetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+			m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+			m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
 			m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
 
 			// ’Ž‹“_Ý’è

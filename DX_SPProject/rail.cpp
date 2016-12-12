@@ -191,6 +191,9 @@ void CRail::Draw(void)
 		// マトリックス設定
 		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
+		// Zテスト開始
+		CRendererDX::EnableZTest();
+
 		// ライティング設定をオフに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
@@ -202,6 +205,9 @@ void CRail::Draw(void)
 
 		// ライティング設定をオンに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+		// Zテスト終了
+		CRendererDX::DisableZTest();
 	}
 }
 

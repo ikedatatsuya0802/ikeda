@@ -320,6 +320,11 @@ void CMeshfield::Draw(void)
 {
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
+
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 		
 	// ライティング設定をオフに
 	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -333,6 +338,11 @@ void CMeshfield::Draw(void)
 		
 	// ライティング設定をオフに
 	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	// Zテスト方法更新
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //=============================================================================

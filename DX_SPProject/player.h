@@ -80,7 +80,7 @@ public:
 	static CPlayer	*Create(bool ifListAdd = true, D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
-	D3DXVECTOR3	SetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
+	D3DXVECTOR3	GetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
 	float	GetSpeed(void) { return m_PerMove; }					// スプライン情報を取得
 	float	GetOldPerSpline(void) { return m_PerOld; }				// スプライン情報を取得
 	float	GetPerSpline(void) { return m_Per; }					// スプライン情報を取得
