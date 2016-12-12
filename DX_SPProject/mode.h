@@ -21,7 +21,6 @@ public:
 	virtual void	Draw(void)		= 0;
 
 protected:
-	int			m_Frame;	// 汎用カウンタ
 };
 #include "title.h"
 #include "tutorial.h"

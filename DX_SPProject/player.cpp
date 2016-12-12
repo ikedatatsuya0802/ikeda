@@ -15,6 +15,7 @@
 #include "railLine.h"
 #include "cameraDX.h"
 #include "driftMark.h"
+#include "countdown.h"
 
 //=============================================================================
 //	ŠÖ”–¼	:CPlayer()
@@ -182,7 +183,7 @@ void CPlayer::UpdateMove(void)
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	
-	if(!DX_CAMERA->GetCameraMode() && KH_W)
+	if((CGame::GetFrame() > COUNTDOWN_END_TIME) && !DX_CAMERA->GetCameraMode() && KH_W)
 	{// ‰Á‘¬
 
 		m_PerMove += PLAYER_MOVEMENT;

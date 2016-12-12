@@ -23,7 +23,10 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+	static int		GetFrame(void) { return m_Frame; }
+
 private:
+	static int	m_Frame;	// 汎用カウンタ
 	CScene2DDX *m_ResultBG;
 	CScene2DDX *m_PushEnter;
 	float		m_Alpha;

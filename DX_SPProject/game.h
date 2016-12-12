@@ -36,6 +36,7 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+	static int		GetFrame(void) { return m_Frame; }
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
 	static CRailLine	*GetRailLine(void) { return m_RailLine; }
@@ -49,6 +50,8 @@ private:
 	static CPlayer		*m_Player1;		// プレイヤーのインスタンス
 	static CPlayer		*m_Player2;		// プレイヤーのインスタンス
 	static CDriftMark	*m_DriftMark;	// ドリフトマークのインスタンス
+
+	static int	m_Frame;	// 汎用カウンタ
 
 	static int	m_GoalCount;
 };

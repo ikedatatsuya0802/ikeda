@@ -32,10 +32,12 @@
 #include "farGoal.h"
 #include "goal.h"
 #include "map.h"
+#include "countdown.h"
 
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
+int			CGame::m_Frame;
 CMeshfield	*CGame::m_Meshfield;
 CRailLine	*CGame::m_RailLine;
 CPlayer		*CGame::m_Player1;
@@ -72,6 +74,11 @@ void CGame::Init(void)
 	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.9f), (SCREEN_HEIGHT * 0.9f), 0.0f));
+	CCountdown::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f),
+		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
+
+	// フレーム初期化
+	m_Frame = -1;
 
 	// BGM再生
 	//CSound::Play(SOUNDLABEL_BGM000);
@@ -109,6 +116,9 @@ void CGame::Update(void)
 		// リザルトにフェード
 		if(m_GoalCount == 0) CFade::Start(new CResult, FS_OUT);
 	}
+
+	// フレーム加算
+	m_Frame++;
 }
 
 //=============================================================================
