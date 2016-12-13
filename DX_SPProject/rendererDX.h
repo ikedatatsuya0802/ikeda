@@ -70,7 +70,7 @@ public:
 	static void	Begin(void);
 	static void	End(void);
 
-	static char* FileName(char* filename, char* directory = ".\\data\\TEXTURE\\");
+	static char* FileName(const char *filename, const char *directory = "./data/TEXTURE/");
 	static LPDIRECT3DVERTEXBUFFER9 SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *pVtxBuff);
 	static void SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	static void SetMatrixBB(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 rot = VEC3_ZERO, D3DXVECTOR3 scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f));

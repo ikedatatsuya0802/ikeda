@@ -38,14 +38,14 @@ public:
 	static CNumber	*Create(int value = 0, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
 	
 	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
+	//static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	static void	Unload(void) { SafetyRelease(m_pTexture); }
+	//static void	Unload(void) { SafetyRelease(m_pTexture); }
 	
 	void	SetNumber(int value = 0);
 
 protected:
-	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
+	//static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
 };
 
 #endif

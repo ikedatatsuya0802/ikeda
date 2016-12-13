@@ -196,7 +196,7 @@ void CRendererDX::End(void)
 //	戻り値	:無し
 //	説明	:ディレクトリとファイル名を結合して返す。
 //=============================================================================
-char* CRendererDX::FileName(char* filename, char* directory)
+char* CRendererDX::FileName(const char* filename, const char *directory)
 {
 	char str[1024] = { NULL };
 

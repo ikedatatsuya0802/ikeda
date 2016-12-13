@@ -132,7 +132,7 @@ void CTitle::Draw(void)
 		}
 	}
 
-	m_Black->SetColor(m_AlphaBlack, 1.0f, 1.0f, 1.0f);
+	//m_Black->SetColor(m_AlphaBlack, 1.0f, 1.0f, 1.0f);
 	m_TitleBG->SetColor(m_Alpha, 1.0f, 1.0f, 1.0f);
 	m_PushEnter->SetColor(m_AlphaButton, 1.0f, 1.0f, 1.0f);
 

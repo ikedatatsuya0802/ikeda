@@ -40,7 +40,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CRendererDX::Init(hInstance, hWnd, TRUE);
 
 	// リソースのロード
-	CNumber::Load();
+	//CNumber::Load();
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
@@ -69,7 +69,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void CManager::Uninit(void)
 {
 	// リソースの開放
-	CNumber::Unload();
+	//CNumber::Unload();
 
 
 	CInput::Uninit();

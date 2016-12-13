@@ -18,7 +18,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
+//LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
 
 //=============================================================================
 //	関数名	:CNumber()
@@ -83,15 +83,12 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	pVtx[3].Pos.z = 0.0f;
 	
 	// 除算係数設定
-	for(int cntRhw = 0 ; cntRhw < VERTEX_NUM ; cntRhw++)
+	for(int i = 0 ; i < VERTEX_NUM ; i++)
 	{
-		pVtx[cntRhw].rhw = 1.0f;
-	}
-	
-	// スコア色設定
-	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
-	{
-		pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[i].rhw = 1.0f;
+
+		// スコア色設定
+		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	// 閾値チェック
@@ -125,7 +122,8 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 
 	m_pVtxBuff->Unlock();
 
-	Load();
+	//Load();
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture);
 }
 
 //=============================================================================
@@ -138,7 +136,7 @@ void CNumber::Uninit(void)
 {
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
-	Unload();
+	//Unload();
 }
 
 //=============================================================================
