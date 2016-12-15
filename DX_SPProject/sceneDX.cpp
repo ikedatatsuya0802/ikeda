@@ -17,7 +17,8 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-list<CSceneDX*>	CSceneDX::m_SceneList[PRIORITY_NUM];
+list<CSceneDX*>	CSceneDX::m_List[PRIORITY_NUM];
+list<CSceneDX*>::iterator	CSceneDX::m_ListItr;
 
 //=============================================================================
 //	関数名	:CSceneDX()
@@ -28,7 +29,7 @@ list<CSceneDX*>	CSceneDX::m_SceneList[PRIORITY_NUM];
 CSceneDX::CSceneDX(bool ifListAdd, int priority, OBJTYPE objType)
 {
 	// リスト追加フラグがオンの場合、リストに自身を追加
-	if(ifListAdd) m_SceneList[priority].push_back(this);
+	if(ifListAdd) m_List[priority].push_back(this);
 
 	// オブジェクトタイプを初期化
 	m_ObjType = objType;
@@ -65,7 +66,7 @@ void CSceneDX::UpdateAll(void)
 	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 更新処理
 			(*itr)->Update();
@@ -87,7 +88,7 @@ void CSceneDX::DrawAll(void)
 	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に描画処理を行う
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 描画処理
 			(*itr)->Draw();
@@ -109,7 +110,7 @@ void CSceneDX::DeleteAll(void)
 	for(int i = 0 ; i < PRIORITY_NUM ; i++)
 	{
 		// リストに登録されている全ての要素を削除する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; )
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; )
 		{
 			// インスタンスが存在している場合のみ処理
 			if(*itr)
@@ -122,7 +123,7 @@ void CSceneDX::DeleteAll(void)
 			}
 
 			// リストから削除
-			itr = m_SceneList[i].erase(itr);
+			itr = m_List[i].erase(itr);
 		}
 	}
 }
@@ -141,7 +142,7 @@ void CSceneDX::Release(void)
 	for(int i = 0 ; i < PRIORITY_NUM ; i++)
 	{
 		// リストから自身のインスタンスを探索する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 自身のインスタンスを見つけ、リストから削除
 			if(*itr == this)
@@ -156,7 +157,7 @@ void CSceneDX::Release(void)
 				}
 
 				// リスト削除
-				itr = m_SceneList[i].erase(itr);
+				itr = m_List[i].erase(itr);
 
 				// 処理終了
 				break;
@@ -179,13 +180,13 @@ void CSceneDX::UnlinkList(void)
 	for(int i = 0 ; i < PRIORITY_NUM ; i++)
 	{
 		// リストから自身のインスタンスを探索する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 自身のインスタンスを見つけ、リストから削除
 			if(*itr == this)
 			{
 				// リスト削除
-				itr = m_SceneList[i].erase(itr);
+				itr = m_List[i].erase(itr);
 
 				// 処理終了
 				break;

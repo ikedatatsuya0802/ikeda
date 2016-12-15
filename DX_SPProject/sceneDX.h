@@ -54,13 +54,17 @@ public:
 	D3DXVECTOR3	GetPos(void)			{ return m_Pos; }
 	D3DXVECTOR3	GetRot(void)			{ return m_Rot; }
 
+	static list<CSceneDX*> GetList(void) { return m_List[0]; }
+	static list<CSceneDX*> GetList(int priority) { return (priority < PRIORITY_NUM) ? m_List[priority] : m_List[0]; }
+
 	void		ChangeDrawFrag(void)	{ m_flgDraw = m_flgDraw ? false : true; }
 		
 protected:
 	CSceneDX(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();
 
-	static list<CSceneDX*>	m_SceneList[PRIORITY_NUM];	// リスト
+	static list<CSceneDX*>	m_List[PRIORITY_NUM];	// リスト
+	static list<CSceneDX*>::iterator m_ListItr;		// リストのイテレータ
 
 	OBJTYPE	m_ObjType;		// オブジェクトタイプ
 
