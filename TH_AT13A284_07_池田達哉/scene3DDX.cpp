@@ -13,7 +13,6 @@
 #include "manager.h"
 #include "main.h"
 #include "rendererDX.h"
-#include "input.h"
 #include "meshfield.h"
 
 //=============================================================================

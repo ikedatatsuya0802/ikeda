@@ -13,10 +13,13 @@
 //	インクルード
 //=============================================================================
 #include <windows.h>
-#include "input.h"
 #include "readfile.h"
 #include <vector>
 #include <list>
+#include <random>
+#include <string>
+#include <sstream>
+#include <limits>
 using namespace std;
 
 //=============================================================================
@@ -27,16 +30,25 @@ using namespace std;
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	SCREEN_WIDTH		(1280.0f)	// ウィンドウの横幅
-#define	SCREEN_HEIGHT		(760.0f)	// ウィンドウの縦幅
-#define	SCREEN_WIDTH_HALF	(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅の半分
-#define	SCREEN_HEIGHT_HALF	(SCREEN_HEIGHT * 0.5f)	// ウィンドウの縦幅の半分
+#define SIMPLE_FOR(max)			for(int i=0;i<max;i++)	// 単純複数回処理
+#define	uchar					unsigned char
+#define	uint					unsigned int
+#define	GAME_FPS				(60)
+#define	DEFAULT_SCREEN_WIDTH	(1024.0f)	// ウィンドウの横幅
+#define	DEFAULT_SCREEN_HEIGHT	(768.0f)	// ウィンドウの縦幅
+#define	SCREEN_WIDTH			(1024.0f)	// ウィンドウの横幅
+#define	SCREEN_HEIGHT			(768.0f)	// ウィンドウの縦幅
+#define	SCREEN_WIDTH_HALF		(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅の半分
+#define	SCREEN_HEIGHT_HALF		(SCREEN_HEIGHT * 0.5f)	// ウィンドウの縦幅の半分
 
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
 int		GetFPS(void);
 HWND	GethWnd(void);
+char*	StringToCharP(const string str);
+string	CharPToString(const char* str);
+vector<std::string> split(const string &str, char sep);
 
 // インスタンス削除関数
 template <class INSTANCE>
@@ -70,7 +82,6 @@ void SwapData(SWAPDATA &data1, SWAPDATA &data2)
 	data1 = data2;
 	data2 = dataBuff;
 }
-
 
 
 #endif

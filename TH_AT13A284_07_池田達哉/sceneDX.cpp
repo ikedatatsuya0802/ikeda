@@ -35,6 +35,7 @@ CSceneDX::CSceneDX(bool ifListAdd, int priority, OBJTYPE objType)
 	m_ObjType = objType;
 
 	// À•WE‰ñ“]‚Ì‰Šú‰»
+	m_Scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	m_Pos = VEC3_ZERO;
 	m_Rot = VEC3_ZERO;
 

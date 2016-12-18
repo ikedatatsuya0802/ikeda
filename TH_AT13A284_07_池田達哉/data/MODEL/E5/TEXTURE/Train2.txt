@@ -1,0 +1,486 @@
+PluginHeader{
+	RailSimVersion = 2.03;
+	PluginType = Train;
+	PluginName = "新幹線E5系 量産車-1";
+	PluginAuthor = "Motty & ささあき";
+	IconTexture = "../mo_e5_1_u/icon/negi1.png";
+	Description = "21世紀の夢の超特急をカタチにしたら、こうなりました。";
+	Description = "[1号車 E523]";
+}
+
+TrainInfo{
+	FrontLimit = 13.7;
+	TailLimit = -12.5;
+	MaxVelocity = 320.0;
+	MaxAcceleration = 2.5;
+	MaxDeceleration = 5.0;
+	TiltSpeed = 0.3;
+	DoorClosingTime = 5.0;
+}
+
+DefineSwitch "LED幕"{
+	GroupCommon = "E5LED";
+	Entry = "はやぶさ　東京";
+	Entry = "はやぶさ　新青森";
+	Entry = "----------------";
+	Entry = "はやて　東京";
+	Entry = "はやて　新青森";
+	Entry = "----------------";
+	Entry = "やまびこ　東京";
+	Entry = "やまびこ　仙台";
+	Entry = "やまびこ　盛岡";
+	Entry = "なすの　東京";
+	Entry = "なすの　郡山";
+	Entry = "----------------";
+	Entry = "いかさし(ネタ)";
+}
+
+DefineSwitch "カラーパターン"{
+	GroupCommon = "E5カラー";
+	Entry = "Ａ";
+	Entry = "Ｂ";
+}
+
+DefineSwitch "ライト"{
+	GroupCommon = "E5ライト";
+	Entry = "点灯";
+	Entry = "点灯(従来型)";
+	Entry = "消灯";
+}
+
+DefineSwitch "サウンド"{
+	GroupCommon = "E5サウンド";
+	Entry = "入";
+	Entry = "切";
+}
+
+DefineSwitch "シャドウ"{
+	GroupCommon = "E5シャドウ";
+	Entry = "ON";
+	Entry = "OFF";
+}
+
+DefineSwitch "パンタグラフ"{
+	GroupCommon = "E5パンタ";
+	Entry = "自動";
+	Entry = "全車下げ";
+	Entry = "全車上げ";
+}
+DefineSwitch "雪煙"{
+	GroupCommon = "E5雪煙";
+	Entry = "あり(自動)";
+	Entry = "なし";
+}
+
+/////////////////////////
+// ムダに多いLED
+/////////////////////////
+
+//行先
+DefineAnimation "はやぶさ　東京"	{	Frame = "../mo_e5_1_u/led/hayabusa_tokyo_j.png", 400;		Frame = "../mo_e5_1_u/led/hayabusa_tokyo_e.png", 150; }
+DefineAnimation "はやぶさ　新青森"	{	Frame = "../mo_e5_1_u/led/hayabusa_shinaomori_j.png", 400;	Frame = "../mo_e5_1_u/led/hayabusa_shinaomori_e.png", 150; }
+DefineAnimation "はやて　東京"		{	Frame = "../mo_e5_1_u/led/hayate_tokyo_j.png", 550;			Frame = "../mo_e5_1_u/led/hayate_tokyo_e.png", 150; }
+DefineAnimation "はやて　新青森"	{	Frame = "../mo_e5_1_u/led/hayate_shinaomori_j.png", 550;	Frame = "../mo_e5_1_u/led/hayate_shinaomori_e.png", 150; }
+DefineAnimation "やまびこ　東京"	{	Frame = "../mo_e5_1_u/led/yamabiko_tokyo_j.png", 600;		Frame = "../mo_e5_1_u/led/yamabiko_tokyo_e.png", 150; }
+DefineAnimation "やまびこ　仙台"	{	Frame = "../mo_e5_1_u/led/yamabiko_sendai_j.png", 500;		Frame = "../mo_e5_1_u/led/yamabiko_sendai_e.png", 150; }
+DefineAnimation "やまびこ　盛岡"	{	Frame = "../mo_e5_1_u/led/yamabiko_morioka_j.png", 600;		Frame = "../mo_e5_1_u/led/yamabiko_morioka_e.png", 150; }
+DefineAnimation "なすの　東京"		{	Frame = "../mo_e5_1_u/led/nasuno_tokyo_j.png", 400;			Frame = "../mo_e5_1_u/led/nasuno_tokyo_e.png", 150; }
+DefineAnimation "なすの　郡山"		{	Frame = "../mo_e5_1_u/led/nasuno_koriyama_j.png", 400;		Frame = "../mo_e5_1_u/led/nasuno_koriyama_e.png", 150; }
+DefineAnimation "いかさし"			{	Frame = "../mo_e5_1_u/led/ika_static_j.png", 600;			Frame = "../mo_e5_1_u/led/ika_static_e.png", 150; }
+
+//行先スクロール＆自由/指定
+DefineAnimation "scrはやぶさ　東京　指定"	{	TiledUVFrame = "../mo_e5_1_u/led/hayabusa_tokyo.png", 0.2, 2.0, 0.0020, 0.0, 250, 1;		Frame = "../mo_e5_1_u/led/reserved_j.png", 150;		Frame = "../mo_e5_1_u/led/reserved_e.png", 150; }
+DefineAnimation "scrはやぶさ　新青森　指定"	{	TiledUVFrame = "../mo_e5_1_u/led/hayabusa_shinaomori.png", 0.2, 2.0, 0.0020, 0.0, 250, 1;	Frame = "../mo_e5_1_u/led/reserved_j.png", 150;		Frame = "../mo_e5_1_u/led/reserved_e.png", 150; }
+DefineAnimation "scrはやて　東京　指定"		{	TiledUVFrame = "../mo_e5_1_u/led/hayate_tokyo.png", 0.2, 2.0, 0.0020, 0.0, 400, 1;			Frame = "../mo_e5_1_u/led/reserved_j.png", 150;		Frame = "../mo_e5_1_u/led/reserved_e.png", 150; }
+DefineAnimation "scrはやて　新青森　指定"	{	TiledUVFrame = "../mo_e5_1_u/led/hayate_shinaomori.png", 0.2, 2.0, 0.0020, 0.0, 400, 1;		Frame = "../mo_e5_1_u/led/reserved_j.png", 150;		Frame = "../mo_e5_1_u/led/reserved_e.png", 150; }
+DefineAnimation "scrやまびこ　東京　自由"	{	TiledUVFrame = "../mo_e5_1_u/led/yamabiko_tokyo.png", 0.2, 2.0, 0.0020, 0.0, 450, 1;		Frame = "../mo_e5_1_u/led/reserved_n_j.png", 150;	Frame = "../mo_e5_1_u/led/reserved_n_e.png", 150; }
+DefineAnimation "scrやまびこ　仙台　自由"	{	TiledUVFrame = "../mo_e5_1_u/led/yamabiko_sendai.png", 0.2, 2.0, 0.0020, 0.0, 350, 1;		Frame = "../mo_e5_1_u/led/reserved_n_j.png", 150;	Frame = "../mo_e5_1_u/led/reserved_n_e.png", 150; }
+DefineAnimation "scrやまびこ　盛岡　自由"	{	TiledUVFrame = "../mo_e5_1_u/led/yamabiko_morioka.png", 0.2, 2.0, 0.0020, 0.0, 450, 1;		Frame = "../mo_e5_1_u/led/reserved_n_j.png", 150;	Frame = "../mo_e5_1_u/led/reserved_n_e.png", 150; }
+DefineAnimation "scrなすの　東京　自由"		{	TiledUVFrame = "../mo_e5_1_u/led/nasuno_tokyo.png", 0.2, 2.0, 0.0020, 0.0, 250, 1;			Frame = "../mo_e5_1_u/led/reserved_n_j.png", 150;	Frame = "../mo_e5_1_u/led/reserved_n_e.png", 150; }
+DefineAnimation "scrなすの　郡山　自由"		{	TiledUVFrame = "../mo_e5_1_u/led/nasuno_koriyama.png", 0.2, 2.0, 0.0020, 0.0, 250, 1;		Frame = "../mo_e5_1_u/led/reserved_n_j.png", 150;	Frame = "../mo_e5_1_u/led/reserved_n_e.png", 150; }
+DefineAnimation "scrいかさし"				{	TiledUVFrame = "../mo_e5_1_u/led/ikasashi.png", 0.2, 2.0, 0.0020, 0.0, 450, 1;				Frame = "../mo_e5_1_u/led/ika_static_j.png", 150;	Frame = "../mo_e5_1_u/led/ika_static_e.png", 150; }
+
+//座席
+DefineAnimation "指定席"	{ Frame = "../mo_e5_1_u/led/res_j.png", 120;	Frame = "../mo_e5_1_u/led/res_e.png", 120; }
+DefineAnimation "自由席"	{ Frame = "../mo_e5_1_u/led/res_n_j.png", 120;	Frame = "../mo_e5_1_u/led/res_n_e.png", 120; }
+
+
+PrimaryAssembly{
+
+/////////////////////////
+// 車輪
+/////////////////////////
+	Axle "DummyWheel1"{ ModelFileName=""; Diameter=0.86; Symmetric=12; Coord = (10.0, 0.43); }
+	Axle "DummyWheel2"{ ModelFileName=""; Diameter=0.86; Symmetric=12; Coord = (7.5, 0.43); }
+	Axle "DummyWheel3"{ ModelFileName=""; Diameter=0.86; Symmetric=12; Coord = (-7.5, 0.43); }
+	Axle "DummyWheel4"{ ModelFileName=""; Diameter=0.86; Symmetric=12; Coord = (-10.0, 0.43); }
+
+/////////////////////////
+// 台車ダミー
+/////////////////////////
+	Body "Bogie1"{ ModelFileName = "";
+		JointZY "DummyWheel1"{ AttachCoord=(0.0, 0.0); LocalCoord=(1.25, 0.0); }
+		JointZY "DummyWheel2"{ AttachCoord=(0.0, 0.0); LocalCoord=(-1.25, 0.0); }
+	}Body "Bogie2"{ ModelFileName = "";
+		JointZY "DummyWheel3"{ AttachCoord=(0.0, 0.0); LocalCoord=(1.25, 0.0); }
+		JointZY "DummyWheel4"{ AttachCoord=(0.0, 0.0); LocalCoord=(-1.25, 0.0); }
+	}
+	
+/////////////////////////
+// 車体ダミー
+/////////////////////////
+	Body "DummyBody"{
+		ModelFileName = "";
+		JointZY "Bogie1"{ AttachCoord=(0.0, -0.43); LocalCoord=(8.75, 0.0); }
+		JointZY "Bogie2"{ AttachCoord=(0.0, -0.43); LocalCoord = (-8.75, 0.0); }
+		Tilt{ TiltRatio = 0.5; MaxAngle = 1.5; BaseAlt = 2.0; }
+	}
+
+	// シャドウ
+	Object3D "Shadow1"{ ModelFileName="../mo_e5_1_u/shadow1.x"; NoShadow = 0; Transparent = 0; If "シャドウ"==1{ ChangeModel="", 1.0; }
+		Joint3D "DummyBody"{ AttachCoord=(0.0, 0.0, 0.0); } }
+
+
+
+////////////////////////////////
+// ホロ
+////////////////////////////////
+	Object3D "Horo1"{
+		ModelFileName = "Horo1.x";
+		AlphaZeroTest = 1, 2;
+		If !"カラーパターン" {
+			EnvMap = 2; ChangeMaterial{ MaterialID = 2; Specular = 0.5, 0.1, 1.0; Power = 6.0; }
+		} Else { ChangeAlpha = 2, 0.0; }
+		Joint3D "DummyBody"{ AttachCoord=(0.0, 0.0, 0.0); }
+	}
+
+////////////////////////////////
+// ライト
+////////////////////////////////
+	Object3D "Light"{
+		ModelFileName = "light.x";	 NoCastShadow = 0, 1, 2, 3;	AlphaZeroTest = 0, 1; Transparent = 5; ChangeAlpha = 5, NightAlpha;
+		
+		If "ライト"!=2 & !"_FRONT"{
+			ChangeModel = "light_w.x", 1.0; }
+		If"ライト"!=2 & "_FRONT"{
+			ChangeModel = "light_r.x", 1.0; }
+		
+		Joint3D "DummyBody"{ AttachCoord=(0.0, 0.0, 0.0); }
+	}
+
+////////////////////////////////
+// 車体本体(描画順の関係でここ)
+////////////////////////////////
+	Object3D "MainBody"{
+		ModelFileName = "body.x"; NoShadow = 4; Transparent = 4;
+		ChangeAlpha = 3, NightAlpha;
+		
+		If !"カラーパターン" {
+			EnvMap = 10; ChangeMaterial{ MaterialID = 10; Specular = 0.5, 0.1, 1.0; Power = 6.0; }
+			EnvMap=15; ChangeMaterial{ MaterialID=15; Specular=0.5, 0.1, 1.0; Power=6.0; }
+			Transparent = 11;	//ロゴ
+		} Else { ChangeAlpha = 10, 0.0; }
+		
+		ApplySwitch "LED幕"{	//大
+			Case 0:		SetAnimation = 18, "はやぶさ　東京";	SetAnimation = 19, "scrはやぶさ　東京　指定";	SetAnimation = 20, "指定席";
+			Case 1:		SetAnimation = 18, "はやぶさ　新青森";	SetAnimation = 19, "scrはやぶさ　新青森　指定";	SetAnimation = 20, "指定席";
+			Case 2:		ChangeTexture = 18, "../mo_e5_1_u/LED/blank.png";	ChangeTexture = 19, "../mo_e5_1_u/LED/blank.png";
+			Case 3:		SetAnimation = 18, "はやて　東京";		SetAnimation = 19, "scrはやて　東京　指定"; 	SetAnimation = 20, "指定席";
+			Case 4:		SetAnimation = 18, "はやて　新青森";	SetAnimation = 19, "scrはやて　新青森　指定";	SetAnimation = 20, "指定席";
+			Case 5:		ChangeTexture = 18, "../mo_e5_1_u/LED/blank.png";	ChangeTexture = 19, "../mo_e5_1_u/LED/blank.png";
+			Case 6:		SetAnimation = 18, "やまびこ　東京";	SetAnimation = 19, "scrやまびこ　東京　自由";	SetAnimation = 20, "自由席";
+			Case 7:		SetAnimation = 18, "やまびこ　仙台";	SetAnimation = 19, "scrやまびこ　仙台　自由";	SetAnimation = 20, "自由席";
+			Case 8:		SetAnimation = 18, "やまびこ　盛岡";	SetAnimation = 19, "scrやまびこ　盛岡　自由";	SetAnimation = 20, "自由席";
+			Case 9:		SetAnimation = 18, "なすの　東京";		SetAnimation = 19, "scrなすの　東京　自由";		SetAnimation = 20, "自由席";
+			Case 10:	SetAnimation = 18, "なすの　郡山";		SetAnimation = 19, "scrなすの　郡山　自由";		SetAnimation = 20, "自由席";
+			Case 11:	ChangeTexture = 18, "../mo_e5_1_u/LED/blank.png";	ChangeTexture = 19, "../mo_e5_1_u/LED/blank.png";
+			Case 12:	SetAnimation = 18, "いかさし";			SetAnimation = 19, "scrいかさし";				SetAnimation = 20, "自由席";
+		}
+		If "ライト"==2 | "_VELOCITY" > 60 {	//OFF
+			ChangeTexture = 18, "../mo_e5_1_u/LED/blank.png";	ChangeTexture = 19, "../mo_e5_1_u/LED/blank.png";	ChangeTexture = 20, "../mo_e5_1_u/LED/blank.png"; }
+
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.0); }
+	}
+
+////////////////////////////////
+// 車輪
+////////////////////////////////
+
+	Object3D "../mo_e5_1_u/wheel1"{ ModelFileName="../mo_e5_1_u/wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2;
+		Joint3D "DummyWheel1"{ AttachCoord=(0.0, 0.0, 0.0); DirLink="DummyWheel1";} }
+	Object3D "../mo_e5_1_u/wheel2"{ ModelFileName="../mo_e5_1_u/wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2;
+		Joint3D "DummyWheel2"{ AttachCoord=(0.0, 0.0, 0.0); DirLink="DummyWheel2";} }
+	Object3D "../mo_e5_1_u/wheel3"{ ModelFileName="../mo_e5_1_u/wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2;
+		Joint3D "DummyWheel3"{ AttachCoord=(0.0, 0.0, 0.0); DirLink="DummyWheel3";} }
+	Object3D "../mo_e5_1_u/wheel4"{ ModelFileName="../mo_e5_1_u/wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2;
+		Joint3D "DummyWheel4"{ AttachCoord=(0.0, 0.0, 0.0); DirLink="DummyWheel4";} }
+
+////////////////////////////////
+// ドア
+////////////////////////////////
+
+
+	Object3D "DoorL1"{
+		ModelFileName = "../mo_e5_1_u/doorL1.x"; ChangeAlpha = 16, NightAlpha;
+		If "ライト" ==2 { ChangeAlpha = 16, 0.0; } //窓の光
+		If !"カラーパターン" { EnvMap=15; ChangeMaterial{ MaterialID=15; Specular=0.5, 0.1, 1.0; Power=6.0; }}
+		Else { ChangeAlpha = 15, 0.0; }
+		If "_DOOR1"{
+			StaticMove{ Displacement=(0.0,0.0,-0.05); AnimationTime=0.4;
+				PostAnimationDelay=2.3; PreReverseDelay=3.0; PostReverseDelay=0.3; }
+			StaticMove{ Displacement=(0.0,0.0,-0.70); PreAnimationDelay=0.5;
+				AnimationTime=2.0; PostAnimationDelay=0.5; PostReverseDelay=0.3; }
+		}
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.4); }
+	}
+	Object3D "DoorL2"{
+		ModelFileName = "../mo_e5_1_u/doorL1.x"; ChangeAlpha = 16, NightAlpha;
+		If "ライト" ==2 { ChangeAlpha = 16, 0.0; } //窓の光
+		If !"カラーパターン" { EnvMap=15; ChangeMaterial{ MaterialID=15; Specular=0.5, 0.1, 1.0; Power=6.0; }}
+		Else { ChangeAlpha = 15, 0.0; }
+		If "_DOOR1"{
+			StaticMove{ Displacement=(0.0,0.0,-0.05); AnimationTime=0.4;
+				PostAnimationDelay=2.3; PreReverseDelay=3.0; PostReverseDelay=0.2; }
+			StaticMove{ Displacement=(0.0,0.0,-0.70); PreAnimationDelay=0.5;
+				AnimationTime=2.0; PostAnimationDelay=0.5; PostReverseDelay=0.3; }
+		}
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, -9.0); }
+	}
+	Object3D "DoorR1"{
+		ModelFileName = "../mo_e5_1_u/doorR1.x"; ChangeAlpha = 16, NightAlpha;
+		If "ライト" ==2 { ChangeAlpha = 16, 0.0; } //窓の光
+		If !"カラーパターン" { EnvMap=15; ChangeMaterial{ MaterialID=15; Specular=0.5, 0.1, 1.0; Power=6.0; }}
+		Else { ChangeAlpha = 15, 0.0; }
+		If "_DOOR2"{
+			StaticMove{ Displacement=(-0.0,0.0,-0.05); AnimationTime=0.4;
+				PostAnimationDelay=2.3; PreReverseDelay=3.0; PostReverseDelay=0.3; }
+			StaticMove{ Displacement=(0.0,0.0,-0.70); PreAnimationDelay=0.5;
+				AnimationTime=2.0; PostAnimationDelay=0.5; PostReverseDelay=0.3; }
+		}
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.4); }
+	}
+	Object3D "DoorR2"{
+		ModelFileName = "../mo_e5_1_u/doorR1.x"; ChangeAlpha = 16, NightAlpha;
+		If "ライト" ==2 { ChangeAlpha = 16, 0.0; } //窓の光
+		If !"カラーパターン" { EnvMap=15; ChangeMaterial{ MaterialID=15; Specular=0.5, 0.1, 1.0; Power=6.0; }}
+		Else { ChangeAlpha = 15, 0.0; }
+		If "_DOOR2"{
+			StaticMove{ Displacement=(-0.0,0.0,-0.05); AnimationTime=0.4;
+				PostAnimationDelay=2.3; PreReverseDelay=3.0; PostReverseDelay=0.2; }
+			StaticMove{ Displacement=(0.0,0.0,-0.70); PreAnimationDelay=0.5;
+				AnimationTime=2.0; PostAnimationDelay=0.5; PostReverseDelay=0.3; }
+		}
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, -9.0); }
+	}
+	
+	// ドア音ダミー
+	Object3D "ドア音ダミー"{ ModelFileName = "";
+		If "_DOOR2" | "_DOOR1"{
+			StaticMove{	Displacement = (0.0, -3000.0, 0.0);
+				PreAnimationDelay = 0.0;	AnimationTime = 0.0;
+				PreReverseDelay = 5.0;		ReverseTime = 0.0; }
+			StaticMove{ Displacement = (0.0, -3000.0, 0.0);
+				PreAnimationDelay = 5.0;	AnimationTime = 0.0;
+				PreReverseDelay = 0.0;		ReverseTime = 0.0; } }
+		Joint3D "DummyBody"{	AttachCoord = (0.0, 3000.0, 0.0); }
+	}
+
+
+////////////////////////////////
+// 雪煙
+////////////////////////////////
+	If !"雪煙" && "_SEASON"==3{
+		Particle{ TextureFileName = "../mo_e5_1_u/snow.png"; AttachObject = "MainBody";
+			SourceCoord = (0.0, 0.1, 10.0); MinQty = -5.0; MaxQty = 15.0; VelocityRel = 0.05;
+			Lifetime = 5.0, 15.0;Direction = (0, 0.1, 0.0), (0, 0.1, 0.0);
+			InitialRadius = 0.1, 0.5; FinalRadius = 5.0, 8.0;
+			Color = #ffffffff, #ffeeeeee; BlendMode = Alpha;
+			AirResistance = 0.1; Gravity = 0.0; Turbulence = 4.0; }
+		Particle{ TextureFileName = "../mo_e5_1_u/snow.png"; AttachObject = "MainBody";
+			SourceCoord = (0.0, 0.1, -12.5); MinQty = -5.0; MaxQty = 10.0; VelocityRel = 0.05;
+			Lifetime = 1.0, 5.0;Direction = (0, 0.1, 0.0), (0, 0.1, 0.0);
+			InitialRadius = 0.1, 0.5; FinalRadius = 5.0, 8.0;
+			Color = #ffffffff, #ffeeeeee; BlendMode = Alpha;
+			AirResistance = 0.1; Gravity = 0.0; Turbulence = 4.0; }
+	}
+
+////////////////////////////////
+// ライトフレア
+////////////////////////////////
+
+
+	If !"_FRONT" & !"_CONNECT1" & "ライト"!=2{
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (0.3, 2.8, 8.3);
+			Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (0.1, 2.8, 8.4);
+			Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.1, 2.8, 8.4);
+			Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.3, 2.8, 8.3);
+			Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+		
+
+		If "_NIGHT" & "ライト"==1{
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (0.3, 2.8, 8.7);
+				Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (0.1, 2.8, 8.8);
+				Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.1, 2.8, 8.8);
+				Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.3, 2.8, 8.7);
+				Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 22; Twinkle = 0.15; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare.png"; }}}
+		}
+
+		If "_NIGHT" & "ライト"==0 & !"_CABINVIEW"{
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.8, 8.0); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.5; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.795, 8.4); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.790, 8.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.785, 9.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.780, 9.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.775, 10.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.0; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.770, 10.9); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.765, 11.5); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.2; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.760, 12.1); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.3; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.755, 12.7); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = ( 0.2, 2.750, 13.2); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+			
+			
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.8, 8.0); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.5; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.795, 8.4); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.790, 8.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.785, 9.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.780, 9.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.775, 10.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.0; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.770, 10.9); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.765, 11.5); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.2; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.760, 12.1); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.3; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.755, 12.7); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-0.2, 2.750, 13.2); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+		}
+	}
+
+////////////////////////////////
+// サウンド
+////////////////////////////////	
+
+	If "サウンド" == 0{
+		If "_CAMDIST" <600{
+			//ループ
+			SoundEffect{ WaveFileName = "../mo_e5_1_u/sound/fas_loop.wav";
+				AttachObject = "MainBody"; SourceCoord = (0.0, 0.0, 12.0); Loop = yes; }
+			SoundEffect{ WaveFileName = "../mo_e5_1_u/sound/fas_loop.wav";
+				AttachObject = "MainBody"; SourceCoord = (0.0, 0.0, -12.0); Loop = yes; }
+				
+			//空力音(車間)
+			If "_VELOCITY" >30 & "_VELOCITY" <= 60{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/run_loop1.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= -3000 ; Loop=yes;}
+			}If "_VELOCITY" >60 & "_VELOCITY" <= 110{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/run_loop1.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= -2000 ; Loop=yes;}
+			}If "_VELOCITY" >110 & "_VELOCITY" <= 160{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/run_loop1.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= -1000 ; Loop=yes;}
+			}If "_VELOCITY" >160 & "_VELOCITY" <= 210{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/run_loop1.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= -500 ; Loop=yes;}
+			}If "_VELOCITY" >210{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/run_loop1.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=yes;}
+			}
+			
+			//VVVF
+			If "_ACCEL">0 && "_VELOCITY">6 && "_VELOCITY"<=35{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/in_11.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}If "_ACCEL">0 && "_VELOCITY">25 && "_VELOCITY"<=70{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/in_12.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}If "_ACCEL">0 && "_VELOCITY">50 && "_VELOCITY"<=260{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/in_21.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}
+			
+			If "_ACCEL"<0 && "_VELOCITY">0 && "_VELOCITY"<=60{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/out_11.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}If "_ACCEL"<0 && "_VELOCITY">45 && "_VELOCITY"<=101{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/out_12.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}If "_ACCEL"<0 && "_VELOCITY">80 && "_VELOCITY"<=210{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/out_21.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 2.5, -12.0); Volume= 0 ; Loop=no;}
+			}
+			
+			//ブレーキ
+			If "_ACCEL"<0 & "_VELOCITY" < 20{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/fas_brake.wav"; AttachObject="MainBody"; SourceCoord=(0.0, 1.0, -12.0); Volume= 0 ; Loop=no;}
+			} 
+			//ドア
+			If "_CAMDIST" <50 {
+				If "_DOOR1" | "_DOOR2" {		//開
+						SoundEffect{ WaveFileName = "../mo_e5_1_u/sound/door_open1.wav";
+							AttachObject="ドア音ダミー"; SourceCoord=(0.0, 3.0 ,0.0); Loop = no; }
+				}Else{
+					If "_VELOCITY" == 0 {		//閉
+						SoundEffect{ WaveFileName = "../mo_e5_1_u/sound/door_close1.wav";
+							AttachObject="ドア音ダミー"; SourceCoord=(0.0, 3.0 ,0.0); Loop = no; } }
+				}
+			}
+		}
+		
+		//スラブ滑走音
+		If "_CAMDIST" < 1200{
+			If "_VELOCITY" >30 & "_VELOCITY" <= 70{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -2000 ; Loop=yes;}
+			}If "_VELOCITY" >70 & "_VELOCITY" <= 110{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -1200 ; Loop=yes;}
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -1200 ; Loop=yes;}
+			}If "_VELOCITY" >110 & "_VELOCITY" <= 160{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -1000 ; Loop=yes;}
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -1000 ; Loop=yes;}
+			}If "_VELOCITY" >160 & "_VELOCITY" <= 210{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -500 ; Loop=yes;}
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -500 ; Loop=yes;}
+			}If "_VELOCITY" >210{
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -0 ; Loop=yes;}
+				SoundEffect{WaveFileName= "../mo_e5_1_u/sound/slab.wav"; AttachObject="MainBody";
+					SourceCoord=(0.0, 1.0, 10.0); Volume= -0 ; Loop=yes;}
+			}
+		}
+	}
+
+	FrontCabin{
+		Joint3D "MainBody"{
+			AttachCoord = (0.0, 2.67, 8.5);
+		}
+	}
+
+}

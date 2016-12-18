@@ -196,7 +196,7 @@ HRESULT CInput::InitMouse(HINSTANCE hInstance, HWND hWnd)
 	SetRect(&m_MState.moveRect, 10, 10, (int)SCREEN_WIDTH-10, (int)SCREEN_HEIGHT-10);		// マウスカーソルの動く範囲
 	m_MState.sPos.x		= (LONG)m_MState.moveRect.left;	// マウスカーソルのX座標を初期化
 	m_MState.sPos.y		= (LONG)m_MState.moveRect.top;		// マウスカーソルのY座標を初期化
-	m_MState.wPos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ワールド座標の初期化
+	m_MState.wPos		= VEC3_ZERO;	// ワールド座標の初期化
 	m_MState.lButton	= false;							// 左ボタンの情報を初期化
 	m_MState.rButton	= false;							// 右ボタンの情報を初期化
 	m_MState.cButton	= false;							// 中央ボタンの情報を初期化
@@ -247,7 +247,7 @@ void CInput::UpdateMouse(void)
 	aMouseState[1] = m_MState.cButton;
 	aMouseState[2] = m_MState.rButton;
 
-	for(int nCntButton = 0 ; nCntButton < MS_MAX ; nCntButton++)
+	for(int nCntButton = 0 ; nCntButton < MBTN_MAX ; nCntButton++)
 	{
 		// トリガ処理
 		m_MouseState.Trigger[nCntButton] = (aMouseState[nCntButton] && !aMouseStateOld[nCntButton]) ? true : false;
@@ -281,9 +281,10 @@ void CInput::UpdateMouse(void)
 		m_MouseState.Press[nCntButton] = aMouseState[nCntButton];
 	}
 	
-
+#ifdef _DEBUG
 	CDebugProc::DebugProc("マウス(2D):(%ld, %ld)\n", m_MState.sPos.x, m_MState.sPos.y);
 	CDebugProc::DebugProc("マウス(3D):(%.2f, %.2f, %.2f)\n", m_MState.wPos.x, m_MState.wPos.y, m_MState.wPos.z);
+#endif
 }
 
 //=============================================================================
@@ -328,7 +329,7 @@ D3DXVECTOR3* CInput::MouseScreenToWorld(D3DXVECTOR3* pOut, POINT point)
 	else
 	{// スクリーンの範囲内でない場合
 
-		*pOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		*pOut = VEC3_ZERO;
 	}
 
 
@@ -368,11 +369,11 @@ D3DXVECTOR3* CInput::CalcScreenToWorld(D3DXVECTOR3* pout, int Sx, int Sy, float 
 D3DXVECTOR3* CInput::CalcScreenToXZ(D3DXVECTOR3* pout, int Sx, int Sy, int Screen_w, int Screen_h, D3DXMATRIX* View, D3DXMATRIX* Prj)
 {
 	D3DXVECTOR3 nearpos;
-	D3DXVECTOR3 farpos;
+	D3DXVECTOR3 farGoalpos;
 	D3DXVECTOR3 ray;
 	CalcScreenToWorld(&nearpos, Sx, Sy, 0.0f, Screen_w, Screen_h, View, Prj);
-	CalcScreenToWorld(&farpos, Sx, Sy, 1.0f, Screen_w, Screen_h, View, Prj);
-	ray = farpos - nearpos;
+	CalcScreenToWorld(&farGoalpos, Sx, Sy, 1.0f, Screen_w, Screen_h, View, Prj);
+	ray = farGoalpos - nearpos;
 	D3DXVec3Normalize(&ray, &ray);
 
 	// 床との交差が起きている場合は交点を
@@ -386,7 +387,7 @@ D3DXVECTOR3* CInput::CalcScreenToXZ(D3DXVECTOR3* pout, int Sx, int Sy, int Scree
 	}
 	else
 	{
-		*pout = farpos;
+		*pout = farGoalpos;
 	}
 
 	return pout;

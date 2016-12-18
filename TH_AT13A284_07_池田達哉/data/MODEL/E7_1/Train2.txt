@@ -1,0 +1,267 @@
+PluginHeader{
+	RailSimVersion = 2.03;
+	PluginType = Train;
+	PluginName = "新幹線E7系  1/12号車";
+	PluginAuthor = "s.sasaki";
+	IconTexture = "";
+	Description = "";
+}
+
+TrainInfo{
+	FrontLimit = 13.7;
+	TailLimit = -12.5;
+	MaxVelocity = 260.0;
+	MaxAcceleration = 2.5;
+	MaxDeceleration = 5.0;
+	DoorClosingTime = 5.0;
+}
+
+
+DefineSwitch "ライト"{
+	GroupCommon = "E7ライト";
+	Entry = "点灯";
+	Entry = "点灯(従来型)";
+	Entry = "消灯";
+}
+
+DefineSwitch "サウンド"{
+	GroupCommon = "E7サウンド";
+	Entry = "入";
+	Entry = "切";
+}
+
+DefineSwitch "シャドウ"{
+	GroupCommon = "E7シャドウ";
+	Entry = "ON";
+	Entry = "OFF";
+}
+
+DefineSwitch "パンタグラフ"{
+	GroupCommon = "E7パンタ";
+	Entry = "自動";
+	Entry = "全車下げ";
+}
+DefineSwitch "雪煙"{
+	GroupCommon = "E7雪煙";
+	Entry = "あり(自動)";
+	Entry = "なし";
+}
+
+DefineSwitch "号車"{
+	Entry = " 1号車";
+	Entry = " 12号車";
+}
+
+PrimaryAssembly{
+
+/////////////////////////
+// 車輪
+/////////////////////////	
+	Axle "DummyWheel1"{ ModelFileName="wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2; Diameter=0.86; Symmetric=12; Coord = (10.0, 0.43); }
+	Axle "DummyWheel2"{ ModelFileName="wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2; Diameter=0.86; Symmetric=12; Coord = (7.5, 0.43); }
+	Axle "DummyWheel3"{ ModelFileName="wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2; Diameter=0.86; Symmetric=12; Coord = (-7.5, 0.43); }
+	Axle "DummyWheel4"{ ModelFileName="wheel.x"; AlphaZeroTest=0,1; NoCastShadow=0,1,2; Diameter=0.86; Symmetric=12; Coord = (-10.0, 0.43); }
+
+/////////////////////////
+// 台車
+/////////////////////////
+	Body "Bogie1"{ ModelFileName = "dai1.x"; AlphaZeroTest=0,1,2; NoCastShadow=0,1,2,3;
+		JointZY "DummyWheel1"{ AttachCoord=(0.0, 0.0); LocalCoord=(1.25, 0.0); }
+		JointZY "DummyWheel2"{ AttachCoord=(0.0, 0.0); LocalCoord=(-1.25, 0.0); }
+	}Body "Bogie2"{ ModelFileName = "dai2.x"; AlphaZeroTest=0,1,2; NoCastShadow=0,1,2,3;
+		JointZY "DummyWheel3"{ AttachCoord=(0.0, 0.0); LocalCoord=(1.25, 0.0); }
+		JointZY "DummyWheel4"{ AttachCoord=(0.0, 0.0); LocalCoord=(-1.25, 0.0); }
+	}
+	
+/////////////////////////
+// 車体ダミー・内装
+/////////////////////////
+	Body "DummyBody"{
+		ModelFileName = "../E7_1/inside1.x";
+		
+		ApplySwitch "号車"{
+		Case 1:
+			ChangeModel = "../E7_1/inside12.x", 1.0;
+		}
+		JointZY "Bogie1"{ AttachCoord=(0.0, -0.43); LocalCoord=(8.75, 0.0); }
+		JointZY "Bogie2"{ AttachCoord=(0.0, -0.43); LocalCoord = (-8.75, 0.0); }
+	}
+
+	// シャドウ
+	Object3D "Shadow1"{ ModelFileName="../E7_1/shadow1.x"; NoShadow = 0; Transparent = 0; If "シャドウ"==1{ ChangeModel="", 1.0; }
+		Joint3D "DummyBody"{ AttachCoord=(0.0, 0.0, 0.0); } }
+
+
+////////////////////////////////
+// 車内
+////////////////////////////////
+	Object3D "Cabin"{
+		ModelFileName = "cabin.x";
+		NoCastShadow = 0;
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.0); }
+	}
+
+////////////////////////////////
+// 車体本体
+////////////////////////////////
+	Object3D "MainBody"{
+		ModelFileName = "1.x";
+		NoShadow = 14;
+		NoCastShadow = 24;
+		
+		ApplySwitch "号車"{
+		Case 1:
+			ChangeModel = "12.x", 1.0;
+		}
+		If "_CABINVIEW" {
+			NoShadow = 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20;
+		}
+		
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.0); }
+	}
+
+////////////////////////////////
+// ホロ
+////////////////////////////////
+	Object3D "Horo"{
+		ModelFileName = "../E7_1/horo2.x";
+		
+		ApplySwitch "号車"{
+		Case 1:
+			ChangeModel = "horo3.x", 1.0;
+		}
+		
+		Joint3D "DummyBody"{ AttachCoord = (0.0, 0.0, 0.0); }
+	}
+
+//////////////////////
+//ライト
+//////////////////////
+
+	Object3D "HeadLight1"{
+		ModelFileName = "light.x";
+		NoShadow = 2,3,4,5;
+		If "ライト"!=2 && !"パンタグラフ" && !"_FRONT"{
+			ChangeModel = "light_l.x", 1.0;
+		}
+		If "ライト"!=2 && !"パンタグラフ" && "_FRONT"{
+			ChangeModel = "light_r.x", 1.0;
+		}
+		Joint3D "MainBody"{ AttachCoord = (0.0, 0.0, 0.0); LocalCoord = (0.0, 0.0, 0.0); }
+	}
+
+
+	//ライト配置用
+	Object3D "LightDummy"{
+		ModelFileName = "";
+		Joint3D "MainBody"{ AttachCoord = (0.0, 1.65, 12.0); LocalCoord = (0.0, 0.0, 0.0); }
+	}
+
+
+	If !"_FRONT" & !"_CONNECT1" & "ライト"!=2{
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.0, 1.55, 12.4);
+			Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.0, 1.55, 12.2);
+			Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.08, 1.7, 12.0);
+			Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.08, 1.7, 11.8);
+			Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+
+
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (1.0, 1.55, 12.4);
+			Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (1.0, 1.55, 12.2);
+			Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (1.08, 1.7, 12.0);
+			Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare.png"; }}}
+		Headlight{ AttachObject = "MainBody"; SourceCoord = (1.08, 1.7, 11.8);
+			Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+			LensFlare{ StartAngle = 22; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 0.4; TexFileName = "flare.png"; }}}
+			
+		If "_NIGHT" & "ライト"==1{
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.0, 1.55, 13.0);
+				Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 1.4; TexFileName = "flare.png"; }}}
+
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (-1.08, 1.7, 12.6);
+				Direction = (-0.1, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 1.4; TexFileName = "flare.png"; }}}
+
+
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (1.0, 1.55, 13.0);
+				Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 1.4; TexFileName = "flare.png"; }}}
+
+			Headlight{ AttachObject = "MainBody"; SourceCoord = (1.08, 1.7, 12.6);
+				Direction = (0.1, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 15; Twinkle = 0.1; Texture{ Distance = 0.0; Radius = 1.4; TexFileName = "flare.png"; }}}
+		}
+
+
+		If "_NIGHT" & "ライト"==0 & !"_CABINVIEW"{
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 0.0); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.5; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 0.4); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 0.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 1.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 1.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 2.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.0; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 2.9); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 3.5); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.2; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 4.1); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.3; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 4.7); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (-1.04, 0.0, 5.2); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+
+
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 0.0); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.5; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 0.4); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.6; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 0.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.7; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 1.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 1.8); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.9; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 2.3); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.0; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 2.9); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 3.5); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.2; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 4.1); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.3; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 4.7); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 1.1; TexFileName = "flare2.png"; }}}
+			Headlight{ AttachObject = "LightDummy"; SourceCoord = (1.04, 0.0, 5.2); Direction = (0.0, 0.0, 1.0); MaxDistance = 0.01;
+				LensFlare{ StartAngle = 180; Texture{ Distance = 0.0; Radius = 0.8; TexFileName = "flare2.png"; }}}
+		}
+	}
+
+
+	FrontCabin{
+		Joint3D "MainBody"{
+			AttachCoord = (-0.2, 2.75, 8.4);
+		}
+	}
+}

@@ -8,65 +8,49 @@
 //	作成日		2016/06/14
 //
 //=============================================================================
-#include "sceneDX.h"
+#include "sceneXDX.h"
 
-//=============================================================================
-//	マクロ定義
-//=============================================================================
-
-//=============================================================================
-//	構造体
-//=============================================================================
-typedef struct{
+typedef struct {
 	LPD3DXMESH		pMesh;		// メッシュ情報
 	LPD3DXBUFFER	pBuffMat;	// マテリアル情報
 	DWORD			NumMat;		// マテリアル数
-} MODELSTATUS;					// 3Dモデル情報
-
-typedef struct {
-	char*				FileName;	// メッシュ情報
-	LPDIRECT3DTEXTURE9	pTexture;	// テクスチャへのポインタ
-} TEXTURE;	// テクスチャ情報
+	int				MorphTime;
+} MODELSTATUS_MORPH;			// 3Dモデル情報
 
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CPlayer;
-class CModel
+class CModel : public CSceneXDX
 {
 public:
-	CModel(int priority = 1);
+	CModel(bool ifListAdd = false, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
-	void	Init(char *filename, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(string fileDir, string filename);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+	static CModel	*Create(string fileDir, string filename);
 	
 	void			SetParent(CModel *model) { m_Parent = model; }
 	void			SetPosDef(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_PosDef = pos; }
 	void			SetRotDef(D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_RotDef = rot; }
-	void			SetPos(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_Pos = pos; }
-	void			SetRot(D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_Rot = rot; }
 
-	static CModel	*Create(char *filename, D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	void			LoadModel(char *filename);
+protected:
+	void	LoadModel(string fileDir, string filename);
+	void	AutomaticSetTexture(void);
+	void	AddTexture(vector<TEXTURE> &texture, string fileName);
+	string	to_string(int val);
 
-private:
-	vector<TEXTURE>	m_Texture;	// テクスチャへのポインタ
-	void			AutomaticSetTexture(void);
-	void			AddTexture(vector<TEXTURE> &texture, char* fileName);
-
-	CModel				*m_Parent;		// 親パーツ
+	string			m_FileDir;
+	CModel			*m_Parent;		// 親パーツ
 	
-	D3DXVECTOR3			m_PosDef;		// 基準座標
-	D3DXVECTOR3			m_RotDef;		// 基準回転
-	D3DXVECTOR3			m_Pos;			// 座標
-	D3DXVECTOR3			m_Rot;			// 回転
-	D3DXMATRIX			m_mtxWorld;		// ワールドマトリックス
-	MODELSTATUS			m_ModelStatus;	// 3Dモデル情報
-	
-	D3DXMATRIX			GetWorldMatrix(void) { return m_mtxWorld; }	// ワールドマトリックス受け渡し
+	D3DXVECTOR3		m_PosDef;		// 基準座標
+	D3DXVECTOR3		m_RotDef;		// 基準回転
+
+	vector<MODELSTATUS_MORPH>	m_ModelStatus;	// 3Dモデル情報
+	int	m_MorphCount;	// モーフィングカウント
+	int	m_MorphStatus;	// モーフィング状態
 };
 
 #endif

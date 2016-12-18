@@ -47,6 +47,8 @@ public:
 	void		AddPos(float x, float y, float z) { m_Pos += D3DXVECTOR3(x, y, z); }
 	void		AddRot(D3DXVECTOR3 rot)	{ m_Rot += rot; }
 	void		AddRot(float x, float y, float z) { m_Rot += D3DXVECTOR3(x, y, z); }
+	void		SetScl(D3DXVECTOR3 scl) { m_Scl = scl; }
+	void		SetScl(float x, float y, float z) { m_Scl = D3DXVECTOR3(x, y, z); }
 	void		SetPos(D3DXVECTOR3 pos)	{ m_Pos = pos; }
 	void		SetPos(float x, float y, float z) { m_Pos = D3DXVECTOR3(x, y, z); }
 	void		SetRot(D3DXVECTOR3 rot)	{ m_Rot = rot; }
@@ -71,6 +73,7 @@ protected:
 	LPDIRECT3DTEXTURE9			m_pTexture;		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;		// 頂点バッファへのポインタ
 
+	D3DXVECTOR3 m_Scl;		// 位置
 	D3DXVECTOR3 m_Pos;		// 位置
 	D3DXVECTOR3 m_Rot;		// 回転角
 

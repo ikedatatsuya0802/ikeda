@@ -70,11 +70,11 @@ typedef struct {
 } MOUSESTATE;	// マウス状態
 
 typedef enum {
-	MS_LB = 0,	// 左ボタン
-	MS_CB,		// 中央ボタン
-	MS_RB,		// 右ボタン
-	MS_MAX		// 
-} MS;	// マウスボタンコード
+	MBTN_LEFT = 0,	// 左ボタン
+	MBTN_CENTER,	// 中央ボタン
+	MBTN_RIGHT,		// 右ボタン
+	MBTN_MAX		// 
+} MB;	// マウスボタンコード
 
 //=============================================================================
 //	クラス定義
@@ -131,7 +131,7 @@ private:
 	static LPDIRECTINPUT8		m_pInput;		// DirectInputオブジェクトへのポインタ
 	static LPDIRECTINPUTDEVICE8	m_pDevKeyboard;	// 入力3Dデバイス(キーボード)へのポインタ
 	static LPDIRECTINPUTDEVICE8 m_pDevMouse;	// マウスのデバイス
-
+	
 	static KEYSTATE		m_KeyState;				// キーボードの入力情報ワーク
 	static MOUSESTATE	m_MouseState;			// キーボードの入力情報ワーク
 	static MOUSE_STATUS	m_MState;				// マウス情報

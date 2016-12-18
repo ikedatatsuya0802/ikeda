@@ -11,7 +11,6 @@
 //=============================================================================
 #include "manager.h"
 #include "main.h"
-#include "input.h"
 #include "DebugProc.h"
 #include "rendererDX.h"
 #include "cameraDX.h"
@@ -21,6 +20,8 @@
 #include "player.h"
 #include "orbit.h"
 #include "stencilShadow.h"
+#include "model.h"
+#include "input.h"
 
 //=============================================================================
 //	ê√ìIÉÅÉìÉoïœêî
@@ -51,10 +52,12 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
-	CStencilShadow::Create();
-	m_Player = CPlayer::Create();
+	//CStencilShadow::Create();
+	// m_Player = CPlayer::Create();
 
-	COrbit::Create();
+	//CSceneXDX::Create("n700\\body.x");
+	//CModel::Create("E5", "body.x");
+	CPlayer::Create();
 }
 
 //=============================================================================
@@ -65,13 +68,14 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
-	CInput::Uninit();
 	CRendererDX::Uninit();
 	CDebugProc::Uninit();
 	SafetyUninit(m_Camera);
 
 	CSceneDX::DeleteAll();
 	CLightDX::Uninit();
+
+	CInput::Uninit();
 }
 
 //=============================================================================
