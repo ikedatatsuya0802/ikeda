@@ -42,13 +42,13 @@ public:
 	
 	static CCameraDX	*GetCamera(void){ return m_Camera; }
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
-	static CPlayer		*GetPlayer(void){ return m_Player; }
+	static int			GetFrame(void) { return m_Frame; }
 
 private:
 	static CCameraDX	*m_Camera;		// カメラのインスタンス
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
-	static CPlayer		*m_Player;	// プレイヤーのインスタンス
 
+	static int	m_Frame;	// 汎用カウンタ
 };
 
 #endif

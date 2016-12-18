@@ -169,3 +169,26 @@ CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
 	// インスタンスをリターン
 	return instance;
 }
+
+//=============================================================================
+//	関数名	:SetColor
+//	引数	:float	a		-> アルファ値
+//			:float	r		-> R値
+//			:float	g		-> G値
+//			:float	b		-> B値
+//	戻り値	:無し
+//	説明	:ポリゴン色を設定する。
+//=============================================================================
+void CScene3DDX::SetColor(float a, float r, float g, float b)
+{
+	VERTEX_3D	*pVtx;	// 2D頂点情報
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for(int i = 0 ; i < 4 ; i++)
+	{
+		pVtx[i].col = D3DCOLOR_COLORVALUE(r, g, b, a);
+	}
+
+	m_pVtxBuff->Unlock();
+}

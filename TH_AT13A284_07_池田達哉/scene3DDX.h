@@ -45,6 +45,7 @@ public:
 	void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGON3DDX_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	void	Unload(void) { SafetyRelease(m_pTexture); }
+	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
 	CScene3DDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

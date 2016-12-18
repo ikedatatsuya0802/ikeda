@@ -10,10 +10,22 @@
 //=============================================================================
 #include "sceneXDX.h"
 
+//----- 頂点フォーマット定義
+typedef struct {
+	float		x, y, z;			// 頂点座標（座標変換あり）
+	float		nx, ny, nz;			// 法線ベクトル
+	float		tu, tv;				// テクスチャ座標
+} VERTEX;
+#define FVF_VERTEX (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1)
+
 typedef struct {
 	LPD3DXMESH		pMesh;		// メッシュ情報
 	LPD3DXBUFFER	pBuffMat;	// マテリアル情報
 	DWORD			NumMat;		// マテリアル数
+	VERTEX			*pt_vertex;	// 頂点データへのポインタ
+	WORD			*pt_index;	// インデックスデータへのポインタ
+	int				num_vertex;	// 頂点数
+	int				num_face;	// 面数
 	int				MorphTime;
 } MODELSTATUS_MORPH;			// 3Dモデル情報
 
@@ -23,7 +35,7 @@ typedef struct {
 class CModel : public CSceneXDX
 {
 public:
-	CModel(bool ifListAdd = false, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CModel(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
 	void	Init(string fileDir, string filename);
@@ -31,22 +43,17 @@ public:
 	void	Update(void);
 	void	Draw(void);
 	static CModel	*Create(string fileDir, string filename);
-	
-	void			SetParent(CModel *model) { m_Parent = model; }
-	void			SetPosDef(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_PosDef = pos; }
-	void			SetRotDef(D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f)) { m_RotDef = rot; }
 
 protected:
 	void	LoadModel(string fileDir, string filename);
-	void	AutomaticSetTexture(void);
-	void	AddTexture(vector<TEXTURE> &texture, string fileName);
 	string	to_string(int val);
 
-	string			m_FileDir;
-	CModel			*m_Parent;		// 親パーツ
+	LPDIRECT3DTEXTURE9 m_pTexture;
 	
-	D3DXVECTOR3		m_PosDef;		// 基準座標
-	D3DXVECTOR3		m_RotDef;		// 基準回転
+	string		m_FileDir;
+
+	VERTEX		*m_MorphVertex;			// モーフィング用頂点ワークへのポインタ
+	WORD		*m_MorphIndex;			// モーフィング用インデックスワークへのポインタ
 
 	vector<MODELSTATUS_MORPH>	m_ModelStatus;	// 3Dモデル情報
 	int	m_MorphCount;	// モーフィングカウント

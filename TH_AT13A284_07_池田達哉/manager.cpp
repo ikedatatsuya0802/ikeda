@@ -17,9 +17,6 @@
 #include "lightDX.h"
 #include "meshfield.h"
 #include "skybox.h"
-#include "player.h"
-#include "orbit.h"
-#include "stencilShadow.h"
 #include "model.h"
 #include "input.h"
 
@@ -28,7 +25,7 @@
 //=============================================================================
 CCameraDX	*CManager::m_Camera;		// カメラのインスタンス
 CMeshfield	*CManager::m_Meshfield;		// メッシュフィールド
-CPlayer		*CManager::m_Player;		// プレイヤー
+int	CManager::m_Frame;
 
 //=============================================================================
 //	関数名	:Init
@@ -52,12 +49,11 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
-	//CStencilShadow::Create();
-	// m_Player = CPlayer::Create();
 
-	//CSceneXDX::Create("n700\\body.x");
-	//CModel::Create("E5", "body.x");
-	CPlayer::Create();
+	CModel::Create("", "human");
+	//CModel::Create("", "car");
+
+	m_Frame = 0;
 }
 
 //=============================================================================
@@ -96,6 +92,8 @@ void CManager::Update(void)
 
 	CDebugProc::Update();
 	CLightDX::Update();
+
+	m_Frame++;
 }
 
 //=============================================================================

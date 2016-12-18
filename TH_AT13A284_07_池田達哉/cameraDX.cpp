@@ -46,7 +46,7 @@ CCameraDX::~CCameraDX()
 void CCameraDX::Init(void)
 {
 	// í èÌéûÉJÉÅÉâê›íË
-	m_CS.posV = D3DXVECTOR3(150.0f, 200.0f, -500.0f);
+	m_CS.posV = D3DXVECTOR3(150.0f, 200.0f, -1000.0f);
 	m_CS.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_CS.vecU			= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot			= D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);

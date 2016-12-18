@@ -1,0 +1,17 @@
+//=====================================================
+//
+// モーフィングファイル
+// 作成日：2016/12/16 12:00:00
+//
+//=====================================================
+MORPH_COUNT = 120
+MORPH_COUNT = 60
+MORPH_COUNT = 30
+MORPH_COUNT = 120
+MORPH_COUNT = 30
+MORPH_COUNT = 30
+MORPH_COUNT = 30
+MORPH_COUNT = 30
+MORPH_COUNT = 30
+MORPH_COUNT = 30
+MORPH_COUNT = 30

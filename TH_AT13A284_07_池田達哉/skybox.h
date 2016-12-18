@@ -8,9 +8,7 @@
 //	作成日		2016/04/20
 //
 //=============================================================================
-#include "sceneDX.h"
-#include "rendererDX.h"
-#include "manager.h"
+#include "scene3DDX.h"
 #include "rendererDX.h"
 
 //=============================================================================
@@ -22,38 +20,38 @@
 #define	SKYBOX_VERTEX_NUM		(VERTEX_NUM * SKYBOX_PRIMITIVE_NUM)	// 頂点数
 
 //=============================================================================
-//	前方宣言
+//	構造体
 //=============================================================================
+typedef struct {
+	float r;
+	float g;
+	float b;
+} COLOR3;
 
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CSkybox : public CSceneDX
+class CSkybox : public CScene3DDX
 {
 public:
 	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
-	
-	// リソースのロード
-	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"SKYBOX_TEXFILENAME000, &m_pTexture); }
-	// リソースのアンロード
-	static void	Unload(void) { SafetyRelease(m_pTexture); }
-
 	static CSkybox	*Create(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	void	SetColor(float r = 1.0f, float g = 1.0f, float b = 1.0f);
+	void	ChangeColor(int time, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
 	CSkybox(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSkybox();
 
-	void	SetSkyboxData(VERTEX_3D *pVtx);
-	void	DrawSkyboxData(void);
+	void	SetVtxData(void);
 	
-	static LPDIRECT3DTEXTURE9	m_pTexture;	// テクスチャへのポインタ
-	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;	// 頂点バッファへのポインタ
-	
-	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
+	int			m_ChangeColorTime;
+	COLOR3		m_FadeColor;
+	COLOR3		m_BoxColor;
 };
 
 #endif

@@ -46,16 +46,24 @@ CModel::~CModel()
 //=============================================================================
 void CModel::Init(string fileDir, string filename)
 {
+	D3DMATERIAL9	mtrl;	// マテリアルオブジェクト
+
 	// 各種初期化処理
 	m_FileDir = fileDir;
-	m_Parent	= NULL;
-	m_PosDef	= VEC3_ZERO;
-	m_RotDef	= VEC3_ZERO;
 	m_Pos		= VEC3_ZERO;
 	m_Rot		= VEC3_ZERO;
 
 	m_MorphCount	= 0;
 	m_MorphStatus	= 0;
+
+	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);			// Ｚバッファ有効化
+	D3D_DEVICE->SetRenderState(D3DRS_AMBIENT, 0x00303030);	// 環境光の設定
+
+	// マテリアルの設定
+	ZeroMemory(&mtrl, sizeof(mtrl));			// いったんゼロでクリア
+	mtrl.Diffuse.r = mtrl.Diffuse.g = mtrl.Diffuse.b = mtrl.Diffuse.a = 1.0;
+	mtrl.Ambient.r = mtrl.Ambient.g = mtrl.Ambient.b = mtrl.Ambient.a = 1.0;
+	D3D_DEVICE->SetMaterial(&mtrl);
 
 	// モデル読み込み
 	LoadModel(m_FileDir, filename);
@@ -74,6 +82,8 @@ void CModel::Uninit(void)
 		SafetyRelease(m_ModelStatus[i].pMesh);
 		SafetyRelease(m_ModelStatus[i].pBuffMat);
 	}
+
+	SafetyRelease(m_pTexture);
 }
 
 //=============================================================================
@@ -84,7 +94,39 @@ void CModel::Uninit(void)
 //=============================================================================
 void CModel::Update(void)
 {
+	MODELSTATUS_MORPH*		pt;	// オブジェクトへのポインタ
+	pt = &m_ModelStatus[0];
+	int nextArray = 0;	// 次のモーフィング配列
 
+	VERTEX		*spt0, *spt1, *dpt;					// 各頂点データへのポインタ
+	float		ratio;								// 時間から求めた変形の割合
+
+	//変形前ポインタを取得
+	spt0 = pt[m_MorphStatus].pt_vertex;
+	//変形後ポインタを取得
+	nextArray = (m_MorphStatus + 1) % m_ModelStatus.size();
+	spt1 = pt[nextArray].pt_vertex;
+	//モーフィング中ポインタを取得
+	dpt = m_MorphVertex;
+
+	// 割合を求める
+	ratio = (float)m_MorphCount / (float)pt[nextArray].MorphTime;
+
+	// ２つのデータから座標を保管してモーフィング中データとして格納
+	//それぞれのポインタを１つすすめる
+	for(int i = 0 ; i < pt[0].num_vertex ; i++, spt0++, spt1++, dpt++)
+	{
+		dpt->x = (spt1->x - spt0->x) * ratio + spt0->x;
+		dpt->y = (spt1->y - spt0->y) * ratio + spt0->y;
+		dpt->z = (spt1->z - spt0->z) * ratio + spt0->z;
+	}
+
+	m_MorphCount++;
+	if(m_MorphCount >= pt[nextArray].MorphTime)
+	{
+		m_MorphStatus = (m_MorphStatus + 1) % m_ModelStatus.size();
+		m_MorphCount = 0;
+	}
 }
 
 //=============================================================================
@@ -95,89 +137,39 @@ void CModel::Update(void)
 //=============================================================================
 void CModel::Draw(void)
 {
-	D3DXMATRIX		mtxView, mtxScl, mtxRot, mtxTrans;			// マトリックス
-	D3DXMATRIX		parentMatrix;								// 親オブジェクトのマトリックス
-	D3DXMATERIAL	*pMat		= NULL;							// マテリアル
-	D3DMATERIAL9	matDef;										// デフォルトのマテリアル
+	D3D_DEVICE->SetFVF(FVF_VERTEX);		// 頂点フォーマット指定
+	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos);
 
-
-	// 親オブジェクトのワールドマトリックス取得
-	if(m_Parent != NULL)
-	{
-		parentMatrix = *m_Parent->GetWMatrix();
-	}
-	else
-	{
-		D3D_DEVICE->GetTransform(D3DTS_WORLD, &parentMatrix);
-	}
-	
-	// マトリックス初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// スケール設定
-	D3DXMatrixScaling(&mtxScl, m_Scl.x, m_Scl.y, m_Scl.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
-
-	// 回転設定
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_RotDef.y + m_Rot.y, m_RotDef.x + m_Rot.x, m_RotDef.z + m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 座標設定
-	D3DXMatrixTranslation(&mtxTrans, m_PosDef.x + m_Pos.x, m_PosDef.y + m_Pos.y, m_PosDef.z + m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	// ワールドマトリックスの設定
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &parentMatrix);
-	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
-	
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
 
-	// 描画処理
-	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
+	// テクスチャのセット
+	D3D_DEVICE->SetTexture(0, m_pTexture);
 
-	// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_ModelStatus[m_MorphStatus].pBuffMat->GetBufferPointer();
+	D3D_DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);		// ソリッド描画
 
-	// 3Dモデル描画
-	for(int i = 0 ; i < (int)m_ModelStatus[m_MorphStatus].NumMat ; i++)
+	//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+
+	// モーフィングモデルを描画
+	if(m_ModelStatus.size() > 0)
 	{
-		// マテリアルセット
-		D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
-
-		// テクスチャ読み込み
-		if(pMat[i].pTextureFilename)
-		{// テクスチャ有り
-
-		 // リストから同名のテクスチャを探索し、セット
-			for each(TEXTURE list in m_pTexture)
-			{
-				if(list.FileName == pMat[i].pTextureFilename)
-				{
-					D3D_DEVICE->SetTexture(0, list.pTexture);
-				}
-			}
-		}
-		else
-		{// テクスチャ無し
-
-		 // テクスチャをセットしない
-			D3D_DEVICE->SetTexture(0, NULL);
-		}
-
-		// モデル描画
-		m_ModelStatus[m_MorphStatus].pMesh->DrawSubset(i);
+		D3D_DEVICE->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST,
+			0, m_ModelStatus[0].num_vertex, m_ModelStatus[0].num_face, m_ModelStatus[0].pt_index,
+			D3DFMT_INDEX16, m_MorphVertex, sizeof(VERTEX));
 	}
 
-	// マテリアルを元に戻す
-	D3D_DEVICE->SetMaterial(&matDef);
+	//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	// アルファテスト終了
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+#ifdef _DEBUG
+	CDebugProc::DebugProc("FRAME:%d, Key:%d", m_MorphCount, m_MorphStatus);
+#endif
 }
 
 //=============================================================================
@@ -210,10 +202,10 @@ CModel *CModel::Create(string fileDir, string filename)
 //=============================================================================
 void CModel::LoadModel(string fileDir, string filename)
 {
-	FILE *fp;	// ファイルポインタ
+	FILE		*fp;	// ファイルポインタ
 	string str = ".\\data\\MODEL\\";
 	str += fileDir;
-	string morphFile = str + "\\morph.txt";
+	string morphFile = str + "morph.txt";
 
 	fopen_s(&fp, morphFile.c_str(), "r");
 
@@ -237,21 +229,41 @@ void CModel::LoadModel(string fileDir, string filename)
 
 	fclose(fp);
 
+	LPDIRECT3DVERTEXBUFFER9	vertex_buffer;	// 頂点バッファ
+	LPDIRECT3DINDEXBUFFER9	index_buffer;	// インデックスバッファ
+	VERTEX*		pVertices;		// 頂点データへのポインタ
+	WORD*		pIndices;		// ポリゴン構成（頂点リンク）データへのポインタ
 
 	for(int i = 0 ; i < (int)m_ModelStatus.size() ; i++)
 	{
 		string strbuff = str;
 
-		strbuff += "\\";
-		strbuff += to_string(i);
-		strbuff += "\\";
 		strbuff += filename;
+		strbuff += to_string(i);
+		strbuff += ".x";
 		// もし3Dモデルファイルのファイル名が間違っていた場合、ダミーのモデルを読み込む。
 		if(fopen_s(&fp, strbuff.c_str(), "r") == NULL)
 		{// ファイル名が正常
 			fclose(fp);
 			D3DXLoadMeshFromX(strbuff.c_str(), D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
 				&m_ModelStatus[i].pBuffMat, NULL, &m_ModelStatus[i].NumMat, &m_ModelStatus[i].pMesh);
+
+			m_ModelStatus[i].pMesh->GetVertexBuffer(&vertex_buffer);	// 頂点バッファオブジェクトへのポインタをゲット
+			m_ModelStatus[i].pMesh->GetIndexBuffer(&index_buffer);		// インデックスバッファオブジェクトへのポインタをゲット
+			m_ModelStatus[i].num_vertex = m_ModelStatus[i].pMesh->GetNumVertices();	// 頂点数をゲット
+			m_ModelStatus[i].num_face = m_ModelStatus[i].pMesh->GetNumFaces();		// 面数をゲット
+
+			// 頂点データ、インデックスデータをメモリにコピー
+			m_ModelStatus[i].pt_vertex = new VERTEX[m_ModelStatus[i].num_vertex];	// 頂点ワーク領域を確保
+			m_ModelStatus[i].pt_index = new WORD[m_ModelStatus[0].num_face * 3];	// インデックスワーク領域を確保
+
+			vertex_buffer->Lock(0, 0, (void**)&pVertices, 0);											// 頂点バッファをロック
+			memcpy(m_ModelStatus[i].pt_vertex, pVertices, sizeof(VERTEX)*m_ModelStatus[0].num_vertex);	// 頂点データをワークにコピー
+			vertex_buffer->Unlock();																	// 頂点バッファをアンロック
+
+			index_buffer->Lock(0, 0, (void**)&pIndices, 0);												// インデックスバッファをロック
+			memcpy(m_ModelStatus[i].pt_index, pIndices, sizeof(WORD)*m_ModelStatus[0].num_face * 3);	// インデックスデータをワークにコピー
+			index_buffer->Unlock();																		// インデックスバッファをアンロック
 		}
 		else
 		{// 指定したファイルが存在していない
@@ -260,57 +272,20 @@ void CModel::LoadModel(string fileDir, string filename)
 		}
 	}
 
-	AutomaticSetTexture();
-}
+	// モーフィング用に頂点バッファ、インデックスバッファを作成
+	m_MorphVertex = new VERTEX[m_ModelStatus[0].num_vertex];		// モーフィング用頂点ワーク領域を確保
+	m_MorphIndex = new WORD[m_ModelStatus[0].num_face * 3];			// モーフィング用インデックスワーク領域を確保
 
-//=============================================================================
-//	関数名	:AutomaticSetTexture
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:マテリアル情報より自動でテクスチャを追加する。
-//=============================================================================
-void CModel::AutomaticSetTexture(void)
-{
-	D3DXMATERIAL	*pMat = NULL;	// マテリアル
+	vertex_buffer->Lock(0, 0, (void**)&pVertices, 0);								// 頂点バッファをロック
+	memcpy(m_MorphVertex, pVertices, sizeof(VERTEX)*m_ModelStatus[0].num_vertex);	// 頂点データをワークにコピー
+	vertex_buffer->Unlock();														// 頂点バッファをアンロック
 
-	for(int i = 0 ; i < (int)m_ModelStatus.size() ; i++)
-	{
-		// マテリアル変換
-		pMat = (D3DXMATERIAL *)m_ModelStatus[i].pBuffMat->GetBufferPointer();
-
-		// プレイヤー描画
-		for(int i = 0 ; i < (int)m_ModelStatus[i].NumMat ; i++)
-		{
-			// テクスチャ読み込み
-			if(pMat[i].pTextureFilename)
-			{
-				// テクスチャ追加
-				AddTexture(m_pTexture, pMat[i].pTextureFilename);
-			}
-		}
-	}
-}
-
-//=============================================================================
-//	関数名	:AddTexture
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:テクスチャを追加する。
-//=============================================================================
-void CModel::AddTexture(vector<TEXTURE> &texture, string fileName)
-{
-	string optional = ".\\data\\MODEL\\";
-	optional += m_FileDir;
-	optional += "\\";
-	optional += "TEXTURE\\";
-	optional += fileName;
-	TEXTURE tex = { fileName, NULL };
-	texture.push_back(tex);
-	const char* file = optional.c_str();
-	string texname = "./data/MODEL/sample/TEXTURE/side01.png";
+	index_buffer->Lock(0, 0, (void**)&pIndices, 0);								// インデックスバッファをロック
+	memcpy(m_MorphIndex, pIndices, sizeof(WORD)*m_ModelStatus[0].num_face * 3);	// インデックスデータをワークにコピー
+	index_buffer->Unlock();														// インデックスバッファをアンロック
 
 	// テクスチャ読み込み
-	D3DXCreateTextureFromFile(D3D_DEVICE, fileName.c_str(), &texture[texture.size() - 1].pTexture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\MODEL\\tex.jpg", &m_pTexture);
 }
 
 string CModel::to_string(int val)

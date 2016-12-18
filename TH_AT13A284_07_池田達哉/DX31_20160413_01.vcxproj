@@ -86,9 +86,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="meshfield.cpp" />
-    <ClCompile Include="orbit.cpp" />
     <ClCompile Include="model.cpp" />
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="readfile.cpp" />
     <ClCompile Include="rendererDX.cpp" />
     <ClCompile Include="scene2DDX.cpp" />
@@ -97,7 +95,6 @@
     <ClCompile Include="sceneDX.cpp" />
     <ClCompile Include="sceneXDX.cpp" />
     <ClCompile Include="skybox.cpp" />
-    <ClCompile Include="stencilShadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraDX.h" />
@@ -107,9 +104,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="meshfield.h" />
-    <ClInclude Include="orbit.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="readfile.h" />
     <ClInclude Include="rendererDX.h" />
     <ClInclude Include="scene2DDX.h" />
@@ -118,7 +113,6 @@
     <ClInclude Include="sceneDX.h" />
     <ClInclude Include="sceneXDX.h" />
     <ClInclude Include="skybox.h" />
-    <ClInclude Include="stencilShadow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
