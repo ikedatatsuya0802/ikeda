@@ -9,7 +9,7 @@
 //=============================================================================
 //	インクルード
 //=============================================================================
-#include "scene3DDX.h"
+#include "particle.h"
 #include "manager.h"
 #include "main.h"
 
@@ -19,7 +19,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene3DDX::CScene3DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
+CParticle::CParticle(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
 {
 
 }
@@ -30,7 +30,7 @@ CScene3DDX::CScene3DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX
 //	戻り値	:無し
 //	説明	:デストラクタ。
 //=============================================================================
-CScene3DDX::~CScene3DDX()
+CParticle::~CParticle()
 {
 
 }
@@ -41,7 +41,7 @@ CScene3DDX::~CScene3DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene3DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CParticle::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -57,7 +57,7 @@ void CScene3DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //	戻り値	:無し
 //	説明	:頂点バッファにデータをセットする。
 //=============================================================================
-void CScene3DDX::SetVtxBuff(void)
+void CParticle::SetVtxBuff(void)
 {
 	VERTEX_3D	*pVtx;	// 3D頂点情報
 
@@ -105,7 +105,7 @@ void CScene3DDX::SetVtxBuff(void)
 //	戻り値	:無し
 //	説明	:終了処理を行う。
 //=============================================================================
-void CScene3DDX::Uninit(void)
+void CParticle::Uninit(void)
 {
 	// インスタンス削除
 	SafetyRelease(m_pVtxBuff);
@@ -118,7 +118,7 @@ void CScene3DDX::Uninit(void)
 //	戻り値	:無し
 //	説明	:更新処理を行う。
 //=============================================================================
-void CScene3DDX::Update(void)
+void CParticle::Update(void)
 {
 
 }
@@ -129,7 +129,7 @@ void CScene3DDX::Update(void)
 //	戻り値	:無し
 //	説明	:描画処理を行う。
 //=============================================================================
-void CScene3DDX::Draw(void)
+void CParticle::Draw(void)
 {
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
@@ -153,13 +153,13 @@ void CScene3DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
+CParticle *CParticle::Create(bool ifListAdd, int priority, OBJTYPE objtype,
 	D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CScene3DDX *instance;	// インスタンス
+	CParticle *instance;	// インスタンス
 
 	// インスタンス生成
-	instance = new CScene3DDX(ifListAdd, priority, objtype);
+	instance = new CParticle(ifListAdd, priority, objtype);
 
 	// 初期化処理
 	instance->Init(pos, rot);
@@ -177,7 +177,7 @@ CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
 //	戻り値	:無し
 //	説明	:ポリゴン色を設定する。
 //=============================================================================
-void CScene3DDX::SetColor(float a, float r, float g, float b)
+void CParticle::SetColor(float a, float r, float g, float b)
 {
 	VERTEX_3D	*pVtx;	// 2D頂点情報
 

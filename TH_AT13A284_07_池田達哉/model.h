@@ -44,6 +44,8 @@ public:
 	void	Draw(void);
 	static CModel	*Create(string fileDir, string filename);
 
+	int		GetMorphCountAll(void) { return m_MorphCountAll; }
+
 protected:
 	void	LoadModel(string fileDir, string filename);
 	string	to_string(int val);
@@ -56,8 +58,9 @@ protected:
 	WORD		*m_MorphIndex;			// モーフィング用インデックスワークへのポインタ
 
 	vector<MODELSTATUS_MORPH>	m_ModelStatus;	// 3Dモデル情報
-	int	m_MorphCount;	// モーフィングカウント
-	int	m_MorphStatus;	// モーフィング状態
+	int	m_MorphCountAll;	// モーフィングカウントの合計
+	int	m_MorphCount;		// モーフィングカウント
+	int	m_MorphStatus;		// モーフィング状態
 };
 
 #endif

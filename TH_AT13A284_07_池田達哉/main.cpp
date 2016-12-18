@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	cpy = GetSystemMetrics(SM_CYCAPTION);
 	RegisterClassEx(&wcex);
 	g_hWnd = CreateWindowEx(
-		0, "NullWindow", "『Unlimited Rail』 TH　AT13A284　07 　池田 達哉", WS_OVERLAPPEDWINDOW,
+		0, "NullWindow", "『四季』 TH　AT13A284　07 　池田 達哉", WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, (rect.right - rect.left + frx * 2),
 		(rect.bottom - rect.top + fry * 2 + cpy),
 		NULL, NULL, hInstance, NULL);

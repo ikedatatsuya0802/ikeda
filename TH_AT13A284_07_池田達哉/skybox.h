@@ -9,7 +9,6 @@
 //
 //=============================================================================
 #include "scene3DDX.h"
-#include "rendererDX.h"
 
 //=============================================================================
 //	マクロ定義
@@ -28,12 +27,17 @@ typedef struct {
 	float b;
 } COLOR3;
 
+#define FLOAT_COLOR(x)	(x/255.0f)
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
 class CSkybox : public CScene3DDX
 {
 public:
+	CSkybox(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	~CSkybox();
+
 	void	Init(D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(void);
 	void	Update(void);
@@ -44,9 +48,6 @@ public:
 	void	ChangeColor(int time, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
-	CSkybox(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
-	~CSkybox();
-
 	void	SetVtxData(void);
 	
 	int			m_ChangeColorTime;

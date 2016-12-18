@@ -20,14 +20,10 @@
 //=============================================================================
 //	前方宣言
 //=============================================================================
-class CMode;
-class CInput;
-class CRendererDX;
-class CSceneDX;
 class CCameraDX;
-class CLightDX;
 class CMeshfield;
-class CPlayer;
+class CSkyBox;
+class CModel;
 
 //=============================================================================
 //	クラス定義
@@ -41,12 +37,12 @@ public:
 	static void	Draw(void);
 	
 	static CCameraDX	*GetCamera(void){ return m_Camera; }
-	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
+	static CModel		*GetModel(void) { return m_Model; }
 	static int			GetFrame(void) { return m_Frame; }
 
 private:
 	static CCameraDX	*m_Camera;		// カメラのインスタンス
-	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
+	static CModel		*m_Model;		// メッシュフィールドのインスタンス
 
 	static int	m_Frame;	// 汎用カウンタ
 };

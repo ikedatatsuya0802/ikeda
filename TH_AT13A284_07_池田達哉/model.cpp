@@ -11,6 +11,7 @@
 //=============================================================================
 #include "model.h"
 #include "main.h"
+#include "manager.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -53,6 +54,7 @@ void CModel::Init(string fileDir, string filename)
 	m_Pos		= VEC3_ZERO;
 	m_Rot		= VEC3_ZERO;
 
+	m_MorphCountAll = 0;
 	m_MorphCount	= 0;
 	m_MorphStatus	= 0;
 
@@ -67,6 +69,12 @@ void CModel::Init(string fileDir, string filename)
 
 	// モデル読み込み
 	LoadModel(m_FileDir, filename);
+
+	// カウント総数を計測
+	for(int i = 0 ; i < (int)m_ModelStatus.size() ; i++)
+	{
+		m_MorphCountAll += m_ModelStatus[i].MorphTime;
+	}
 }
 
 //=============================================================================
@@ -168,7 +176,8 @@ void CModel::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 #ifdef _DEBUG
-	CDebugProc::DebugProc("FRAME:%d, Key:%d", m_MorphCount, m_MorphStatus);
+	CDebugProc::DebugProc("FRAME:%d, Key:%d\n", m_MorphCount, m_MorphStatus);
+	CDebugProc::DebugProc("TIME:%.2fsec", (m_MorphCountAll / 60.0f));
 #endif
 }
 

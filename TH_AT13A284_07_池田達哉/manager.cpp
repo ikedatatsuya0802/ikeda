@@ -15,7 +15,6 @@
 #include "rendererDX.h"
 #include "cameraDX.h"
 #include "lightDX.h"
-#include "meshfield.h"
 #include "skybox.h"
 #include "model.h"
 #include "input.h"
@@ -23,9 +22,9 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CCameraDX	*CManager::m_Camera;		// カメラのインスタンス
-CMeshfield	*CManager::m_Meshfield;		// メッシュフィールド
-int	CManager::m_Frame;
+CCameraDX	*CManager::m_Camera;
+CModel		*CManager::m_Model;
+int			CManager::m_Frame;
 
 //=============================================================================
 //	関数名	:Init
@@ -47,10 +46,9 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_Camera->Init();
 	CDebugProc::Init();
 
-	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
 
-	CModel::Create("", "human");
+	m_Model = CModel::Create("", "human");
 	//CModel::Create("", "car");
 
 	m_Frame = 0;

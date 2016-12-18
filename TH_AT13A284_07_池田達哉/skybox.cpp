@@ -12,6 +12,7 @@
 #include "skybox.h"
 #include "manager.h"
 #include "main.h"
+#include "model.h"
 
 //=============================================================================
 //	関数名	:CSkybox()
@@ -172,14 +173,28 @@ void CSkybox::Uninit(void)
 //=============================================================================
 void CSkybox::Update(void)
 {
+	int frame = CManager::GetFrame() % CManager::GetModel()->GetMorphCountAll();
+
 	// カウンタをセット
-	if(CManager::GetFrame() == 10)
+	if(frame == 285)
 	{
-		ChangeColor(60, 1.0f, 1.0f, 1.0f);
+		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(228), FLOAT_COLOR(225));
 	}
-	else if(CManager::GetFrame() == 120)
+	else if(frame == 615)
 	{
-		ChangeColor(60, 0.0f, 0.5f, 1.0f);
+		ChangeColor(60, FLOAT_COLOR(50), FLOAT_COLOR(205), FLOAT_COLOR(50));
+	}
+	else if(frame == 915)
+	{
+		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(165), FLOAT_COLOR(0));
+	}
+	else if(frame == 1230)
+	{
+		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(250), FLOAT_COLOR(250));
+	}
+	else if(frame == 1600)
+	{
+		ChangeColor(60, 0.1f, 0.1f, 0.1f);
 	}
 
 	// カウンタが設定されている場合

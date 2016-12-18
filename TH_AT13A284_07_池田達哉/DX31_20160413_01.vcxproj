@@ -85,8 +85,8 @@
     <ClCompile Include="lightDX.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
-    <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="particle.cpp" />
     <ClCompile Include="readfile.cpp" />
     <ClCompile Include="rendererDX.cpp" />
     <ClCompile Include="scene2DDX.cpp" />
@@ -103,8 +103,8 @@
     <ClInclude Include="lightDX.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
-    <ClInclude Include="meshfield.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="particle.h" />
     <ClInclude Include="readfile.h" />
     <ClInclude Include="rendererDX.h" />
     <ClInclude Include="scene2DDX.h" />

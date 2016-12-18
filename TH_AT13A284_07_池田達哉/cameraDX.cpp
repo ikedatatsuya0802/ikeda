@@ -22,8 +22,7 @@ CCameraDX::CCameraDX()
 {
 	// アニメーション情報初期化
 	LoadCameraAnim();
-	//m_Anim.ifAnim = true;
-	//m_Anim2.ifAnim = true;
+	m_Anim.ifAnim = true;
 }
 
 //=============================================================================
@@ -78,8 +77,8 @@ void CCameraDX::Uninit(void)
 //=============================================================================
 void CCameraDX::Update(void)
 {
-	CameraMove();
-	//CameraAnimation();
+	//CameraMove();
+	CameraAnimation();
 }
 
 //=============================================================================
