@@ -148,17 +148,8 @@ void CModel::Draw(void)
 	D3D_DEVICE->SetFVF(FVF_VERTEX);		// 頂点フォーマット指定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos);
 
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
-
 	// テクスチャのセット
 	D3D_DEVICE->SetTexture(0, m_pTexture);
-
-	D3D_DEVICE->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);		// ソリッド描画
-
-	//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
 	// モーフィングモデルを描画
 	if(m_ModelStatus.size() > 0)
@@ -167,13 +158,6 @@ void CModel::Draw(void)
 			0, m_ModelStatus[0].num_vertex, m_ModelStatus[0].num_face, m_ModelStatus[0].pt_index,
 			D3DFMT_INDEX16, m_MorphVertex, sizeof(VERTEX));
 	}
-
-	//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 #ifdef _DEBUG
 	CDebugProc::DebugProc("FRAME:%d, Key:%d\n", m_MorphCount, m_MorphStatus);

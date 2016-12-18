@@ -11,7 +11,6 @@
 //=============================================================================
 #include "skybox.h"
 #include "manager.h"
-#include "main.h"
 #include "model.h"
 
 //=============================================================================
@@ -178,19 +177,19 @@ void CSkybox::Update(void)
 	// カウンタをセット
 	if(frame == 285)
 	{
-		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(228), FLOAT_COLOR(225));
+		ChangeColor(60, FCOLOR(255), FCOLOR(228), FCOLOR(225));
 	}
 	else if(frame == 615)
 	{
-		ChangeColor(60, FLOAT_COLOR(50), FLOAT_COLOR(205), FLOAT_COLOR(50));
+		ChangeColor(60, FCOLOR(136), FCOLOR(206), FCOLOR(250));
 	}
 	else if(frame == 915)
 	{
-		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(165), FLOAT_COLOR(0));
+		ChangeColor(60, FCOLOR(255), FCOLOR(165), FCOLOR(0));
 	}
 	else if(frame == 1230)
 	{
-		ChangeColor(60, FLOAT_COLOR(255), FLOAT_COLOR(250), FLOAT_COLOR(250));
+		ChangeColor(60, FCOLOR(120), FCOLOR(120), FCOLOR(120));
 	}
 	else if(frame == 1600)
 	{
@@ -232,11 +231,6 @@ void CSkybox::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
 	// 描画処理
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
 	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
@@ -250,11 +244,6 @@ void CSkybox::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 
 	// ライティング設定をオンに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);

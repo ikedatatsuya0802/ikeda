@@ -11,6 +11,7 @@
 //=============================================================================
 #include "cameraDX.h"
 #include "input.h"
+#include "manager.h"
 
 //=============================================================================
 //	関数名	:CCameraDX()
@@ -466,8 +467,8 @@ void CCameraDX::SetCamera(void)
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	//CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", m_CS.posV.x, m_CS.posV.y, m_CS.posV.z);
-	//CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", m_CS.posR.x, m_CS.posR.y, m_CS.posR.z);
+	CDebugProc::DebugProc("カメラ視点　(%5.2f:%5.2f:%5.2f)\n", m_CS.posV.x, m_CS.posV.y, m_CS.posV.z);
+	CDebugProc::DebugProc("カメラ注視点(%5.2f:%5.2f:%5.2f)\n", m_CS.posR.x, m_CS.posR.y, m_CS.posR.z);
 #endif
 }
 

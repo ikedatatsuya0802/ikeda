@@ -18,6 +18,7 @@
 #include "skybox.h"
 #include "model.h"
 #include "input.h"
+#include "particle.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -36,6 +37,9 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// レンダラ―読み込み
 	CRendererDX::Init(hInstance, hWnd, TRUE);
+
+	// リソースのロード
+	CParticle::Load();
 
 	// 各種インスタンス生成
 	m_Camera		= new CCameraDX();
@@ -70,6 +74,10 @@ void CManager::Uninit(void)
 	CLightDX::Uninit();
 
 	CInput::Uninit();
+
+
+	// リソースのアンロード
+	CParticle::Unload();
 }
 
 //=============================================================================
@@ -84,6 +92,31 @@ void CManager::Update(void)
 
 	CRendererDX::Update();
 	m_Camera->Update();
+
+
+	int frame = CManager::GetFrame() % CManager::GetModel()->GetMorphCountAll();
+
+	// パーティクル生成
+	if((frame >= 300) && (frame < 540))
+	{
+		if(frame % 3 == 0)
+		CParticle::Create(0);
+	}
+	else if((frame >= 600) && (frame < 900))
+	{
+		if(frame % 3 == 0)
+			CParticle::Create(1);
+	}
+	else if((frame >= 930) && (frame < 1200))
+	{
+		if(frame % 3 == 0)
+			CParticle::Create(2);
+	}
+	else if((frame >= 1200) && (frame < 1500))
+	{
+		if(frame % 3 == 0)
+			CParticle::Create(3);
+	}
 
 	// シーン更新
 	CSceneDX::UpdateAll();

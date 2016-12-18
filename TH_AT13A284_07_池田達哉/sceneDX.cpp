@@ -61,16 +61,17 @@ CSceneDX::~CSceneDX()
 //=============================================================================
 void CSceneDX::UpdateAll(void)
 {
-	list<CSceneDX*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
 	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
-		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
+		for(m_ListItr = m_List[i].begin() ; m_ListItr != m_List[i].end() ; )
 		{
 			// 更新処理
-			(*itr)->Update();
+			(*m_ListItr)->Update();
+
+			// イテレート継続
+			if(m_ListItr != m_List[i].end()) m_ListItr++;
 		}
 	}
 }
@@ -83,16 +84,14 @@ void CSceneDX::UpdateAll(void)
 //=============================================================================
 void CSceneDX::DrawAll(void)
 {
-	list<CSceneDX*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
 	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に描画処理を行う
-		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
+		for(m_ListItr = m_List[i].begin() ; m_ListItr != m_List[i].end() ; m_ListItr++)
 		{
 			// 描画処理
-			(*itr)->Draw();
+			(*m_ListItr)->Draw();
 		}
 	}
 }
@@ -139,7 +138,7 @@ void CSceneDX::Release(void)
 {
 	list<CSceneDX*>::iterator itr;	// リストのイテレータ
 
-									// 全リストを検索
+	// 全リストを検索
 	for(int i = 0 ; i < PRIORITY_NUM ; i++)
 	{
 		// リストから自身のインスタンスを探索する
@@ -148,20 +147,17 @@ void CSceneDX::Release(void)
 			// 自身のインスタンスを見つけ、リストから削除
 			if(*itr == this)
 			{
-				if(*itr)
-				{
-					// 終了処理
-					(*itr)->Uninit();
+				// 終了処理
+				(*itr)->Uninit();
 
-					// インスタンス削除
-					delete (*itr);
-				}
+				// インスタンス削除
+				delete (*itr);
 
-				// リスト削除
-				itr = m_List[i].erase(itr);
+				// リストからオブジェクトを削除し、イテレートを継続
+				m_ListItr = m_List[i].erase(itr);
 
 				// 処理終了
-				break;
+				return;
 			}
 		}
 	}
@@ -187,10 +183,10 @@ void CSceneDX::UnlinkList(void)
 			if(*itr == this)
 			{
 				// リスト削除
-				itr = m_List[i].erase(itr);
+				m_ListItr = m_List[i].erase(itr);
 
 				// 処理終了
-				break;
+				return;
 			}
 		}
 	}
