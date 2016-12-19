@@ -114,7 +114,7 @@ void CManager::Update(void)
 	}
 	else if((frame >= 1200) && (frame < 1500))
 	{
-		if(frame % 3 == 0)
+		if(frame % 2 == 0)
 			CParticle::Create(3);
 	}
 

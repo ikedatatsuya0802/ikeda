@@ -60,6 +60,7 @@ protected:
 	D3DXVECTOR3	m_Move;		// ˆÚ“®—Ê
 	D3DXVECTOR3	m_RotMove;	// ‰ñ“]—Ê
 	D3DXVECTOR3	m_Wind;		// •——Ê
+	int			m_MaxLife;
 	int			m_Life;
 };
 

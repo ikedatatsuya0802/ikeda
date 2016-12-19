@@ -81,6 +81,7 @@ void CParticle::Init(int pattern)
 		m_Move		= D3DXVECTOR3(moveX(mt), moveY(mt), moveZ(mt));
 		m_RotMove	= D3DXVECTOR3(rotX(mt), rotY(mt), rotZ(mt));
 		m_Wind		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_MaxLife	= 120;
 		m_Life		= 120;
 	}
 	break;
@@ -102,6 +103,7 @@ void CParticle::Init(int pattern)
 		m_Move		= D3DXVECTOR3(moveX(mt), moveY(mt), moveZ(mt));
 		m_RotMove	= D3DXVECTOR3(rotX(mt), rotY(mt), rotZ(mt));
 		m_Wind		= D3DXVECTOR3(-0.5f, 0.0f, 0.5f);
+		m_MaxLife	= 60;
 		m_Life		= 60;
 	}
 	break;
@@ -123,6 +125,7 @@ void CParticle::Init(int pattern)
 		m_Move		= D3DXVECTOR3(moveX(mt), moveY(mt), moveZ(mt));
 		m_RotMove	= D3DXVECTOR3(rotX(mt), rotY(mt), rotZ(mt));
 		m_Wind		= D3DXVECTOR3(-0.1f, 0.0f, 0.1f);
+		m_MaxLife	= 120;
 		m_Life		= 120;
 	}
 	break;
@@ -141,6 +144,7 @@ void CParticle::Init(int pattern)
 		m_Move		= D3DXVECTOR3(moveX(mt), moveY(mt), moveZ(mt));
 		m_RotMove	= VEC3_ZERO;
 		m_Wind		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_MaxLife	= 180;
 		m_Life		= 180;
 	}
 	break;
@@ -162,6 +166,18 @@ void CParticle::Init(int pattern)
 void CParticle::SetVtxBuff(void)
 {
 	VERTEX_3D	*pVtx;	// 3Dí∏ì_èÓïÒ
+	float alpha = 0.0f;
+
+
+	// ÉAÉãÉtÉ@ílÇÃê›íË
+	if(((float)m_Life / (float)m_MaxLife) > 0.5f)
+	{
+		alpha = 1.0f;
+	}
+	else
+	{
+		alpha = (((float)m_Life + ((float)m_MaxLife / 2)) / (float)m_MaxLife);
+	}
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -192,19 +208,19 @@ void CParticle::SetVtxBuff(void)
 		switch(m_Pattern)
 		{
 		case 0:// èt
-			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(FCOLOR(255), FCOLOR(182), FCOLOR(193), 1.0f);
+			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(FCOLOR(255), FCOLOR(182), FCOLOR(193), alpha);
 			break;
 		case 1:// âƒ
-			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(FCOLOR(34), FCOLOR(139), FCOLOR(34), 1.0f);
+			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(FCOLOR(34), FCOLOR(139), FCOLOR(34), alpha);
 			break;
 		case 2:// èH
-			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 0.3f, 0.3f, 1.0f);
+			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 0.3f, 0.3f, alpha);
 			break;
 		case 3:// ì~
-			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, alpha);
 			break;
 		default:
-			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, alpha);
 			break;
 		}
 	}
@@ -242,6 +258,8 @@ void CParticle::Update(void)
 	m_Move	+= m_Wind;
 	m_Pos	+= m_Move;
 	m_Rot	+= m_RotMove;
+
+	SetVtxBuff();
 
 	m_Life--;
 	if(m_Life <= 0)
