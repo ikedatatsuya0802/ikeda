@@ -18,11 +18,6 @@
 #include "meshfield.h"
 
 //=============================================================================
-//	静的メンバ変数
-//=============================================================================
-LPDIRECT3DTEXTURE9	CSceneXDX::m_pTexture[MODEL_TEXTURENUM];
-
-//=============================================================================
 //	関数名	:CSceneX()
 //	引数	:無し
 //	戻り値	:無し
@@ -111,13 +106,13 @@ void CSceneXDX::Update(void)
 //=============================================================================
 void CSceneXDX::Draw(void)
 {
-	D3DXMATERIAL		*pMat		= NULL;		// マテリアル
-	D3DMATERIAL9		matDef;					// デフォルトのマテリアル
+	D3DXMATERIAL		*pMat = NULL;		// マテリアル
+	D3DMATERIAL9		matDef;				// デフォルトのマテリアル
 
 
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
-	
+
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
@@ -128,42 +123,35 @@ void CSceneXDX::Draw(void)
 
 	// マテリアル変換
 	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
-	
-	// プレイヤー描画
-	for(int nCntMat = 0 ; nCntMat < (int)m_ModelStatus.NumMat ; nCntMat++)
+
+	// 3Dモデル描画
+	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
 	{
-		D3D_DEVICE->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
+		// マテリアルセット
+		D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
 
 		// テクスチャ読み込み
-		if(pMat[nCntMat].pTextureFilename)
-		{
-			if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player000.png") == 0)
-			{// レールテクスチャ
-				D3D_DEVICE->SetTexture(0, m_pTexture[0]);
-			}
-			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player001.png") == 0)
-			{// レールテクスチャ
-				D3D_DEVICE->SetTexture(0, m_pTexture[1]);
-			}
-			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player002.jpg") == 0)
-			{// レールテクスチャ
-				D3D_DEVICE->SetTexture(0, m_pTexture[2]);
-			}
-			else if(strcmp(pMat[nCntMat].pTextureFilename, "..\\data\\TEXTURE\\player003.jpg") == 0)
-			{// レールテクスチャ
-				D3D_DEVICE->SetTexture(0, m_pTexture[3]);
-			}
-			else
+		if(pMat[i].pTextureFilename)
+		{// テクスチャ有り
+
+		 // リストから同名のテクスチャを探索し、セット
+			for each(TEXTURE list in m_pTexture)
 			{
-				D3D_DEVICE->SetTexture(0, NULL);
+				if(list.FileName == CharPToString(pMat[i].pTextureFilename))
+				{
+					D3D_DEVICE->SetTexture(0, list.pTexture);
+				}
 			}
 		}
 		else
 		{// テクスチャ無し
+
+		 // テクスチャをセットしない
 			D3D_DEVICE->SetTexture(0, NULL);
 		}
 
-		m_ModelStatus.pMesh->DrawSubset(nCntMat);
+		// モデル描画
+		m_ModelStatus.pMesh->DrawSubset(i);
 	}
 
 	// マテリアルを元に戻す
@@ -226,4 +214,49 @@ void CSceneXDX::LoadModel(char *filename)
 			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
 	}
 
+	AutomaticSetTexture();
+}
+
+//=============================================================================
+//	関数名	:AutomaticSetTexture
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:マテリアル情報より自動でテクスチャを追加する。
+//=============================================================================
+void CSceneXDX::AutomaticSetTexture(void)
+{
+	D3DXMATERIAL	*pMat = NULL;	// マテリアル
+
+									// マテリアル変換
+	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+
+	// プレイヤー描画
+	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
+	{
+		// マテリアルセット
+		//D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
+
+		// テクスチャ読み込み
+		if(pMat[i].pTextureFilename)
+		{
+			AddTexture(m_pTexture, pMat[i].pTextureFilename);
+		}
+	}
+}
+
+//=============================================================================
+//	関数名	:AddTexture
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:テクスチャを追加する。
+//=============================================================================
+void CSceneXDX::AddTexture(vector<TEXTURE> &texture, char* fileName)
+{
+	char optional[1024] = ".\\data\\MODEL\\n700\\";
+	char* fName = strcat(optional, fileName);
+	TEXTURE tex = { fileName, NULL };
+	texture.push_back(tex);
+
+
+	D3DXCreateTextureFromFile(D3D_DEVICE, fName, &texture[texture.size() - 1].pTexture);
 }

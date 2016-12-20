@@ -24,10 +24,10 @@
 //	クラス定義
 //=============================================================================
 class CPlayer;
-class CModel
+class CModel : public CSceneXDX
 {
 public:
-	CModel(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CModel(bool ifListAdd = false, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
 	void	Init(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
@@ -42,9 +42,12 @@ public:
 	void			SetRot(D3DXVECTOR3 rot = VEC3_ZERO) { m_Rot = rot; }
 
 	static CModel	*Create(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
-	void			LoadModel(char *filename);
 
 private:
+	void	LoadModel(char *filename);
+	void	AutomaticSetTexture(void);
+	void	AddTexture(vector<TEXTURE> &texture, char* fileName);
+
 	CModel				*m_Parent;		// 親パーツ
 	
 	D3DXVECTOR3			m_PosDef;		// 基準座標

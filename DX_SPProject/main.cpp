@@ -235,3 +235,28 @@ HWND GethWnd(void)
 {
 	return g_hWnd;
 }
+
+//=============================================================================
+//	ŠÖ”–¼	:CharPToString
+//	ˆø”	:–³‚µ
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:char*Œ^‚ğstringŒ^‚É•ÏŠ·‚·‚éB
+//=============================================================================
+string CharPToString(const char* str)
+{
+	string name(str);
+
+	return name;
+}
+
+// •¶š—ñ•ªŠ„
+vector<std::string> split(const string &str, char sep)
+{
+	vector<string> v;
+	stringstream ss(str);
+	string buffer;
+	while(getline(ss, buffer, sep)) {
+		v.push_back(buffer);
+	}
+	return v;
+}

@@ -28,7 +28,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CModel::CModel(bool ifListAdd, int priority, OBJTYPE objtype)
+CModel::CModel(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneXDX(ifListAdd, priority, objtype)
 {
 
 }
@@ -144,24 +144,36 @@ void CModel::Draw(void)
 	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
 
 	// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();	
-	
-	// プレイヤー描画
-	for(int nCntMat = 0 ; nCntMat < (int)m_ModelStatus.NumMat ; nCntMat++)
+	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+
+	// 3Dモデル描画
+	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
 	{
-		D3D_DEVICE->SetMaterial(&pMat[nCntMat].MatD3D);	// マテリアルセット
+		// マテリアルセット
+		D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
 
 		// テクスチャ読み込み
-		if(pMat[nCntMat].pTextureFilename)
-		{
-			D3D_DEVICE->SetTexture(0, NULL);
+		if(pMat[i].pTextureFilename)
+		{// テクスチャ有り
+
+		 // リストから同名のテクスチャを探索し、セット
+			for each(TEXTURE list in m_pTexture)
+			{
+				if(list.FileName == CharPToString(pMat[i].pTextureFilename))
+				{
+					D3D_DEVICE->SetTexture(0, list.pTexture);
+				}
+			}
 		}
 		else
 		{// テクスチャ無し
+
+		 // テクスチャをセットしない
 			D3D_DEVICE->SetTexture(0, NULL);
 		}
 
-		m_ModelStatus.pMesh->DrawSubset(nCntMat);
+		// モデル描画
+		m_ModelStatus.pMesh->DrawSubset(i);
 	}
 
 	// マテリアルを元に戻す
@@ -184,7 +196,7 @@ CModel *CModel::Create(char *filename, D3DXVECTOR3 pos)
 	CModel *model;	// インスタンス
 
 	// インスタンス生成
-	model = new CModel;
+	model = new CModel();
 
 	// 初期化処理
 	model->Init(filename, pos);
@@ -218,4 +230,45 @@ void CModel::LoadModel(char *filename)
 		D3DXLoadMeshFromX("./data/MODEL/dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
 			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
 	}
+
+	AutomaticSetTexture();
+}
+
+//=============================================================================
+//	関数名	:AutomaticSetTexture
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:マテリアル情報より自動でテクスチャを追加する。
+//=============================================================================
+void CModel::AutomaticSetTexture(void)
+{
+	D3DXMATERIAL	*pMat = NULL;	// マテリアル
+
+	// マテリアル変換
+	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+
+	// プレイヤー描画
+	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
+	{
+		// テクスチャ読み込み
+		if(pMat[i].pTextureFilename)
+		{
+			AddTexture(m_pTexture, pMat[i].pTextureFilename);
+		}
+	}
+}
+
+//=============================================================================
+//	関数名	:AddTexture
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:テクスチャを追加する。
+//=============================================================================
+void CModel::AddTexture(vector<TEXTURE> &texture, char* fileName)
+{
+	TEXTURE tex = { fileName, NULL };
+	texture.push_back(tex);
+
+
+	D3DXCreateTextureFromFile(D3D_DEVICE, fileName, &texture[texture.size() - 1].pTexture);
 }

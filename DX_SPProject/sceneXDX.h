@@ -36,6 +36,11 @@ typedef struct {
 	DWORD			NumMat;		// マテリアル数
 } MODELSTATUS;					// 3Dモデル情報
 
+typedef struct {
+	string				FileName;	// メッシュ情報
+	LPDIRECT3DTEXTURE9	pTexture;	// テクスチャへのポインタ
+} TEXTURE;	// テクスチャ情報
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -54,15 +59,18 @@ public:
 	// リソースのアンロード
 	static void	Unload(void);
 
-	void LoadModel(char *filename);
 
 protected:
 	CSceneXDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneXDX();
 
+	void	LoadModel(char *filename);
+	void	AutomaticSetTexture(void);
+	void	AddTexture(vector<TEXTURE> &texture, char* fileName);
+
 	MODELSTATUS	m_ModelStatus;	// 3Dモデル情報
 
-	static LPDIRECT3DTEXTURE9	m_pTexture[MODEL_TEXTURENUM];	// テクスチャへのポインタ
+	vector<TEXTURE>	m_pTexture;	// テクスチャへのポインタ
 };
 
 #endif

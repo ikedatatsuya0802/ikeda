@@ -18,6 +18,8 @@
 #include <vector>
 #include <list>
 #include <random>
+#include <string>
+#include <sstream>
 using namespace std;
 
 //=============================================================================
@@ -44,7 +46,8 @@ using namespace std;
 //=============================================================================
 int		GetFPS(void);
 HWND	GethWnd(void);
-//void ChangeFlag(bool &Flag) { Flag = Flag ? false : true; } // フラグ変更関数
+string	CharPToString(const char* str);
+vector<std::string> split(const string &str, char sep);
 
 // インスタンス削除関数
 template <class INSTANCE>
