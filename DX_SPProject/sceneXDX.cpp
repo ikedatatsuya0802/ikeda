@@ -113,6 +113,9 @@ void CSceneXDX::Draw(void)
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
+	// Zテスト開始
+	CRendererDX::EnableZTest();
+
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
@@ -161,13 +164,9 @@ void CSceneXDX::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-	
-	// デバッグ情報表示
-#ifdef _DEBUG
-	/*CDebugProc::DebugProc("プレイヤー座標:(%5.2f:%5.2f:%5.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
-	int i = mesh->GetFrontMesh(m_Pos);
-	CDebugProc::DebugProc("乗っているポリゴン:(%2d:%2d:%2d)\n", i + 0, i + 1, i + 2);*/
-#endif
+
+	// Zテスト終了
+	CRendererDX::DisableZTest();
 }
 
 //=============================================================================

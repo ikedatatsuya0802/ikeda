@@ -64,7 +64,7 @@ void CGoal::Init(void)
 
 	Load();
 
-	//CSceneXDX::Create("ekisha.x", m_Pos);
+	CSceneXDX::Create("ekisha.x", D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
 }
 
 //=============================================================================
@@ -162,17 +162,23 @@ void CGoal::Draw(void)
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, VEC3_ZERO, m_Rot);
 
+	// Zテスト開始
+	CRendererDX::EnableZTest();
+
 	// ライティング設定をオフに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 描画処理
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);	// 描画
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
 
 	// ライティング設定をオンに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	// Zテスト終了
+	CRendererDX::DisableZTest();
 }
 
 //=============================================================================

@@ -29,7 +29,6 @@ void CPlayer_Title::Init(D3DXVECTOR3 pos)
 
 	// モデル・モーションの読み込み
 	LoadMotion("./data/motion.txt");
-	SetMotion(MT_NONE);
 	m_Pause = false;
 
 	m_Frame = 0;

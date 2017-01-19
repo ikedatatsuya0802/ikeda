@@ -119,10 +119,10 @@ void CRail::SetVtxBuff(void)
 			else
 			{
 				pVtx[i * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x + (cosf(rot) * (RAIL_WIDTH * 0.5f)),
-					0.1f,
+					m_Spline->PosHermite[i].y,
 					m_Spline->PosHermite[i].z - sinf(rot) * (RAIL_WIDTH * 0.5f));
 				pVtx[i * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x - cosf(rot) * (RAIL_WIDTH * 0.5f),
-					0.1f,
+					m_Spline->PosHermite[i].y,
 					m_Spline->PosHermite[i].z + sinf(rot) * (RAIL_WIDTH * 0.5f));
 			}
 		}
@@ -171,11 +171,20 @@ void CRail::Uninit(void)
 //=============================================================================
 void CRail::Update(void)
 {
+	static SPLINE spline = *CGame::GetRailLine()->GetSpline();
+
 	// 描画フラグ設定
 	m_flgDraw = DX_CAMERA->GetCameraMode() ? false : true;
 
-	// レール情報セット
-	SetVtxBuff();
+	// レールがエディットされた場合、更新
+	if(fabsf(spline.Length - m_Spline->Length) < 0.01f)
+	{
+		// レール情報セット
+		SetVtxBuff();
+	}
+
+	// レール情報保存
+	spline = (*m_Spline);
 }
 
 //=============================================================================
@@ -194,6 +203,9 @@ void CRail::Draw(void)
 		// Zテスト開始
 		CRendererDX::EnableZTest();
 
+		// カリングをオフに
+		//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 		// ライティング設定をオフに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
@@ -208,6 +220,9 @@ void CRail::Draw(void)
 
 		// Zテスト終了
 		CRendererDX::DisableZTest();
+		
+		// 裏面カリング
+		D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	}
 }
 

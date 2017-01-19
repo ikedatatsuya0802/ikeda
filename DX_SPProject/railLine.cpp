@@ -364,17 +364,6 @@ void CRailLine::Update(void)
 		// マウスによるエディット動作
 		MouseEdit();
 	}
-	else
-	{
-		if(KT_M)
-		{
-			DX_CAMERA->SetCameraVibrate(60, 10.0f);
-			/*
-			(DX_CAMERA->m_CS.Vib.Cnt == 0) ?
-				DX_CAMERA->SetCameraVibrate(-1, 1.0f)
-				: DX_CAMERA->DisableCameraVibrate();*/
-		}
-	}
 }
 
 //=============================================================================
@@ -385,6 +374,8 @@ void CRailLine::Update(void)
 //=============================================================================
 void CRailLine::MouseEdit(void)
 {
+	static POINT holdPos = {0};	// ホールド開始時のマウスのスクリーン座標
+
 	if(CInput::GetMousePress(MBTN_LEFT))
 	{// マウスが押されている状態
 
@@ -402,6 +393,7 @@ void CRailLine::MouseEdit(void)
 
 					if(length < RAILLINE_DRAG_SIZE)
 					{
+						holdPos = CInput::GetMouseScreenPos();
 						m_Spline.ifHold[i] = 1;
 						break;
 					}
@@ -412,7 +404,22 @@ void CRailLine::MouseEdit(void)
 			{
 				if(m_Spline.ifHold[i])
 				{
-					m_Spline.Pos[i] = CInput::GetMouseWorldPos();
+					if(KH_LSHIFT)
+					{
+						// 高さエディット
+						m_Spline.Pos[i].y = (float)holdPos.y - CInput::GetMouseScreenPos().y;
+						
+						// 高さの下限値設定
+						if(m_Spline.Pos[i].y < 1.0f)
+						{
+							m_Spline.Pos[i].y = 1.0f;
+						}
+					}
+					else
+					{
+						m_Spline.Pos[i].x = CInput::GetMouseWorldPos().x;
+						m_Spline.Pos[i].z = CInput::GetMouseWorldPos().z;
+					}
 				}
 			}
 			break;
@@ -541,6 +548,9 @@ void CRailLine::MouseEdit(void)
 				}
 			}
 		}
+
+		// スプラインの再計算
+		CalcSpline();
 	}
 	else if(CInput::GetMousePress(MBTN_RIGHT))
 	{
@@ -616,15 +626,15 @@ void CRailLine::MouseEdit(void)
 			m_Spline.Drift[i].ifHoldBegin	= false;
 			m_Spline.Drift[i].ifHoldEnd		= false;
 		}
+
+		// スプラインの再計算
+		CalcSpline();
 	}
 
 
 	// 線形の再計算
 	SetSplineVtx();
 	SetSplineVtxVec();
-
-	// スプラインの再計算
-	CalcSpline();
 }
 
 //=============================================================================
@@ -841,10 +851,18 @@ void CRailLine::Draw(void)
 		}
 	}
 	CDebugProc::DebugProc("スプライン長:%.1f\n", m_Spline.Length);
+
+	CDebugProc::DebugProc("スプライン区間長\n");
 	for(int i = 0 ; i < (int)m_Spline.LengthMin.size() - 1 ; i++)
 	{
-		CDebugProc::DebugProc("スプライン区間長[%d -> %d]:%.1f\n", i, (i + 1), m_Spline.LengthMin[i]);
+		CDebugProc::DebugProc("[%2d->%2d]:%4.0f, ", i, (i + 1), m_Spline.LengthMin[i]);
+
+		if(i % 4 == 3)
+		{
+			CDebugProc::DebugProc("\n");
+		}
 	}
+	CDebugProc::DebugProc("\n");
 
 	if(m_DebugProcCnt > 0)
 	{
@@ -1019,7 +1037,39 @@ void CRailLine::CalcSpline(int line)
 				+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].z)
 				+ ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].z);
 			
-			m_Spline.PosHermite[i].y = 1.0f;
+			// 高さ設定
+			if(posNum < (int)m_Spline.Pos.size())
+			{
+				// 次点への高さの差分計算
+				float high = m_Spline.Pos[posNum + 1].y - m_Spline.Pos[posNum].y;
+
+				if(high > 0.0f)
+				{// 上り坂
+
+					float rad = nowt * D3DX_PI;
+					float pow = (-cosf(rad) * RAILLINE_SLOPE + RAILLINE_SLOPE) * 0.5f;
+
+					m_Spline.PosHermite[i].y = m_Spline.Pos[posNum].y + high * pow;
+					rad = 0;
+				}
+				else if(high < 0.0f)
+				{// 下り坂
+
+					high *= -1.0f;
+					float rad = nowt * D3DX_PI;
+					float pow = (cosf(rad) * RAILLINE_SLOPE + RAILLINE_SLOPE) * 0.5f;
+
+					m_Spline.PosHermite[i].y = (m_Spline.Pos[posNum].y - high) + high * pow;
+				}
+				else
+				{
+					m_Spline.PosHermite[i].y = m_Spline.Pos[posNum].y;
+				}
+			}
+			else
+			{
+				m_Spline.PosHermite[i].y = m_Spline.Pos[posNum].y;
+			}
 
 			// 実時間を進める
 			t += (1.0f / RAILLINE_SET);
@@ -1058,40 +1108,6 @@ void CRailLine::CalcSpline(int line)
 			}
 		}
 	}
-
-	/*
-	for(int i = 0 ; i < (int)m_Spline.PosHermite.size() ; i++, t += (1.0f / RAILLINE_SET))
-	{
-		float nowt = (t - ((int)t));
-
-		if((int)t == 0)
-		{
-			vec = D3DXVECTOR3((m_Spline.PosHermite[(int)t + 1].x - m_Spline.PosHermite[(int)t].x), 0.0f, (m_Spline.PosHermite[(int)t + 1].z - m_Spline.PosHermite[(int)t].z));
-		}
-		else if(i == (RAILLINE_SET - 1))
-		{
-			vec = D3DXVECTOR3((m_Spline.PosHermite[(int)t].x - m_Spline.PosHermite[(int)t - 1].x), 0.0f, (m_Spline.PosHermite[(int)t].z - m_Spline.PosHermite[(int)t - 1].z));
-		}
-		else
-		{
-			vec = D3DXVECTOR3((m_Spline.PosHermite[(int)t + 1].x - m_Spline.PosHermite[(int)t - 1].x), 0.0f, (m_Spline.PosHermite[(int)t + 1].z - m_Spline.PosHermite[(int)t - 1].z));
-		}
-		D3DXVec3Normalize(&vec, &vec);
-		vec *= RAILLINE_MARGIN;
-
-		if(line > 0)
-		{
-			m_Spline.PosHermite[i].x -= cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline.PosHermite[i].z -= sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-		else if(line < 0)
-		{
-			m_Spline.PosHermite[i].x += cosf(D3DX_PI * 0.5f) * (line * vec.x) - sinf(D3DX_PI * 0.5f) * (line * vec.z);
-			m_Spline.PosHermite[i].z += sinf(D3DX_PI * 0.5f) * (line * vec.x) + cosf(D3DX_PI * 0.5f) * (line * vec.z);
-		}
-
-		t += (1.0f / RAILLINE_SET);
-	}*/
 }
 
 //=============================================================================
@@ -1113,7 +1129,39 @@ D3DXVECTOR3 CRailLine::GetSplinePos(float t)
 			+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].x) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].x);
 		pos.z = (pow((nowt - 1), 2) * (2 * nowt + 1) * m_Spline.Pos[posNum].z) + (powf(nowt, 2) * (3 - 2 * nowt) * m_Spline.Pos[posNum + 1].z)
 			+ (pow((1 - nowt), 2) * nowt * m_Spline.Vec[posNum].z) + ((nowt - 1) * powf(nowt, 2) * m_Spline.Vec[posNum + 1].z);
-		pos.y = 1.0f;
+		
+
+		if(posNum < (int)m_Spline.Pos.size())
+		{
+			// 次点への高さの差分計算
+			float high = m_Spline.Pos[posNum + 1].y - m_Spline.Pos[posNum].y;
+
+			if(high > 0.0f)
+			{// 上り坂
+
+				float rad = nowt * D3DX_PI;
+				float pow = (-cosf(rad) * RAILLINE_SLOPE + RAILLINE_SLOPE) * 0.5f;
+
+				pos.y = m_Spline.Pos[posNum].y + high * pow;
+			}
+			else if(high < 0.0f)
+			{// 下り坂
+
+				high *= -1.0f;
+				float rad = nowt * D3DX_PI;
+				float pow = (cosf(rad) * RAILLINE_SLOPE + RAILLINE_SLOPE) * 0.5f;
+
+				pos.y = (m_Spline.Pos[posNum].y - high) + high * pow;
+			}
+			else
+			{
+				pos.y = m_Spline.Pos[posNum].y;
+			}
+		}
+		else
+		{
+			pos.y = m_Spline.Pos[posNum].y;
+		}
 	}
 
 	return pos;
@@ -1180,4 +1228,55 @@ DRIFT_STATUS CRailLine::GetDriftStatus(float oldt, float t)
 	}
 
 	return ds;
+}
+
+//=============================================================================
+//	関数名	:GetMoveVec
+//	引数	:float t	->	スプライン媒介変数
+//	戻り値	:なし
+//	説明	:tの位置での進行方向を返す。
+//=============================================================================
+D3DXVECTOR3 CRailLine::GetMoveVec(float t)
+{
+	D3DXVECTOR3 vec = GetSplinePos(t + 0.01f) - GetSplinePos(t);
+
+	return vec;
+}
+
+//=============================================================================
+//	関数名	:AngleOf2Vector
+//	引数	:D3DXVECTOR3 a	->	ベクトル1
+//			:D3DXVECTOR3 b	->	ベクトル2
+//	戻り値	:なし
+//	説明	:2つのベクトルのなす角を返す。
+//=============================================================================
+float CRailLine::AngleOf2Vector(D3DXVECTOR3 a, D3DXVECTOR3 b)
+{
+	//内積とベクトル長さを使ってcosθを求める
+	float length = D3DXVec3Length(&a) * D3DXVec3Length(&b);
+
+	if(length > 0.0f)
+	{
+		float rad = D3DXVec3Dot(&a, &b) / length;
+
+		if(rad > 1.0f)
+		{
+			rad = 1.0f;
+		}
+
+		//cosθからθを求める
+		float angle = acos(rad);
+
+		// 角度補正
+		if(a.y < 0.0f)
+		{
+			angle *= -1;
+		}
+
+		return angle;
+	}
+	else
+	{
+		return 0;
+	}
 }

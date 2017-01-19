@@ -315,7 +315,7 @@ void CRendererDX::SetMatrix(D3DXMATRIX *mtxWorld, D3DXVECTOR3 pos, D3DXVECTOR3 r
 	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxTrans);
 
 	// ワールドマトリックスの設定
-	D3D_DEVICE->SetTransform(D3DTS_WORLD, mtxWorld);	
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, mtxWorld);
 }
 
 //=============================================================================

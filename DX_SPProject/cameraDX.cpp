@@ -128,14 +128,14 @@ void CCameraDX::Update(void)
 				m_CSEdit.Rot = VEC3_ZERO;
 				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 			}
-			if(CInput::GetKeyTrigger(DIK_3))
+			else if(CInput::GetKeyTrigger(DIK_3))
 			{
 				m_CSEdit.posV = CAMERA_EDIT_V2;
 				m_CSEdit.posR = CAMERA_EDIT_R2;
 				m_CSEdit.Rot = VEC3_ZERO;
 				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 			}
-			if(CInput::GetKeyTrigger(DIK_4))
+			else if(CInput::GetKeyTrigger(DIK_4))
 			{
 				D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL);
 
@@ -144,57 +144,71 @@ void CCameraDX::Update(void)
 				m_CSEdit.Rot = VEC3_ZERO;
 				m_CSEdit.Distance = hypotf((m_CSEdit.posR.z - m_CSEdit.posV.z), (m_CSEdit.posR.x - m_CSEdit.posV.x));
 			}
+
+
+			if(CInput::GetMouseNotch() > 0)
+			{
+				// ↑に回転（チルト）した
+
+				if(CInput::GetMouseNotch() > 1)
+				{
+					m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
+				}
+				m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
+
+				CInput::SetMouseNotch(0);
+			}
+			else if(CInput::GetMouseNotch() < 0)
+			{
+				// ↓に回転（チルト）した
+
+				if(CInput::GetMouseNotch() < -1)
+				{
+					m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
+				}
+				m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
+
+				CInput::SetMouseNotch(0);
+			}
 		}
+		else
+		{
+			if(KH_Q)
+			{// 注視点移動(左)
+
+			 // 角度増減
+				m_CS.Rot.y -= CAMERA_POSR_MOVEMENT_X * 0.25f;
+			}
+			else if(KH_E)
+			{// 注視点移動(右)
+
+			 // 角度増減
+				m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X * 0.25f;
+			}
+
+			player = CGame::GetPlayer1();	// プレイヤー情報の取得
+
+			CameraVibrate();
+
+			if(player != NULL)
+			{
+				// 視点設定
+				m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+				m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
+				m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
+
+				// 注視点設定
+				m_CS.posR.x = player->GetPos().x;
+				m_CS.posR.z = player->GetPos().z;
+				m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
+			}
+		}
+
+
 
 		if(KT_L)
 		{
 			ChangeCameraMode();
-		}
-
-		player = CGame::GetPlayer1();	// プレイヤー情報の取得
-
-		CameraVibrate();
-
-		if(player != NULL)
-		{
-			// 視点設定
-			m_CS.posR.x = player->GetPos().x;
-			m_CS.posR.z = player->GetPos().z;
-			m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
-
-			// 視点設定
-			m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-			m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-			m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
-
-			// 注視点設定
-			//m_CS.posR.x = player->GetPos().x + (sinf(m_CS.Rot.y) * m_CS.Distance);
-			//m_CS.posR.z = player->GetPos().z + (cosf(m_CS.Rot.y) * m_CS.Distance);
-		}
-
-		if(CInput::GetMouseNotch() > 0)
-		{
-			// ↑に回転（チルト）した
-
-			if(CInput::GetMouseNotch() > 1)
-			{
-				m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
-			}
-			m_CSEdit.posV.y -= CAMERA_WHEEL_CHANGE_Y;
-
-			CInput::SetMouseNotch(0);
-		}
-		else if(CInput::GetMouseNotch() < 0)
-		{
-			// ↓に回転（チルト）した
-
-			if(CInput::GetMouseNotch() < -1)
-			{
-				m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
-			}
-			m_CSEdit.posV.y += CAMERA_WHEEL_CHANGE_Y;
-
-			CInput::SetMouseNotch(0);
 		}
 	}
 }

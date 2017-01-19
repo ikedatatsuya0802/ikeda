@@ -87,6 +87,7 @@
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="debugProc.cpp" />
     <ClCompile Include="driftMark.cpp" />
+    <ClCompile Include="EStructure.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="farGoal.cpp" />
     <ClCompile Include="game.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="debugProc.h" />
     <ClInclude Include="driftMark.h" />
+    <ClInclude Include="EStructure.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="farGoal.h" />
     <ClInclude Include="game.h" />

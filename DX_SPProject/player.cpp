@@ -58,14 +58,10 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_RotMove	= VEC3_ZERO;
 	m_nCntMove	= 0;
 	m_bJump		= false;
-	m_NumKey	= 0;
-	m_Key		= 0;
-	m_Frame		= 0;
 	m_Pause		= false;
 
 	// モデル・モーションの読み込み
 	LoadMotion("./data/motion.txt");
-	SetMotion(MT_NONE);
 	m_Pause		= false;
 	
 	m_RailLine	= 0;
@@ -113,9 +109,6 @@ void CPlayer::Update(void)
 
 			// プレイヤー移動
 			UpdateMove();
-
-			// 相対回転設定
-			UpdateMotion();
 
 
 			// ドリフトマーク開始判断
@@ -210,9 +203,13 @@ void CPlayer::UpdateMove(void)
 	// 絶対移動量の計測
 	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));
 
+	// 補正後のT
+	float castT = m_Per;
+
 	// 位置反映
-	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
-	m_Pos.z = CGame::GetRailLine()->GetSplinePos(m_Per).z;
+	m_Pos.x = CGame::GetRailLine()->GetSplinePos(castT).x;
+	m_Pos.z = CGame::GetRailLine()->GetSplinePos(castT).z;
+	m_Pos.y = CGame::GetRailLine()->GetSplinePos(castT).y;
 
 	
 	// 回転反映
@@ -223,6 +220,18 @@ void CPlayer::UpdateMove(void)
 
 	// 回転量計算
 	m_Spline->Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
+
+	
+	// 傾斜の回転軸計算
+	D3DXVECTOR3 vec = CGame::GetRailLine()->GetMoveVec(castT);
+	D3DXVec3Normalize(&vec, &vec);
+
+	m_VecQuat.x = -vec.z;
+	m_VecQuat.y = 0.0f;
+	m_VecQuat.z = vec.x;
+
+	// 傾斜の回転軸計算
+	m_RotQuat = CGame::GetRailLine()->AngleOf2Vector(vec, D3DXVECTOR3(vec.x, 0.0f, vec.z));
 }
 
 //=============================================================================
@@ -309,22 +318,6 @@ void CPlayer::UpdateDrift(void)
 		}
 	}
 
-	// ジャンプ量の反映
-	m_Pos.y += m_Move.y;
-
-	CMeshfield	*mesh = CGame::GetMeshfield();	// メッシュフィールド
-												// プレイヤーの高さを設定
-	if(m_Pos.y < (mesh->GetHeight(m_Pos) + 0.0f))
-	{
-		m_Pos.y = mesh->GetHeight(m_Pos) + 0.0f;
-		m_bJump = false;
-	}
-	else
-	{
-		// ジャンプ量の減衰
-		m_Move.y -= PLAYER_GRAVITY;
-	}
-
 	// 回転量補正
 	if(m_RotMove.y > D3DX_PI)				// 回転量がプラス方向に逆向きの場合
 	{
@@ -339,46 +332,6 @@ void CPlayer::UpdateDrift(void)
 }
 
 //=============================================================================
-//	関数名	:UpdateMotion
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:モーションを更新する。
-//=============================================================================
-void CPlayer::UpdateMotion(void)
-{
-	for(int i = 0 ; i < m_NumParts ; i++)
-	{
-		KEY *key, *keyNext;
-		float rate;
-		D3DXVECTOR3 pos, rot;
-
-		key		= &m_Motion[m_MotionType].KeyInfo[m_Key].Key[i];
-		keyNext	= &m_Motion[m_MotionType].KeyInfo[(m_Key + 1) % m_NumKey].Key[i];
-		rate = (float)m_Frame / m_Motion[m_MotionType].KeyInfo[m_Key].Frame;
-		pos.x = (key->PosX * (1.0f - rate)) + (keyNext->PosX * rate);
-		pos.y = (key->PosY * (1.0f - rate)) + (keyNext->PosY * rate);
-		pos.z = (key->PosZ * (1.0f - rate)) + (keyNext->PosZ * rate);
-		rot.x = (key->RotX * (1.0f - rate)) + (keyNext->RotX * rate);
-		rot.y = (key->RotY * (1.0f - rate)) + (keyNext->RotY * rate);
-		rot.z = (key->RotZ * (1.0f - rate)) + (keyNext->RotZ * rate);
-		m_Model[i]->SetPos(pos);
-		m_Model[i]->SetRot(rot);
-	}
-
-	m_Frame++;
-	if(m_Frame >= m_Motion[m_MotionType].KeyInfo[m_Key].Frame)
-	{
-		m_Key = (m_Key + 1) % m_NumKey;
-		m_Frame = 0;
-		
-		if(!m_Motion[m_MotionType].Loop && (m_Key == (m_Motion[m_MotionType].NumKey - 1)))
-		{
-			SetMotion(MT_NEUTRAL);
-		}
-	}
-}
-
-//=============================================================================
 //	関数名	:Draw
 //	引数	:無し
 //	戻り値	:無し
@@ -388,7 +341,32 @@ void CPlayer::Draw(void)
 {
 	// ワールドマトリックスの設定
 	D3DXVECTOR3 rot = D3DXVECTOR3(m_Rot.x, m_Rot.y + m_Spline->Rot.y, m_Rot.z);
-	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, rot);
+	D3DXMATRIX mtxView, mtxScl, mtxRot, mtxQuat, mtxTrans;			// マトリックス
+
+
+	// マトリックス初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// スケール設定
+	D3DXMatrixScaling(&mtxScl, 1.0f, 1.0f, 1.0f);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
+
+	// 回転設定
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	// 傾斜設定
+	D3DXQUATERNION quat = D3DXQUATERNION(m_Pos.x, m_Pos.x, m_Pos.x, 0.0f);
+	D3DXQuaternionRotationAxis(&quat, &m_VecQuat, m_RotQuat);
+	D3DXMatrixRotationQuaternion(&mtxQuat, &quat);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxQuat);
+
+	// 座標設定
+	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 	// Zテスト方法更新
 	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
@@ -417,11 +395,11 @@ void CPlayer::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	
 	// デバッグ情報表示
-#ifdef _DEBUG/*
-	CDebugProc::DebugProc("スプライン座標:(%.4f)\n", m_Per);
+#ifdef _DEBUG
+	//CDebugProc::DebugProc("スプライン座標:(%.4f)\n", m_Per);
 	CDebugProc::DebugProc("モデル座標:(%5.2f:%5.2f:%5.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
-	CDebugProc::DebugProc("モデル回転:(%5.2f:%5.2f:%5.2f)\n", m_Rot.x, m_Rot.y, m_Rot.z);*/
-	//CDebugProc::DebugProc("Key:%d, Frame:%d\n", m_Key, m_Frame);
+	CDebugProc::DebugProc("QUAT:(%5.2f:%5.2f:%5.2f:%5.2f)\n", quat.x, quat.y, quat.z, quat.w);
+	CDebugProc::DebugProc("ROTQUAT:%5.2f\n", m_RotQuat);
 #endif
 }
 
@@ -576,33 +554,4 @@ void CPlayer::LoadMotion(char *fileName)
 			}
 		}
 	}
-}
-
-//=============================================================================
-//	関数名	:SetMotion
-//	引数	:D3DXVECTOR3 pos(初期位置)
-//	戻り値	:無し
-//	説明	:モーションをセットする。
-//=============================================================================
-void CPlayer::SetMotion(MOTIONTYPE motionType)
-{
-	switch(motionType)
-	{
-	case MT_NEUTRAL:
-		{
-			m_NumKey = m_Motion[(int)motionType].NumKey;
-			break;
-		}
-	case MT_WALK:
-		{
-			m_NumKey = m_Motion[(int)motionType].NumKey;
-			break;
-		}
-	default:
-		m_NumKey = m_Motion[(int)motionType].NumKey;
-		break;
-	}
-	m_MotionType	= motionType;
-	m_Key			= 0;
-	m_Frame			= 0;
 }

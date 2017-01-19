@@ -20,11 +20,11 @@ using namespace std;
 #define	RAILLINE_TEXFILENAME002	"drift001.png"			// テクスチャのファイル名
 #define	RAILLINE_TEXFILENAME003	"drift002.png"			// テクスチャのファイル名
 
-#define	RAILLINE_GOAL			(0.98f)					// 横幅
+#define	RAILLINE_GOAL			(0.98f)					// ゴール地点のスプライン座標
 #define	RAILLINE_LENGTH			(10000.0f)				// 横幅
 #define	RAILLINE_WIDTH			(15.0f)					// 横幅
 #define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
-#define	RAILLINE_SET			(80)					// レールの分割数
+#define	RAILLINE_SET			(300)					// レールの分割数
 #define	RAILLINE_VECTOR			(4)						// レールのベクトル数
 #define	RAILLINE_VERTEX			(RAILLINE_SET * 2 + 2)	// レールの頂点数
 #define	RAILLINE_SPOINT_SIZE	(20.0f)					// レール頂点の確認用エフェクトサイズ
@@ -32,6 +32,8 @@ using namespace std;
 #define	RAILLINE_DRAG_SIZE		(100.0f)				// ドラッグの選択半径
 #define	RAILLINE_DRIFT_SEARCH	(1000)					// マウスからの最近点の探索数
 #define	RAILLINE_DRIFT_DRAG		(0.02f)					// ドリフトマークの可動範囲
+
+#define	RAILLINE_SLOPE			(1.0f)					// 坂の勾配
 
 //=============================================================================
 //	構造体
@@ -97,6 +99,9 @@ public:
 	SPLINE* GetSpline(void) { return &m_Spline; }
 	D3DXVECTOR3	GetSplinePos(float t);
 	DRIFT_STATUS GetDriftStatus(float oldt, float t);
+
+	D3DXVECTOR3 GetMoveVec(float t);
+	float AngleOf2Vector(D3DXVECTOR3 a, D3DXVECTOR3 b);
 
 private:
 	CRailLine(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);

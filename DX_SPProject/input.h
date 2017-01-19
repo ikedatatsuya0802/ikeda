@@ -185,6 +185,8 @@ public:
 	#define	KH_RIGHT	(CInput::GetKeyPress(DIK_RIGHT))
 	#define	KH_ENTER	(CInput::GetKeyPress(DIK_RETURN))
 	#define	KH_SPACE	(CInput::GetKeyPress(DIK_SPACE))
+	#define	KH_LSHIFT	(CInput::GetKeyPress(DIK_LSHIFT))
+	#define	KH_RSHIFT	(CInput::GetKeyPress(DIK_RSHIFT))
 };
 
 class CInputTrigger
@@ -232,6 +234,8 @@ public:
 	#define	KT_RIGHT	(CInput::GetKeyTrigger(DIK_RIGHT))
 	#define	KT_ENTER	(CInput::GetKeyTrigger(DIK_RETURN))
 	#define	KT_SPACE	(CInput::GetKeyTrigger(DIK_SPACE))
+	#define	KT_LSHIFT	(CInput::GetKeyTrigger(DIK_LSHIFT))
+	#define	KT_RSHIFT	(CInput::GetKeyTrigger(DIK_RSHIFT))
 };
 
 class CInputRelease
@@ -279,6 +283,8 @@ public:
 	#define	KR_RIGHT	(CInput::GetKeyRelease(DIK_RIGHT))
 	#define	KR_ENTER	(CInput::GetKeyRelease(DIK_RETURN))
 	#define	KR_SPACE	(CInput::GetKeyRelease(DIK_SPACE))
+	#define	KR_LSHIFT	(CInput::GetKeyRelease(DIK_LSHIFT))
+	#define	KR_RSHIFT	(CInput::GetKeyRelease(DIK_RSHIFT))
 };
 
 class CInputRepeat
@@ -326,6 +332,8 @@ public:
 	#define	KRP_RIGHT	(CInput::GetKeyRepeat(DIK_RIGHT))
 	#define	KRP_ENTER	(CInput::GetKeyRepeat(DIK_RETURN))
 	#define	KRP_SPACE	(CInput::GetKeyRepeat(DIK_SPACE))
+	#define	KRP_LSHIFT	(CInput::GetKeyRepeat(DIK_LSHIFT))
+	#define	KRP_RSHIFT	(CInput::GetKeyRepeat(DIK_RSHIFT))
 };
 
 #endif

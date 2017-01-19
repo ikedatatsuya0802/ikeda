@@ -26,7 +26,7 @@
 
 #define	PLAYER_MOVEMENT			(0.000001f)		// プレイヤーのスピード
 #define	PLAYER_SPEED_MAX		(0.003f)		// プレイヤーのスピード
-#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (1 / 12.f))		// プレイヤーのカーブの限界スピード
+#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (6 / 12.f))		// プレイヤーのカーブの限界スピード
 #define	PLAYER_START_PER		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
@@ -104,17 +104,13 @@ protected:
 	D3DXVECTOR3		m_Move;			// モデルの相対移動量
 	D3DXVECTOR3		m_RotMove;		// モデルの相対回転量
 	bool			m_bJump;		// ジャンプ状態
+	D3DXVECTOR3		m_VecQuat;		// 傾斜クォータニオンの回転ベクトル
+	float			m_RotQuat;		// 傾斜クォータニオンの回転角度
 
 	// モーション関連
 	void		LoadMotion(char *fileName = "./data/motion.txt");
-	void		SetMotion(MOTIONTYPE motionType);
-	void		UpdateMotion(void);
 
 	MOTION		*m_Motion;		// モーション情報
-	MOTIONTYPE	m_MotionType;	// モーションタイプ
-	int			m_NumKey;		// キー数
-	int			m_Key;			// 現在のキー
-	int			m_Frame;		// 現在のフレーム値
 
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置

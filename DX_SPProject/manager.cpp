@@ -46,7 +46,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 #ifdef _DEBUG
 	m_Mode = new CGame();
 #else
-	m_Mode = new CTitle();
+	m_Mode = new CGame();
 #endif // DEBUG
 	m_Camera		= new CCameraDX();
 

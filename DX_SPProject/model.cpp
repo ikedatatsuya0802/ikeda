@@ -134,6 +134,9 @@ void CModel::Draw(void)
 	// ワールドマトリックスの設定
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &parentMatrix);
 	D3D_DEVICE->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// Zテスト開始
+	CRendererDX::EnableZTest();
 	
 	// アルファテスト開始
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -156,7 +159,7 @@ void CModel::Draw(void)
 		if(pMat[i].pTextureFilename)
 		{// テクスチャ有り
 
-		 // リストから同名のテクスチャを探索し、セット
+			// リストから同名のテクスチャを探索し、セット
 			for each(TEXTURE list in m_pTexture)
 			{
 				if(list.FileName == CharPToString(pMat[i].pTextureFilename))
@@ -183,6 +186,9 @@ void CModel::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+	// Zテスト終了
+	CRendererDX::DisableZTest();
 }
 
 //=============================================================================
