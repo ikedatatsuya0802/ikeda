@@ -51,6 +51,7 @@ protected:
 	~CScene3DDX();
 
 	virtual void SetVtxBuff(void);
+	void SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical);
 	
 	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
 };

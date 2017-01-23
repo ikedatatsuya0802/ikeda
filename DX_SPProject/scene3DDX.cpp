@@ -170,3 +170,66 @@ CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
 	// インスタンスをリターン
 	return instance;
 }
+
+//=============================================================================
+//	関数名	:SetMeshIndex
+//	引数	:LPDIRECT3DINDEXBUFFER9 *idx	->	インデックス
+//			:int x							->	メッシュの横ブロック数
+//			:int y							->	メッシュの縦ブロック数
+//	戻り値	:無し
+//	説明	:メッシュのインデックスをセットする。
+//=============================================================================
+void CScene3DDX::SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical)
+{
+	WORD	*pIdx;
+	int		idxNum		= ((horizontal + 1) * 2) * vertical + ((vertical - 1) * 2);
+	int		idxStd		= ((horizontal + 1) * 2 + 2);
+	int		idxVtxNum	= (horizontal + 1) * (vertical + 1);
+
+	// インデックスバッファの確保
+	D3D_DEVICE->CreateIndexBuffer((sizeof(WORD) * idxNum), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, idxBuff, NULL);
+
+
+	(*idxBuff)->Lock(0, 0, (void**)&pIdx, 0);
+	{
+		int buff = (idxVtxNum / (vertical + 1));
+
+		for(int nCntVertical = 0 ; nCntVertical < vertical ; nCntVertical++)
+		{
+			for(int nCntIdx = 0 ; nCntIdx < idxStd ; nCntIdx++)
+			{
+				if((nCntVertical == (vertical - 1)) && (nCntIdx == (idxStd - 2)))
+				{// 処理打ち切り
+					break;
+				}
+
+				if(nCntIdx == (idxStd - 1))
+				{
+					buff += (horizontal + 2);
+					pIdx[nCntVertical * idxStd + nCntIdx] = buff;
+				}
+				else if(nCntIdx == (idxStd - 2))
+				{
+					pIdx[nCntVertical * idxStd + nCntIdx] = buff;
+				}
+				else
+				{
+					pIdx[nCntVertical * idxStd + nCntIdx] = buff;
+
+					if(nCntIdx % 2 == 0)
+					{
+						buff -= (horizontal + 1);
+					}
+					else
+					{
+						if(nCntIdx != (idxStd - 3))
+						{
+							buff += (horizontal + 2);
+						}
+					}
+				}
+			}
+		}
+	}
+	(*idxBuff)->Unlock();
+}

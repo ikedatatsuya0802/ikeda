@@ -63,6 +63,8 @@ protected:
 	CSceneDX(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();
 
+	void AddVtxBuffer(vector<LPDIRECT3DVERTEXBUFFER9> &pVtxBuff, const int size);
+
 	static list<CSceneDX*>	m_List[PRIORITY_NUM];	// リスト
 	static list<CSceneDX*>::iterator m_ListItr;		// リストのイテレータ
 

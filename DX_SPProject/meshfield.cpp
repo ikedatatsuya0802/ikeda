@@ -60,53 +60,8 @@ void CMeshfield::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	// 頂点情報セット
 	SetVtxBuff();
 
-	// インデックスバッファの確保
-	D3D_DEVICE->CreateIndexBuffer((sizeof(WORD) * MESHFIELD_INDEX_NUM), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIdxBuff, NULL);
-
-	WORD *pIdx;
-
-	m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
-	{
-		int buff = (MESHFIELD_VERTEX_NUM / (MESHFIELD_VERTICAL + 1));
-
-		for(int nCntVertical = 0 ; nCntVertical < MESHFIELD_VERTICAL ; nCntVertical++)
-		{
-			for(int nCntIdx = 0 ; nCntIdx < MESHFIELD_INDEX_STANDARD ; nCntIdx++)
-			{
-				if((nCntVertical == (MESHFIELD_VERTICAL - 1)) && (nCntIdx == (MESHFIELD_INDEX_STANDARD - 2)))
-				{// 処理打ち切り
-					break;
-				}
-
-				if(nCntIdx == (MESHFIELD_INDEX_STANDARD - 1))
-				{
-					buff += (MESHFIELD_HORIZONTAL + 2);
-					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
-				}
-				else if(nCntIdx == (MESHFIELD_INDEX_STANDARD - 2))
-				{
-					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
-				}
-				else
-				{
-					pIdx[nCntVertical * MESHFIELD_INDEX_STANDARD + nCntIdx] = buff;
-				
-					if(nCntIdx % 2 == 0)
-					{
-						buff -= (MESHFIELD_HORIZONTAL + 1);
-					}
-					else
-					{
-						if(nCntIdx != (MESHFIELD_INDEX_STANDARD - 3))
-						{
-							buff += (MESHFIELD_HORIZONTAL + 2);
-						}
-					}
-				}
-			}
-		}
-	}
-	m_pIdxBuff->Unlock();
+	// インデックスセット
+	SetMeshIndex(&m_pIdxBuff, MESHFIELD_HORIZONTAL, MESHFIELD_VERTICAL);
 
 	Load();
 }

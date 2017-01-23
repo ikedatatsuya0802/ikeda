@@ -194,3 +194,22 @@ void CSceneDX::UnlinkList(void)
 		}
 	}
 }
+
+//=============================================================================
+//	関数名	:AddVtxBuffer
+//	引数	:vector<LPDIRECT3DVERTEXBUFFER9> &pVtxBuff	->	頂点バッファ
+//			:int size	->	バッファサイズ
+//	戻り値	:無し
+//	説明	:頂点バッファを追加する。
+//=============================================================================
+void CSceneDX::AddVtxBuffer(vector<LPDIRECT3DVERTEXBUFFER9> &pVtxBuff, const int size)
+{
+	// サイズ変更
+	pVtxBuff.resize(pVtxBuff.size() + 1);
+
+	// バッファ生成
+	D3D_DEVICE->CreateVertexBuffer(size,
+		D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED,
+		&pVtxBuff[pVtxBuff.size() - 1],
+		NULL);
+}
