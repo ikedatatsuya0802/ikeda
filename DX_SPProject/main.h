@@ -82,5 +82,10 @@ void SwapData(SWAPDATA &data1, SWAPDATA &data2)
 	data2 = dataBuff;
 }
 
+template<typename TYPE,	size_t SIZE>
+size_t array_length(const TYPE(&)[SIZE])
+{
+	return SIZE;
+}
 
 #endif

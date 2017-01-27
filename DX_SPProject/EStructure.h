@@ -14,12 +14,17 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	ESTRUCTURE_WIDTH		(15.0f)				// 横幅
-#define	ESTRUCTURE_MARGIN		(50.0f)				// レールの間隔
-#define	ESTRUCTURE_SET		(20)				// レールの分割数
-#define	ESTRUCTURE_VECTOR		(4)					// レールのベクトル数
-#define	ESTRUCTURE_VERTEX		(ESTRUCTURE_SET * 2 + 2)	// レールの頂点数
-#define	ESTRUCTURE_TEXFILENAME000	"EStructure000.png"	// ポリゴンのファイル名
+const float	ESTRUCTURE_WIDTH		= (RAILLINE_WIDTH * 5.0f);	// 横幅
+const int	ESTRUCTURE_VERTICAL		= RAILLINE_SET;				// 奥方向のブロック数
+const int	ESTRUCTURE_HORIZONTAL	= 10;						// 平行方向のブロック数
+const float	ESTRUCTURE_WALL_HEIGHT	= 10.0f;					// 外壁の高さ
+#define	ESTRUCTURE_TEXFILENAME000	"EStructure000.png"			// テクスチャファイル名
+
+const int ESTRUCTURE_POLYGON_NUM = ((ESTRUCTURE_HORIZONTAL * 2) * ESTRUCTURE_VERTICAL + ((ESTRUCTURE_VERTICAL - 1) * 2));			// ポリゴン数
+const int ESTRUCTURE_INDEX_NUM = (((ESTRUCTURE_HORIZONTAL + 1) * 2) * ESTRUCTURE_VERTICAL + ((ESTRUCTURE_VERTICAL - 1) * 2));	// 頂点インデックス数
+
+const int ESTRUCTURE_VERTEX_NUM = ((ESTRUCTURE_VERTICAL + 1) * (ESTRUCTURE_HORIZONTAL + 1));	// 頂点数
+const int ESTRUCTURE_INDEX_STANDARD = ((ESTRUCTURE_HORIZONTAL + 1) * 2 + 2);					// インデックスの基準値
 
 //=============================================================================
 //	構造体
@@ -31,7 +36,7 @@
 class CEStructure : public CScene3DDX
 {
 public:
-	void	Init(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
+	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
@@ -41,7 +46,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CEStructure	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
+	static CEStructure	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CEStructure(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
@@ -50,8 +55,9 @@ protected:
 	void SetVtxBuff(void);
 	
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
+	LPDIRECT3DINDEXBUFFER9		m_pIdxBuff;	// インデックスバッファへのポインタ
+	D3DXVECTOR3 m_MeshPos[ESTRUCTURE_VERTEX_NUM];
 
-	int			m_EStructureLine;				// レールの配置
 	SPLINE*		m_Spline;
 };
 

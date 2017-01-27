@@ -34,6 +34,7 @@
 #include "map.h"
 #include "countdown.h"
 #include "pillar.h"
+#include "EStructure.h"
 
 //=============================================================================
 //	Ã“Iƒƒ“ƒo•Ï”
@@ -64,6 +65,7 @@ void CGame::Init(void)
 	m_RailLine = CRailLine::Create(0);
 	//m_RailLine->ChangeDrawFrag();
 	CPillar::Create();
+	CEStructure::Create();
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();

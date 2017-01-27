@@ -98,14 +98,18 @@ void CPillar::SetVtxBuff(void)
 			{
 				pVtx[y * (PILLAR_HORIZONTAL + 1) + x].Pos.x
 					= cosf(D3DX_PI * 2.0f / PILLAR_HORIZONTAL * x) * PILLAR_RADIUS;
+				m_MeshPos[y * (PILLAR_HORIZONTAL + 1) + x].x
+					= cosf(D3DX_PI * 2.0f / PILLAR_HORIZONTAL * x) * PILLAR_RADIUS;
 
 				pVtx[y * (PILLAR_HORIZONTAL + 1) + x].Pos.y
+					= ((PILLAR_HEIGHT * 1.0f * PILLAR_VERTICAL)) - ((m_Spline->Pos[i].y - 10.0f) * y);
+				m_MeshPos[y * (PILLAR_HORIZONTAL + 1) + x].y
 					= ((PILLAR_HEIGHT * 1.0f * PILLAR_VERTICAL)) - ((m_Spline->Pos[i].y - 10.0f) * y);
 
 				pVtx[y * (PILLAR_HORIZONTAL + 1) + x].Pos.z
 					= sinf(D3DX_PI * 2.0f / PILLAR_HORIZONTAL * x) * PILLAR_RADIUS;
-
-				m_MeshPos[y * (PILLAR_HORIZONTAL + 1) + x] = pVtx[y * (PILLAR_HORIZONTAL + 1) + x].Pos;
+				m_MeshPos[y * (PILLAR_HORIZONTAL + 1) + x].z
+					= sinf(D3DX_PI * 2.0f / PILLAR_HORIZONTAL * x) * PILLAR_RADIUS;
 			}
 		}
 
@@ -125,6 +129,135 @@ void CPillar::SetVtxBuff(void)
 				pVtx[y * (PILLAR_HORIZONTAL + 1) + x].tex.x = (1.0f / 8.0f * x);
 				pVtx[y * (PILLAR_HORIZONTAL + 1) + x].tex.y = (1.0f / PILLAR_VERTICAL * y);
 			}
+		}
+
+		// 法線設定
+		for(int j = 0 ; j < PILLAR_VERTEX_NUM ; j++)
+		{
+			// 法線設定
+			D3DXVECTOR3 nor = VEC3_ZERO;
+
+			if(j == 0)
+			{// 最初の点
+
+				D3DXVECTOR3 v1, v2;
+
+				v1 = m_MeshPos[1] - m_MeshPos[0];
+				v2 = m_MeshPos[PILLAR_HORIZONTAL] - m_MeshPos[0];
+
+				D3DXVec3Cross(&nor, &v1, &v2);
+				D3DXVec3Normalize(&nor, &nor);
+			}
+			else if(j <= PILLAR_HORIZONTAL)
+			{// 上端の点
+
+				D3DXVECTOR3 n1, n2, v1, v2, v3;
+
+				// 基準点からのベクトル算出
+				v1 = m_MeshPos[j + 1] - m_MeshPos[j];
+				v2 = m_MeshPos[j + PILLAR_HORIZONTAL] - m_MeshPos[j];
+				v3 = m_MeshPos[j - 1] - m_MeshPos[j];
+
+				// 外積により2つのベクトルにおける法線算出
+				D3DXVec3Cross(&n1, &v1, &v2);
+				D3DXVec3Normalize(&n1, &n1);
+				D3DXVec3Cross(&n2, &v2, &v3);
+				D3DXVec3Normalize(&n2, &n2);
+
+				// 最終的なベクトル算出
+				nor = (n1 + n2) / 2.0f;
+				D3DXVec3Normalize(&nor, &nor);
+			}
+			else if(j >= (PILLAR_VERTEX_NUM - PILLAR_HORIZONTAL - 1))
+			{// 下端の点
+
+				D3DXVECTOR3 n1, n2, v1, v2, v3;
+
+				// 基準点からのベクトル算出
+				v1 = m_MeshPos[j - 1] - m_MeshPos[j];
+				v2 = m_MeshPos[j - PILLAR_HORIZONTAL] - m_MeshPos[j];
+				v3 = m_MeshPos[j + 1] - m_MeshPos[j];
+
+				// 外積により2つのベクトルにおける法線算出
+				D3DXVec3Cross(&n1, &v1, &v2);
+				D3DXVec3Normalize(&n1, &n1);
+				D3DXVec3Cross(&n2, &v2, &v3);
+				D3DXVec3Normalize(&n2, &n2);
+
+				// 最終的なベクトル算出
+				nor = (n1 + n2) / 2.0f;
+				D3DXVec3Normalize(&nor, &nor);
+			}
+			else if(j % PILLAR_HORIZONTAL == 0)
+			{// 左端の点
+
+				D3DXVECTOR3 n1, n2, v1, v2, v3;
+
+				// 基準点からのベクトル算出
+				v1 = m_MeshPos[j - PILLAR_HORIZONTAL] - m_MeshPos[j];
+				v2 = m_MeshPos[j + 1] - m_MeshPos[j];
+				v3 = m_MeshPos[j + PILLAR_HORIZONTAL] - m_MeshPos[j];
+
+				// 外積により2つのベクトルにおける法線算出
+				D3DXVec3Cross(&n1, &v1, &v2);
+				D3DXVec3Normalize(&n1, &n1);
+				D3DXVec3Cross(&n2, &v2, &v3);
+				D3DXVec3Normalize(&n2, &n2);
+
+				// 最終的なベクトル算出
+				nor = (n1 + n2) / 2.0f;
+				D3DXVec3Normalize(&nor, &nor);
+			}
+			else if(j % PILLAR_HORIZONTAL == (PILLAR_HORIZONTAL - 1))
+			{// 右端の点
+
+				D3DXVECTOR3 n1, n2, v1, v2, v3;
+
+				// 基準点からのベクトル算出
+				v1 = m_MeshPos[j - PILLAR_HORIZONTAL] - m_MeshPos[j];
+				v2 = m_MeshPos[j + 1] - m_MeshPos[j];
+				v3 = m_MeshPos[j + PILLAR_HORIZONTAL] - m_MeshPos[j];
+
+				// 外積により2つのベクトルにおける法線算出
+				D3DXVec3Cross(&n1, &v1, &v2);
+				D3DXVec3Normalize(&n1, &n1);
+				D3DXVec3Cross(&n2, &v2, &v3);
+				D3DXVec3Normalize(&n2, &n2);
+
+				// 最終的なベクトル算出
+				nor = (n1 + n2) / 2.0f;
+				D3DXVec3Normalize(&nor, &nor);
+			}
+			else
+			{// 接点が6つの点
+
+				D3DXVECTOR3 norArray[6];
+				D3DXVECTOR3 vec[6];
+
+				vec[0] = m_MeshPos[j - PILLAR_HORIZONTAL] - m_MeshPos[j];
+				vec[1] = m_MeshPos[j - PILLAR_HORIZONTAL + 1] - m_MeshPos[j];
+				vec[2] = m_MeshPos[j + 1] - m_MeshPos[j];
+				vec[3] = m_MeshPos[j + PILLAR_HORIZONTAL] - m_MeshPos[j];
+				vec[4] = m_MeshPos[j + PILLAR_HORIZONTAL + 1] - m_MeshPos[j];
+				vec[5] = m_MeshPos[j - 1] - m_MeshPos[j];
+				D3DXVec3Cross(&norArray[0], &vec[0], &vec[1]);
+				D3DXVec3Normalize(&norArray[0], &norArray[0]);
+				D3DXVec3Cross(&norArray[1], &vec[1], &vec[2]);
+				D3DXVec3Normalize(&norArray[1], &norArray[1]);
+				D3DXVec3Cross(&norArray[2], &vec[2], &vec[3]);
+				D3DXVec3Normalize(&norArray[2], &norArray[2]);
+				D3DXVec3Cross(&norArray[3], &vec[3], &vec[4]);
+				D3DXVec3Normalize(&norArray[3], &norArray[3]);
+				D3DXVec3Cross(&norArray[4], &vec[4], &vec[5]);
+				D3DXVec3Normalize(&norArray[4], &norArray[4]);
+				D3DXVec3Cross(&norArray[5], &vec[5], &vec[1]);
+				D3DXVec3Normalize(&norArray[5], &norArray[5]);
+				nor = (norArray[0] + norArray[1] + norArray[2] + norArray[3] + norArray[4] + norArray[5]) / 6.0f;
+				D3DXVec3Normalize(&nor, &nor);
+			}
+
+			// 法線をセット
+			pVtx[j].Nor = nor;
 		}
 
 		m_pVtxBuff[i]->Unlock();
@@ -228,7 +361,7 @@ CPillar *CPillar::Create(D3DXVECTOR3 pos)
 //	関数名	:SetMeshNor
 //	引数	:D3DXVECTOR3 pos(初期位置)
 //	戻り値	:無し
-//	説明	:。
+//	説明	:法線を再設定する。
 //=============================================================================
 void CPillar::SetMeshNor(void)
 {
@@ -236,9 +369,6 @@ void CPillar::SetMeshNor(void)
 
 	for(int i = 0 ; i < (int)m_pVtxBuff.size() ; i++)
 	{
-		m_pVtxBuff[i]->Lock(0, 0, (void**)&pVtx, 0);
-		memcpy(pVtx, m_pVtxBuff[i], sizeof(m_pVtxBuff[i]));
-
 		for(int j = 0 ; j < PILLAR_VERTEX_NUM ; j++)
 		{
 			// 法線設定
@@ -316,7 +446,7 @@ void CPillar::SetMeshNor(void)
 				D3DXVec3Normalize(&nor, &nor);
 			}
 			else if(j % PILLAR_HORIZONTAL == (PILLAR_HORIZONTAL - 1))
-			{// 左端の点
+			{// 右端の点
 
 				D3DXVECTOR3 n1, n2, v1, v2, v3;
 
@@ -337,7 +467,7 @@ void CPillar::SetMeshNor(void)
 			}
 			else
 			{// 接点が6つの点
-
+				
 				D3DXVECTOR3 n1, n2, n3, n4, n5, n6, v1, v2, v3, v4, v5, v6;
 
 				v1 = m_MeshPos[0] - m_MeshPos[0];
@@ -365,15 +495,38 @@ void CPillar::SetMeshNor(void)
 			// 法線をセット
 			pVtx[j].Nor = nor;
 
-
-			m_pVtxBuff[i]->Unlock();
 		}
 	}
 }
 
-void CPillar::Vector3Round(D3DXVECTOR3 *vec)
+
+D3DXVECTOR3 CPillar::GetVecNor(D3DXVECTOR3 *vec, uint size)
 {
-	(*vec).x = (float)(int)(*vec).x;
-	(*vec).y = (float)(int)(*vec).y;
-	(*vec).z = (float)(int)(*vec).z;
+	D3DXVECTOR3 nor = VEC3_ZERO;
+	vector<D3DXVECTOR3> norArray(size);
+
+	for(uint i = 0 ; i < size ; i++)
+	{
+		D3DXVec3Cross(&norArray[i], &vec[i], &vec[i + 1]);
+		D3DXVec3Normalize(&norArray[i], &norArray[i]);
+
+		nor += norArray[i];
+	}/*
+	D3DXVec3Cross(&n1, &v1, &v2);
+	D3DXVec3Normalize(&n1, &n1);
+	D3DXVec3Cross(&n2, &v2, &v3);
+	D3DXVec3Normalize(&n2, &n2);
+	D3DXVec3Cross(&n3, &v3, &v4);
+	D3DXVec3Normalize(&n3, &n3);
+	D3DXVec3Cross(&n4, &v4, &v5);
+	D3DXVec3Normalize(&n4, &n4);
+	D3DXVec3Cross(&n5, &v5, &v6);
+	D3DXVec3Normalize(&n5, &n5);
+	D3DXVec3Cross(&n6, &v6, &v1);
+	D3DXVec3Normalize(&n6, &n6);*/
+	//nor = (n1 + n2 + n3 + n4 + n5 + n6) / 6.0f;
+	nor /= (float)size;
+	D3DXVec3Normalize(&nor, &nor);
+
+	return nor;
 }

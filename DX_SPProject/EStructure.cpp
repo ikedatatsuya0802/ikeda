@@ -1,6 +1,6 @@
 //=============================================================================
 //
-//	タイトル	レールファイル
+//	タイトル	高架
 //	ファイル名	EStructure.cpp
 //	作成者		AT13A284_07 池田達哉
 //	作成日		2016/06/29
@@ -49,27 +49,26 @@ CEStructure::~CEStructure()
 //	戻り値	:無し
 //	説明	:初期化処理を行う。
 //=============================================================================
-void CEStructure::Init(int line, D3DXVECTOR3 pos)
-{	
-	char			*str	= NULL;	// ファイル内容格納配列
-	unsigned int	offset	= 0;	// 文字列指定子
-
+void CEStructure::Init(D3DXVECTOR3 pos)
+{
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VEC3_ZERO);
-	m_EStructureLine = line;
 	
 	//LoadSpline(line);
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * (m_Spline->PosHermite.size() * 2 + 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ESTRUCTURE_VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
-	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"ESTRUCTURE_TEXFILENAME000, &m_pTexture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\wall000.jpg", &m_pTexture);
 	
 	// レール情報セット
 	SetVtxBuff();
+
+	// インデックスセット
+	SetMeshIndex(&m_pIdxBuff, ESTRUCTURE_HORIZONTAL, ESTRUCTURE_VERTICAL);
 
 	Load();
 }
@@ -82,65 +81,91 @@ void CEStructure::Init(int line, D3DXVECTOR3 pos)
 //=============================================================================
 void CEStructure::SetVtxBuff(void)
 {
-	VERTEX_3D			*pVtx;		// 3D頂点情報
+	VERTEX_3D *pVtx;		// 3D頂点情報
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
 		float rot = 0.0f;
-		//D3DXVECTOR3 a[ESTRUCTURE_VERTEX];
 
-		// 描画座標設定
-		rot = atan2f((m_Spline->PosHermite[1].x - m_Spline->PosHermite[0].x), (m_Spline->PosHermite[1].z - m_Spline->PosHermite[0].z));
-		pVtx[0].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x + cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z - sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
-		pVtx[1].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x - cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f), 1.0f, m_Spline->PosHermite[0].z + sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
-		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
-		{
+		for(int y = 0 ; y < ESTRUCTURE_VERTICAL ; y++)
+		{			
+			D3DXVECTOR3 sPos = m_Spline->PosHermite[y];			
+			sPos.y = (m_Spline->PosHermite[y].y < 2.0f) ? -100.0f : (sPos.y - 1.0f);
+			D3DXVECTOR3 vec = VEC3_ZERO;
+
 			// 角度設定
-			if(i != ((int)m_Spline->PosHermite.size() - 1))
+			if(y != ((int)m_Spline->PosHermite.size() - 1))
 			{
-				rot = atan2f((m_Spline->PosHermite[i + 1].x - m_Spline->PosHermite[i].x), (m_Spline->PosHermite[i + 1].z - m_Spline->PosHermite[i].z));
+				rot = atan2f((m_Spline->PosHermite[y + 1].x - m_Spline->PosHermite[y].x), (m_Spline->PosHermite[y + 1].z - m_Spline->PosHermite[y].z));
 			}
 			else
 			{
-				rot = atan2f((m_Spline->PosHermite[i].x - m_Spline->PosHermite[i - 1].x), (m_Spline->PosHermite[i].z - m_Spline->PosHermite[i - 1].z));
+				rot = atan2f((m_Spline->PosHermite[y].x - m_Spline->PosHermite[y - 1].x), (m_Spline->PosHermite[y].z - m_Spline->PosHermite[y - 1].z));
 			}
 
-			if(i == ((int)m_Spline->PosHermite.size() - 1))
+			float cosWidth = (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f));	// 線路幅のX成分
+			float sinWidth = (sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));	// 線路幅のZ成分
+			float cosWidthOuter = cosWidth * 1.1f;						// 外壁幅のX成分
+			float sinWidthOuter = sinWidth * 1.1f;						// 外壁幅のZ成分
+
+			for(int x = 0 ; x <= ESTRUCTURE_HORIZONTAL ; x++)
 			{
-				pVtx[i * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
-					0.1f,
-					m_Spline->PosHermite[0].z - sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
-				pVtx[i * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[0].x - cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f),
-					0.1f,
-					m_Spline->PosHermite[0].z + sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
-			}
-			else
-			{
-				pVtx[i * 2 + 0].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
-					0.1f,
-					m_Spline->PosHermite[i].z - sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
-				pVtx[i * 2 + 1].Pos = D3DXVECTOR3(m_Spline->PosHermite[i].x - cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f),
-					0.1f,
-					m_Spline->PosHermite[i].z + sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f));
+				D3DXVECTOR3 pos = VEC3_ZERO;
+
+				switch(x)
+				{
+				case 0:		// 基準点
+					pos = D3DXVECTOR3(sPos.x, sPos.y, sPos.z);
+					break;
+				case 1:		// 基準左・内壁下部
+					pos = D3DXVECTOR3((sPos.x - cosWidth), sPos.y, (sPos.z + sinWidth));
+					break;
+				case 2:		// 基準左・内壁上部
+					pos = D3DXVECTOR3((sPos.x - cosWidth), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z + sinWidth));
+					break;
+				case 3:		// 基準左・外壁上部
+					pos = D3DXVECTOR3((sPos.x - sinWidthOuter), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z + cosWidthOuter));
+					break;
+				case 4:		// 基準左・外壁下部
+					pos = D3DXVECTOR3((sPos.x - sinWidthOuter), (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)), (sPos.z + cosWidthOuter));
+					break;
+				case 5:		// 基準真下の点
+					pos = D3DXVECTOR3(sPos.x, (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.3f)), sPos.z);
+					break;
+				case 6:		// 基準右・外壁下部
+					pos = D3DXVECTOR3((sPos.x + sinWidthOuter), (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)), (sPos.z - cosWidthOuter));
+					break;
+				case 7:		// 基準右・外壁上部
+					pos = D3DXVECTOR3((sPos.x + sinWidthOuter), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z - cosWidthOuter));
+					break;
+				case 8:		// 基準右・内壁上部
+					pos = D3DXVECTOR3((sPos.x + cosWidth), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z - sinWidth));
+					break;
+				case 9:		// 基準右・内壁下部
+					pos = D3DXVECTOR3((sPos.x + cosWidth), sPos.y, (sPos.z - sinWidth));
+					break;
+				case 10:	// 基準点
+					pos = D3DXVECTOR3(sPos.x, sPos.y, sPos.z);
+					break;
+				default:
+					break;
+				}
+
+				int i = y * (ESTRUCTURE_HORIZONTAL + 1) + x;
+				pVtx[i].Pos = pos;
 			}
 		}
 
-		for(int i = 0 ; i < ((int)m_Spline->PosHermite.size() * 2 + 2) ; i++)
+		for(int i = 0 ; i < ESTRUCTURE_VERTEX_NUM ; i++)
 		{
 			// 法線設定
 			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 			// 色設定
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
-		}
 
-		// テクスチャ座標設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
-		{
-			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * 0.75f);
-			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * 0.75f);
+			// テクスチャ座標設定
+			pVtx[i].tex = D3DXVECTOR2((float)(i % 2), (float)i * 0.75f);
 		}
 
 	}
@@ -192,25 +217,26 @@ void CEStructure::Update(void)
 //=============================================================================
 void CEStructure::Draw(void)
 {
-	if(m_flgDraw)
+	//if(m_flgDraw)
 	{
 		// マトリックス設定
-		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
+		CRendererDX::SetMatrix(&m_mtxWorld, VEC3_ZERO);
 
 		// Zテスト開始
 		CRendererDX::EnableZTest();
 
 		// ライティング設定をオフに
-		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 描画処理
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
+		D3D_DEVICE->SetIndices(m_pIdxBuff);									// インデックスバッファのバインド
 		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->PosHermite.size() * 2));	// 描画
+		D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, ESTRUCTURE_VERTEX_NUM, 0, ESTRUCTURE_POLYGON_NUM);
 
 		// ライティング設定をオンに
-		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 		// Zテスト終了
 		CRendererDX::DisableZTest();
@@ -223,13 +249,13 @@ void CEStructure::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CEStructure *CEStructure::Create(int line, D3DXVECTOR3 pos)
+CEStructure *CEStructure::Create(D3DXVECTOR3 pos)
 {
-	CEStructure *scene3D;
+	CEStructure *instance;
 
-	scene3D = new CEStructure;
+	instance = new CEStructure;
 	
-	scene3D->Init(line, pos);
+	instance->Init(pos);
 
-	return scene3D;
+	return instance;
 }

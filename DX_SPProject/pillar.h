@@ -14,6 +14,7 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+#define array_sizeof(p) ( sizeof( p) / sizeof( (p)[0] ) )
 #define	PILLAR_RADIUS			(10.0f)					// 半径
 #define	PILLAR_HEIGHT			(100.0f)				// 縦幅
 #define	PILLAR_VERTICAL			(1)						// 縦ブロック数
@@ -54,7 +55,7 @@ protected:
 
 	void SetVtxBuff(void);
 	void SetMeshNor(void);
-	void Vector3Round(D3DXVECTOR3 *vec);
+	D3DXVECTOR3 GetVecNor(D3DXVECTOR3 *vec, uint size);
 
 	static LPDIRECT3DTEXTURE9		m_pTexture;	// テクスチャへのポインタ
 	LPDIRECT3DINDEXBUFFER9			m_pIdxBuff;	// インデックスバッファへのポインタ
