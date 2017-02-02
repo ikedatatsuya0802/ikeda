@@ -14,7 +14,6 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	LIGHT_NUM		(3)		// ライトの個数
 
 //=============================================================================
 //	クラス定義
@@ -23,9 +22,6 @@ class CLightDX
 {
 public:
 	static HRESULT	Init(void);
-	static void		Uninit(void);
-	static void		Update(void);
-	static void		Draw(void);
 
 	static uint		GetLightNum(void) { return m_LightNum; }
 
@@ -41,9 +37,7 @@ private:
 	static void AddSpotLight(D3DXVECTOR3 pos, D3DXVECTOR3 vec, D3DCOLORVALUE dif,
 		D3DCOLORVALUE spec = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DCOLORVALUE amb = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
-	//static D3DLIGHT9 m_Light[3];
 	static vector<D3DLIGHT9> m_Light;
-	static vector<D3DLIGHT9> m_SpotLight;
 	static uint m_LightNum;
 };
 

@@ -121,7 +121,7 @@ void CWiring::Draw(void)
 	// Œ»Ý‚Ìƒ}ƒeƒŠƒAƒ‹‚ðŽæ“¾
 	D3D_DEVICE->GetMaterial(&matDef);
 
-	for(int i = 3 ; i < (int)m_Spline->PosHermite.size() ; i += 3)
+	for(int i = 2 ; i < (int)m_Spline->PosHermite.size() ; i += 3)
 	{
 		float rot = 0.0f;
 

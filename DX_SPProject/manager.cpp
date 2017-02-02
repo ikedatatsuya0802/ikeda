@@ -80,7 +80,6 @@ void CManager::Uninit(void)
 	CSceneDX::DeleteAll();
 	CSound::Uninit();
 	CFade::Uninit();
-	CLightDX::Uninit();
 }
 
 //=============================================================================
@@ -99,7 +98,6 @@ void CManager::Update(void)
 	CRendererDX::Update();
 	m_Camera->Update();
 	CDebugProc::Update();
-	CLightDX::Update();
 }
 
 //=============================================================================
@@ -112,9 +110,6 @@ void CManager::Draw(void)
 {
 	// 描画シーケンス開始
 	CRendererDX::Begin();
-
-	// ライトベクトル情報
-	CLightDX::Draw();
 
 	// カメラの設定
 	m_Camera->SetCamera();

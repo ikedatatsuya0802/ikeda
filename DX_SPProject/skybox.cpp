@@ -114,7 +114,7 @@ void CSkybox::SetVtxBuff(bool ifLight)
 		pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 		// êFê›íË
-		if(ifLight)
+		if(1)
 		{
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}

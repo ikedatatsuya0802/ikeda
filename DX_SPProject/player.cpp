@@ -177,7 +177,7 @@ void CPlayer::Update(void)
 void CPlayer::UpdateMove(void)
 {
 	CCameraDX	*camera		= DX_CAMERA;	// ƒJƒƒ‰
-	int		posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
+	int			posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
 	
 
 	// ƒXƒvƒ‰ƒCƒ“‚Ìƒ[ƒh
@@ -192,7 +192,7 @@ void CPlayer::UpdateMove(void)
 	else if(!DX_CAMERA->GetCameraMode() && KH_S)
 	{// Œ¸‘¬
 
-		m_PerMove -= PLAYER_MOVEMENT;
+		m_PerMove -= PLAYER_MOVEMENT * 2;
 		if(m_PerMove < 0.0f)
 		{
 			m_PerMove = 0.0f;
@@ -206,18 +206,19 @@ void CPlayer::UpdateMove(void)
 	}
 
 	// ˆÚ“®—Ê”½‰f
-	m_Per += m_PerMove;
+	float	length = m_Spline->LengthMin[posNum];
+	float	lengthPer = length / 1000.0f;
+	m_Per += (m_PerMove * lengthPer);
+	CDebugProc::DebugProc("Œ»Ý‹æŠÔ:%d->%d\n", posNum, posNum + 1);
+	CDebugProc::DebugProc("lengthPer:%f\n", lengthPer);
 
 	// â‘ÎˆÚ“®—Ê‚ÌŒv‘ª
 	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));
 
-	// •â³Œã‚ÌT
-	float castT = m_Per;
-
 	// ˆÊ’u”½‰f
-	m_Pos.x = CGame::GetRailLine()->GetSplinePos(castT).x;
-	m_Pos.z = CGame::GetRailLine()->GetSplinePos(castT).z;
-	m_Pos.y = CGame::GetRailLine()->GetSplinePos(castT).y;
+	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
+	m_Pos.z = CGame::GetRailLine()->GetSplinePos(m_Per).z;
+	m_Pos.y = CGame::GetRailLine()->GetSplinePos(m_Per).y;
 
 	
 	// ‰ñ“]”½‰f
@@ -230,7 +231,7 @@ void CPlayer::UpdateMove(void)
 
 	
 	// ŒXŽÎ‚Ì‰ñ“]Ž²ŒvŽZ
-	D3DXVECTOR3 vec = CGame::GetRailLine()->GetMoveVec(castT);
+	D3DXVECTOR3 vec = CGame::GetRailLine()->GetMoveVec(m_Per);
 	D3DXVec3Normalize(&vec, &vec);
 
 	m_VecQuat.x = -vec.z;

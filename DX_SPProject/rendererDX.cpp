@@ -93,19 +93,23 @@ HRESULT CRendererDX::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);		// レンダーステート設定
 	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);							// ライティング設定(オン・オフ)
 
-																				// サンプラーステートの設定
+	// サンプラーステートの設定
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);		// テクスチャ縮小時の補間設定
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);		// テクスチャ拡大時の補間設定
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);		// 繰り返し設定(U値サイドを繰り返し)
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);		// 繰り返し設定(V値サイドを繰り返し)
 
-																				// テクスチャステージステートの設定
+	// テクスチャステージステートの設定
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);		// 透過設定
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);		// 透過設定
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);		// 透過設定
 
 
-																				// テクスチャ生成
+	// アンビエントライトの設定
+	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+
+	// テクスチャ生成
 	D3DXCreateTexture(m_pD3DDevice, (UINT)SCREEN_WIDTH, (UINT)SCREEN_HEIGHT, 1,
 		D3DUSAGE_RENDERTARGET, D3DFMT_A8B8G8R8, D3DPOOL_DEFAULT, &m_BlurTex1);
 	m_BlurTex1->GetSurfaceLevel(0, &m_BlurSurf1);

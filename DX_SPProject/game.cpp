@@ -64,7 +64,7 @@ void CGame::Init(void)
 	// 3D
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
-	CCylinder::Create();
+	//CCylinder::Create();
 	m_RailLine = CRailLine::Create(0);
 	//m_RailLine->ChangeDrawFrag();
 	CPillar::Create();
