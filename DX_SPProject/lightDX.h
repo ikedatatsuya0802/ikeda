@@ -27,7 +27,11 @@ public:
 	static void		Update(void);
 	static void		Draw(void);
 
-	static void		ChangeHolLight(uint num, D3DCOLORVALUE col);
+	static uint		GetLightNum(void) { return m_LightNum; }
+
+	static void		ChangeHolLight(cuint num, D3DCOLORVALUE col);
+	static void		ChangeLight(cuint num, cbool flug);
+	static void		SetSpotLight(cuint num, const D3DXVECTOR3 pos, const D3DXVECTOR3 vec);
 
 private:
 	static void AddHolizontalLight(D3DXVECTOR3 vec, D3DCOLORVALUE dif,
@@ -39,8 +43,8 @@ private:
 
 	//static D3DLIGHT9 m_Light[3];
 	static vector<D3DLIGHT9> m_Light;
-	static int m_LightNum;
-
+	static vector<D3DLIGHT9> m_SpotLight;
+	static uint m_LightNum;
 };
 
 #endif

@@ -84,6 +84,16 @@ public:
 		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 		D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	}
+	static void EnableAlphaTest(void) {
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	}
+	static void DisableAlphaTest(void) {
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	}
 
 	static LPDIRECT3DDEVICE9		m_pD3DDevice;		// 3Dデバイスへのポインタ
 

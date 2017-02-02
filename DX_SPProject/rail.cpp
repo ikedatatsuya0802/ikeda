@@ -207,7 +207,7 @@ void CRail::Draw(void)
 		//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 		// ライティング設定をオフに
-		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 描画処理
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
@@ -216,7 +216,7 @@ void CRail::Draw(void)
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->PosHermite.size() * 2));	// 描画
 
 		// ライティング設定をオンに
-		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 		// Zテスト終了
 		CRendererDX::DisableZTest();

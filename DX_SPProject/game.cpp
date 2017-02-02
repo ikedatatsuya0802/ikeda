@@ -35,6 +35,7 @@
 #include "countdown.h"
 #include "pillar.h"
 #include "EStructure.h"
+#include "wiring.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -45,6 +46,8 @@ CRailLine	*CGame::m_RailLine;
 CPlayer		*CGame::m_Player1;
 CPlayer		*CGame::m_Player2;
 CDriftMark	*CGame::m_DriftMark;
+CScene2DDX	*CGame::m_Hakushin;
+CPause		*CGame::m_Pause;
 
 int			CGame::m_GoalCount = GOAL_COUNT;
 
@@ -66,6 +69,7 @@ void CGame::Init(void)
 	//m_RailLine->ChangeDrawFrag();
 	CPillar::Create();
 	CEStructure::Create();
+	CWiring::Create();
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
@@ -73,13 +77,17 @@ void CGame::Init(void)
 	
 	// 2D
 	CDriftMark::Create();
+	m_Hakushin = CScene2DDX::Create(D3DXVECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f), "hakushin.png");
+	m_Hakushin->SetColor(0.0f);
 	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
-	CPause::Create();
 	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.9f), (SCREEN_HEIGHT * 0.9f), 0.0f));
 	CCountdown::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
+	m_Pause = CPause::Create();
+	m_Pause->UnlinkList();
 
 	// フレーム初期化
 	m_Frame = -1;
@@ -108,17 +116,22 @@ void CGame::Uninit(void)
 //=============================================================================
 void CGame::Update(void)
 {
-	// 3D
-	// シーン更新
-	CSceneDX::UpdateAll();
+	m_Pause->Update();
 
-	if(m_Player1->GetPerSpline() >= RAILLINE_GOAL)
+	// ポーズされていない場合のみ実行
+	if(!m_Pause->GetPause())
 	{
-		// ゴールしていたらカウンタを減らす
-		if(m_GoalCount > 0) m_GoalCount--;
+		// シーン更新
+		CSceneDX::UpdateAll();
 
-		// リザルトにフェード
-		if(m_GoalCount == 0) CFade::Start(new CResult, FS_OUT);
+		if(m_Player1->GetPerSpline() >= RAILLINE_GOAL)
+		{
+			// ゴールしていたらカウンタを減らす
+			if(m_GoalCount > 0) m_GoalCount--;
+
+			// リザルトにフェード
+			if(m_GoalCount == 0) CFade::Start(new CResult, FS_OUT);
+		}
 	}
 
 	// フレーム加算
@@ -135,4 +148,9 @@ void CGame::Draw(void)
 {
 	// シーン描画
 	CSceneDX::DrawAll();
+
+	if(m_Pause->GetPause())
+	{
+		m_Pause->Draw();
+	}
 }

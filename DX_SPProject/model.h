@@ -27,7 +27,7 @@ class CPlayer;
 class CModel : public CSceneXDX
 {
 public:
-	CModel(bool ifListAdd = false, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CModel(bool ifListAdd = false, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CModel();
 
 	void	Init(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);

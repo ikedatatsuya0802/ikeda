@@ -84,7 +84,8 @@ void CSceneXDX::Unload(void)
 //=============================================================================
 void CSceneXDX::Uninit(void)
 {
-
+	SafetyRelease(m_ModelStatus.pBuffMat);
+	SafetyRelease(m_ModelStatus.pMesh);
 }
 
 //=============================================================================

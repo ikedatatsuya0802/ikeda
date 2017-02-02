@@ -24,7 +24,7 @@ using namespace std;
 #define	RAILLINE_LENGTH			(10000.0f)				// 横幅
 #define	RAILLINE_WIDTH			(15.0f)					// 横幅
 #define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
-#define	RAILLINE_SET			(100)					// レールの分割数
+#define	RAILLINE_SET			(50)					// レールの分割数
 #define	RAILLINE_VECTOR			(4)						// レールのベクトル数
 #define	RAILLINE_VERTEX			(RAILLINE_SET * 2 + 2)	// レールの頂点数
 #define	RAILLINE_SPOINT_SIZE	(20.0f)					// レール頂点の確認用エフェクトサイズ
@@ -104,7 +104,7 @@ public:
 	static float AngleOf2Vector(D3DXVECTOR3 a, D3DXVECTOR3 b);
 
 private:
-	CRailLine(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CRailLine(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRailLine();
 
 	void	MouseEdit();

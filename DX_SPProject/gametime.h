@@ -31,7 +31,7 @@ typedef struct FIGURE{
 class CGametime
 {
 public:
-	CGametime(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CGametime(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CGametime();
 	
 	void	Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure);
@@ -39,7 +39,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CGametime	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+	static CGametime	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, FIGURE figure = 0);
 
 	void	SetValue(float value);

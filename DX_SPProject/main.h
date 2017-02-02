@@ -33,6 +33,12 @@ using namespace std;
 #define SIMPLE_FOR(max)			for(int i=0;i<max;i++)	// 単純複数回処理
 #define	uchar					unsigned char
 #define	uint					unsigned int
+#define	cbool					const bool
+#define	cchar					const char
+#define	cint					const int
+#define	cfloat					const float
+#define	cuchar					const unsigned char
+#define	cuint					const unsigned int
 #define	GAME_FPS				(60)
 #define	DEFAULT_SCREEN_WIDTH	(1280.0f)	// ウィンドウの横幅
 #define	DEFAULT_SCREEN_HEIGHT	(760.0f)	// ウィンドウの縦幅

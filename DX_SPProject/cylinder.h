@@ -44,7 +44,7 @@
 class CCylinder : public CScene3DDX
 {
 public:
-	CCylinder(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CCylinder(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CCylinder();
 
 	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
@@ -52,7 +52,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CCylinder	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+	static CCylinder	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード

@@ -34,7 +34,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CSkybox	*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+	static CSkybox	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		bool ifLight = false, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	// リソースのロード
@@ -43,7 +43,7 @@ public:
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
 protected:
-	CSkybox(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CSkybox(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSkybox();
 
 	void	SetVtxBuff(bool ifLight);

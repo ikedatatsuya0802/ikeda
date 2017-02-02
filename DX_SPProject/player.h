@@ -38,6 +38,8 @@
 #define	PLAYER_ROTMOTION		(0.2f)			// プレイヤーの回転ステップ
 #define	PLAYER_MOTION_SPEED		(1.0f / 15)		// プレイヤーのモーションスピード
 
+#define	PLAYER_CAMERA_DISVEC	(10.0f)			// カメラ距離の変更量
+
 //=============================================================================
 //	構造体
 //=============================================================================
@@ -87,7 +89,7 @@ public:
 	void	SetPerSpline(float perSpline) { m_Per = perSpline; }	// スプライン位置をセット
 
 protected:
-	CPlayer(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_PLAYER);
+	CPlayer(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_PLAYER);
 	~CPlayer();
 
 	CModel *m_Model[PLAYER_PARTS];	// 3Dモデルのパーツ情報
@@ -104,6 +106,7 @@ protected:
 	D3DXVECTOR3		m_Move;			// モデルの相対移動量
 	D3DXVECTOR3		m_RotMove;		// モデルの相対回転量
 	bool			m_bJump;		// ジャンプ状態
+	D3DXVECTOR3		m_MoveVec;		// 進行方向
 	D3DXVECTOR3		m_VecQuat;		// 傾斜クォータニオンの回転ベクトル
 	float			m_RotQuat;		// 傾斜クォータニオンの回転角度
 

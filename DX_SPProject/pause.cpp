@@ -14,6 +14,7 @@
 #include "game.h"
 #include "player.h"
 #include "fade.h"
+#include "countdown.h"
 
 //=============================================================================
 //	ŠÖ”–¼	:CPause()
@@ -158,7 +159,7 @@ void CPause::Update(void)
 {
 	VERTEX_2D	*pVtx;	// 3D’¸“_î•ñ
 
-	if(KT_P)
+	if((CGame::GetFrame() > COUNTDOWN_END_TIME) && KT_P)
 	{
 		ChangePause();
 	}

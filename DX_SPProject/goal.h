@@ -40,7 +40,7 @@ public:
 	static CGoal	*Create(void);
 
 protected:
-	CGoal(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CGoal(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CGoal();
 
 	void SetVtxBuff(void);

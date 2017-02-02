@@ -27,7 +27,6 @@ CCameraDX::CCameraDX()
 {
 	// アニメーション情報初期化
 	LoadCameraAnim();
-	LoadCameraAnim2();
 	m_Anim.ifAnim = true;
 	//m_Anim2.ifAnim = true;
 }
@@ -68,8 +67,8 @@ void CCameraDX::Init(void)
 	}
 	m_CS.vecU			= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot			= D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
-	m_CS.Distance		= hypotf((m_CS.posR.z - m_CS.posV.z), (m_CS.posR.x - m_CS.posV.x));
-	m_CS.Vib.vPos			= VEC3_ZERO;
+	m_CS.Distance		= CAMERA_POSV_TOPLAYER;
+	m_CS.Vib.vPos		= VEC3_ZERO;
 	m_CS.Vib.Cnt		= 0;
 	m_CS.Vib.Width	= 0.0f;
 
@@ -83,8 +82,9 @@ void CCameraDX::Init(void)
 	m_CSEdit.Vib.Cnt	= 0;
 	m_CSEdit.Vib.Width	= 0.0f;
 
-	m_Key	= 0;
-	m_Frame = 0;
+	m_Key		= 0;
+	m_Frame		= 0;
+	m_DisVec	= 0;
 }
 
 //=============================================================================
@@ -173,6 +173,7 @@ void CCameraDX::Update(void)
 		}
 		else
 		{
+#ifdef _DEBUG
 			if(KH_Q)
 			{// 注視点移動(左)
 
@@ -185,6 +186,7 @@ void CCameraDX::Update(void)
 			 // 角度増減
 				m_CS.Rot.y += CAMERA_POSR_MOVEMENT_X * 0.25f;
 			}
+#endif
 
 			player = CGame::GetPlayer1();	// プレイヤー情報の取得
 
@@ -193,14 +195,25 @@ void CCameraDX::Update(void)
 			if(player != NULL)
 			{
 				// 視点設定
-				m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-				m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * CAMERA_POSV_TOPLAYER);
-				m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
+				/*m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * m_CS.Distance);
+				m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * m_CS.Distance);
+				m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;*/
 
 				// 注視点設定
 				m_CS.posR.x = player->GetPos().x;
 				m_CS.posR.z = player->GetPos().z;
 				m_CS.posR.y = player->GetPos().y + (CAMERA_POSV_TOHIGHPLAYER / 2);
+
+				// カメラ距離設定
+				m_CS.Distance += m_DisVec;
+
+				// カメラ距離変化量減衰
+				m_DisVec *= 0.8f;
+
+				// 視点設定
+				m_CS.posV.x = player->GetPos().x + (sinf(m_CS.Rot.y + player->GetSplineRot().y) * m_CS.Distance);
+				m_CS.posV.z = player->GetPos().z + (cosf(m_CS.Rot.y + player->GetSplineRot().y) * m_CS.Distance);
+				m_CS.posV.y = player->GetPos().y + CAMERA_POSV_TOHIGHPLAYER;
 			}
 		}
 
@@ -590,63 +603,6 @@ void CCameraDX::LoadCameraAnim(void)
 			fscanf(fp, "POSV = %f %f %f\n", &m_Anim.Status[aNum].PosV.x, &m_Anim.Status[aNum].PosV.y, &m_Anim.Status[aNum].PosV.z);
 			// 注視点情報を読み込み
 			fscanf(fp, "POSR = %f %f %f\n", &m_Anim.Status[aNum].PosR.x, &m_Anim.Status[aNum].PosR.y, &m_Anim.Status[aNum].PosR.z);
-		}
-		else if(strcmp(str, "END_SCRIPT") == 0)
-		{// スプライン読み込みを終了
-
-			break;
-		}
-	}
-
-	// ファイルクローズ
-	fclose(fp);
-}
-
-//=============================================================================
-//	関数名	:LoadCameraAnim2
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:カメラのアニメーション情報をロードする。
-//=============================================================================
-void CCameraDX::LoadCameraAnim2(void)
-{
-	FILE	*fp = NULL;	// ファイルポインタ
-
-	fp = fopen("./data/camera_anim2.txt", "r");
-
-	m_Anim2.ifAnim	= false;
-	m_Anim2.Loop	= false;
-
-	// END_SCRIPTまで読み込み
-	while(!feof(fp))
-	{
-		char str[65535] = { NULL };
-		memset(str, NULL, sizeof(str));
-
-		// 単語を取得
-		fscanf(fp, "%s", str);
-
-		if(strcmp(str, "LOOP") == 0)
-		{// ループ情報を読み込み
-
-			int a = 0;
-			fscanf(fp, " = %d\n", &a);
-			m_Anim2.Loop = (bool)a;
-		}
-		else if(strcmp(str, "FRAME") == 0)
-		{// スプライン制御点を追加
-
-		 // アニメーションデータを追加
-			m_Anim2.Status.push_back(CAMERA_ANIM_STATUS2());
-
-			uint aNum = m_Anim2.Status.size() - 1;	// 終端の配列番号
-
-			// フレーム数を読み込み
-			fscanf(fp, " = %d\n", &m_Anim2.Status[aNum].Frame);
-			// 視点情報を読み込み
-			fscanf(fp, "POSV = %f %f %f\n", &m_Anim2.Status[aNum].PosV.x, &m_Anim2.Status[aNum].PosV.y, &m_Anim2.Status[aNum].PosV.z);
-			// 注視点情報を読み込み
-			fscanf(fp, "VEC = %f %f %f\n", &m_Anim2.Status[aNum].Rot.x, &m_Anim2.Status[aNum].Rot.y, &m_Anim2.Status[aNum].Rot.z);
 		}
 		else if(strcmp(str, "END_SCRIPT") == 0)
 		{// スプライン読み込みを終了

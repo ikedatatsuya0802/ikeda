@@ -121,6 +121,7 @@
     <ClCompile Include="speedmeter.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="wiring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraDX.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="speedmeter.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="wiring.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

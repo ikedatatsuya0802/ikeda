@@ -16,6 +16,7 @@
 #include "cameraDX.h"
 #include "driftMark.h"
 #include "countdown.h"
+#include "lightDX.h"
 
 //=============================================================================
 //	関数名	:CPlayer()
@@ -56,6 +57,7 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_Rot		= VEC3_ZERO;
 	m_Move		= VEC3_ZERO;
 	m_RotMove	= VEC3_ZERO;
+	m_MoveVec	= VEC3_ZERO;
 	m_nCntMove	= 0;
 	m_bJump		= false;
 	m_Pause		= false;
@@ -77,6 +79,9 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_SplineTime = 0.0f;
 	m_DriftCurve = 0;
 	m_CntDrift = 0;
+
+	// スポットライトの起動
+	//CLightDX::ChangeLight(CLightDX::GetLightNum() - 1, true);
 }
 
 //=============================================================================
@@ -87,7 +92,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(void)
 {
-
+	// スポットライトの終了
+	//CLightDX::ChangeLight(CLightDX::GetLightNum() - 1, false);
 }
 
 //=============================================================================
@@ -98,66 +104,68 @@ void CPlayer::Uninit(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
-	// 移動処理
-	if(m_Pause == false)
-	{
-		// スプライン位置を保存
-		m_PerOld = m_Per;
+	// スプライン位置を保存
+	m_PerOld = m_Per;
 
-		if(m_Per <= RAILLINE_GOAL)
-		{// ゴールに到着するまで
+	if(m_Per <= RAILLINE_GOAL)
+	{// ゴールに到着するまで
 
-			// プレイヤー移動
-			UpdateMove();
+		// プレイヤー移動
+		UpdateMove();
 
 
-			// ドリフトマーク開始判断
-			if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
-			{
-				if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == -1)
-				{// ドリフトの開始
+		// ドリフトマーク開始判断
+		if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
+		{
+			if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == -1)
+			{// ドリフトの開始
 
-					if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
-					{// 左カーブ
+				if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
+				{// 左カーブ
 
-						if((m_DriftCurve >= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
-						{// ドリフトしていなかった場合、80km/hを超えていたら減速
+					if((m_DriftCurve >= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+					{// ドリフトしていなかった場合、80km/hを超えていたら減速
 
-							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
-							m_PerMove -= PLAYER_NOT_DRIFT;
-							if(m_PerMove < 0.0f) m_PerMove = 0;
-						}
+						CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+						m_PerMove -= PLAYER_NOT_DRIFT;
+						if(m_PerMove < 0.0f) m_PerMove = 0;
 					}
-					else
-					{// 右カーブ
+				}
+				else
+				{// 右カーブ
 
-						if((m_DriftCurve <= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
-						{// ドリフトしていなかった場合、80km/hを超えていたら減速
+					if((m_DriftCurve <= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+					{// ドリフトしていなかった場合、80km/hを超えていたら減速
 
-							CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
-							m_PerMove -= PLAYER_NOT_DRIFT;
-							if(m_PerMove < 0.0f) m_PerMove = 0;
-						}
+						CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+						m_PerMove -= PLAYER_NOT_DRIFT;
+						if(m_PerMove < 0.0f) m_PerMove = 0;
 					}
 				}
 			}
 		}
-		else
-		{// ゴール到達後
-
-			D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL);
-			D3DXVECTOR3 vecDis = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL + 0.01f);
-
-			// 回転量計算
-			m_Spline->Rot.y = atan2f((pos.x - vecDis.x), (pos.z - vecDis.z));
-
-			// 位置反映
-			m_Pos.x -= m_RealSpeed * sinf(m_Spline->Rot.y);
-			m_Pos.z -= m_RealSpeed * cosf(m_Spline->Rot.y);
-		}
 
 		UpdateDrift();
 	}
+	else
+	{// ゴール到達後
+
+		D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL);
+		D3DXVECTOR3 vecDis = CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL + 0.01f);
+
+		// 回転量計算
+		m_Spline->Rot.y = atan2f((pos.x - vecDis.x), (pos.z - vecDis.z));
+
+		// 位置反映
+		m_Pos.x -= m_RealSpeed * sinf(m_Spline->Rot.y);
+		m_Pos.z -= m_RealSpeed * cosf(m_Spline->Rot.y);
+	}
+
+	D3DXVECTOR3 lightVec = VEC3_ZERO;
+	D3DXVec3Normalize(&lightVec, &m_MoveVec);
+
+	// スポットライトの設定
+	//CLightDX::SetSpotLight(0, m_Pos, m_MoveVec);
 }
 
 //=============================================================================
@@ -214,12 +222,11 @@ void CPlayer::UpdateMove(void)
 	
 	// 回転反映
 	float tDis = m_Per + 0.01f;
-	D3DXVECTOR3 vecDis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	vecDis.x = CGame::GetRailLine()->GetSplinePos(tDis).x;
-	vecDis.z = CGame::GetRailLine()->GetSplinePos(tDis).z;
+	m_MoveVec.x = CGame::GetRailLine()->GetSplinePos(tDis).x;
+	m_MoveVec.z = CGame::GetRailLine()->GetSplinePos(tDis).z;
 
 	// 回転量計算
-	m_Spline->Rot.y = atan2f((m_Pos.x - vecDis.x), (m_Pos.z - vecDis.z));
+	m_Spline->Rot.y = atan2f((m_Pos.x - m_MoveVec.x), (m_Pos.z - m_MoveVec.z));
 
 	
 	// 傾斜の回転軸計算
@@ -242,8 +249,11 @@ void CPlayer::UpdateMove(void)
 //=============================================================================
 void CPlayer::UpdateDrift(void)
 {
+	static int m_DriftTime = 0;	// ドリフトしている時間
+
 	// ドリフト
-	if(!m_CntDrift && KT_LEFT && !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == 2)))
+	if(KT_LEFT && (CGame::GetFrame() > COUNTDOWN_END_TIME) && !m_CntDrift
+		&& !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == 2)))
 	{
 		m_Move.y += PLAYER_JUMP;
 
@@ -252,8 +262,16 @@ void CPlayer::UpdateDrift(void)
 		if(!m_DriftCurve) m_DriftCurve--;
 		m_DriftCurve--;
 		m_CntDrift = PLAYER_ROT_STEP;
+
+		// エフェクト表示
+		m_DriftTime = 120;
+		CGame::GetHakushin()->SetColor(1.0f);
+
+		// カメラ距離設定
+		CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
 	}
-	else if(!m_CntDrift && KT_RIGHT && !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == -2)))
+	else if(KT_LEFT && (CGame::GetFrame() > COUNTDOWN_END_TIME) && !m_CntDrift
+		&& !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == -2)))
 	{
 		m_Move.y += PLAYER_JUMP;
 
@@ -262,6 +280,32 @@ void CPlayer::UpdateDrift(void)
 		if(!m_DriftCurve) m_DriftCurve++;
 		m_DriftCurve++;
 		m_CntDrift = PLAYER_ROT_STEP;
+
+		// エフェクト表示
+		m_DriftTime = 120;
+		CGame::GetHakushin()->SetColor(1.0f);
+
+		// カメラ距離設定
+		CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
+	}
+
+	// ドリフト中かどうか
+	if((m_DriftCurve == 2) || (m_DriftCurve == -2))
+	{
+		if(m_DriftTime > 0)
+		{
+			CGame::GetHakushin()->SetSize(true, 0.997f, 0.997f);
+			m_DriftTime--;
+		}
+		else
+		{
+			m_DriftTime = 0;
+		}
+	}
+	else
+	{
+		m_DriftTime = 0;
+		CGame::GetHakushin()->SetSize(false, SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
 	}
 
 	// ドリフトマーク終了判断
@@ -277,6 +321,9 @@ void CPlayer::UpdateDrift(void)
 				m_Move.y += PLAYER_JUMP;
 
 				m_bJump = true;
+
+				// カメラ距離設定
+				CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
 			}
 			else if(m_DriftCurve == -2)
 			{
@@ -285,6 +332,9 @@ void CPlayer::UpdateDrift(void)
 				m_Move.y += PLAYER_JUMP;
 
 				m_bJump = true;
+
+				// カメラ距離設定
+				CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
 			}
 		}
 	}

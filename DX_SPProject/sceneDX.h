@@ -19,6 +19,13 @@
 //=============================================================================
 //	ç\ë¢ëÃÅEóÒãìëÃ
 //=============================================================================
+typedef enum {
+	PRIORITY_TOP = 0,
+	PRIORITY_2D = 2,
+	PRIORITY_3D,
+	PRIORITY_MAX
+} PRIORITY;
+
 typedef enum{
 	OBJTYPE_NONE = 0,
 	OBJTYPE_PLAYER,
@@ -60,7 +67,7 @@ public:
 	void		ChangeDrawFrag(void)	{ m_flgDraw = m_flgDraw ? false : true; }
 		
 protected:
-	CSceneDX(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneDX(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneDX();
 
 	void AddVtxBuffer(vector<LPDIRECT3DVERTEXBUFFER9> &pVtxBuff, const int size);

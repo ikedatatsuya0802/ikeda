@@ -30,7 +30,7 @@
 class CSpeedmeter : public CScene2DDX
 {
 public:
-	CSpeedmeter(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CSpeedmeter(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSpeedmeter();
 
 	void	Init(float maxSpeed, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,

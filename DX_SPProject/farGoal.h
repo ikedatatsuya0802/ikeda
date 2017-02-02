@@ -25,7 +25,7 @@
 class CFarGoal : CSceneDX
 {
 public:
-	CFarGoal(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CFarGoal(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CFarGoal();
 	
 	void	Init(uint defValue, D3DXVECTOR3 pos, D3DXVECTOR2 size);

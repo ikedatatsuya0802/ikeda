@@ -50,7 +50,7 @@ public:
 	static CPillar	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
-	CPillar(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CPillar(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CPillar();
 
 	void SetVtxBuff(void);

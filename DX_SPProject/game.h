@@ -22,6 +22,7 @@ class CMeshfield;
 class CPlayer;
 class CRailLine;
 class CDriftMark;
+class CPause;
 
 //=============================================================================
 //	クラス定義
@@ -43,6 +44,8 @@ public:
 	static CPlayer		*GetPlayer1(void){ return m_Player1; }
 	static CPlayer		*GetPlayer2(void){ return m_Player2; }
 	static CDriftMark	*GetDriftMark(void) { return m_DriftMark; }
+	static CScene2DDX	*GetHakushin(void) { return m_Hakushin; }
+	static CPause		*GetPause(void) { return m_Pause; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
@@ -50,6 +53,8 @@ private:
 	static CPlayer		*m_Player1;		// プレイヤーのインスタンス
 	static CPlayer		*m_Player2;		// プレイヤーのインスタンス
 	static CDriftMark	*m_DriftMark;	// ドリフトマークのインスタンス
+	static CScene2DDX	*m_Hakushin;	// 集中線のインスタンス
+	static CPause		*m_Pause;		// ポーズ画面のインスタンス
 
 	static int	m_Frame;	// 汎用カウンタ
 

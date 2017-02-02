@@ -185,6 +185,53 @@ CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 siz
 
 //=============================================================================
 //	関数名	:SetColor
+//	引数	:bool	mode	-> 変更モード、trueで倍率指定、falseで値指定
+//			:float	x		-> 幅(倍率)
+//			:float	y		-> 高さ(倍率)
+//	戻り値	:無し
+//	説明	:ポリゴン色を設定する。
+//=============================================================================
+void CScene2DDX::SetSize(cbool mode, cfloat x, cfloat y)
+{
+	VERTEX_2D	*pVtx;	// 2D頂点情報
+
+	if(mode)
+	{// 倍率指定
+		
+		float nx = (x * sinf(m_fAngle - m_Rot.z) * m_fLength);
+		float ny = (y * cosf(m_fAngle - m_Rot.z) * m_fLength);
+
+		m_fLength = hypotf(nx, ny);
+		m_fAngle = atan2f(nx, ny);
+	}
+	else
+	{// 値指定
+
+		m_fLength = hypotf(x, y) * 0.5f;
+		m_fAngle = atan2f(x, y);
+	}
+
+
+	// 頂点バッファに反映
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	pVtx[0].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[0].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z) * m_fLength));
+
+	pVtx[1].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z) * m_fLength));
+	pVtx[1].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z) * m_fLength));
+
+	pVtx[2].Pos.x = (m_Pos.x - (sinf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
+	pVtx[2].Pos.y = (m_Pos.y - (cosf(-m_fAngle - m_Rot.z + D3DX_PI) * m_fLength));
+
+	pVtx[3].Pos.x = (m_Pos.x - (sinf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
+	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
+
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:SetColor
 //	引数	:float	a		-> アルファ値
 //			:float	r		-> R値
 //			:float	g		-> G値
@@ -192,7 +239,7 @@ CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 siz
 //	戻り値	:無し
 //	説明	:ポリゴン色を設定する。
 //=============================================================================
-void CScene2DDX::SetColor(float a, float r, float g, float b)
+void CScene2DDX::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
 {
 	VERTEX_2D	*pVtx;	// 2D頂点情報
 

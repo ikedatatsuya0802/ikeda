@@ -61,7 +61,7 @@ public:
 
 
 protected:
-	CSceneXDX(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CSceneXDX(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSceneXDX();
 
 	void	LoadModel(char *filename);

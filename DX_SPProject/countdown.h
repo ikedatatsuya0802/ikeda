@@ -33,7 +33,7 @@
 class CCountdown : public CScene2DDX
 {
 public:
-	CCountdown(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CCountdown(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CCountdown();
 
 	void	Init(D3DXVECTOR3 pos = VEC3_ZERO,

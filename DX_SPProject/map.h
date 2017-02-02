@@ -48,7 +48,7 @@ public:
 	static CMap	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
-	CMap(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CMap(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CMap();
 
 	void SetVtxBuff(void);

@@ -111,6 +111,7 @@ public:
 	bool ifCameraAnimInitialized(void) { return m_Anim.Status.size() > 0 ? true : false; }
 	int GetCameraAnimFrame(void);
 	int GetCameraFirstAnimFrame(void) { return m_Anim.Status[0].Frame; }
+	void SetDisVec(float value) { m_DisVec = value; }
 
 protected:
 	void CameraMove(void);
@@ -118,13 +119,14 @@ protected:
 	void CameraVibrate(void);
 
 	void LoadCameraAnim(void);
-	void LoadCameraAnim2(void);
-	CAMERA_ANIM	m_Anim;
+	CAMERA_ANIM		m_Anim;
 	CAMERA_ANIM2	m_Anim2;
 	uint m_Key;
 	uint m_Frame;
 
 	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
+
+	float m_DisVec;	// カメラ距離の変更量
 };
 
 #endif

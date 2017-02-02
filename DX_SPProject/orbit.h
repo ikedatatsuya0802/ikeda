@@ -41,7 +41,7 @@
 class COrbit : public CScene3DDX
 {
 public:
-	COrbit(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	COrbit(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~COrbit();
 
 	void	Init(D3DXVECTOR3 pos = VEC3_ZERO);
@@ -49,7 +49,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static COrbit		*Create(bool ifListAdd = true, int priority = 2, OBJTYPE objtype = OBJTYPE_NONE,
+	static COrbit		*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード

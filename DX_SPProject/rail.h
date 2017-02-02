@@ -44,7 +44,7 @@ public:
 	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
-	CRail(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CRail(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CRail();
 
 	void SetVtxBuff(void);

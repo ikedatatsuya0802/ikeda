@@ -89,8 +89,8 @@ void CEStructure::SetVtxBuff(void)
 
 		for(int y = 0 ; y < ESTRUCTURE_VERTICAL ; y++)
 		{			
-			D3DXVECTOR3 sPos = m_Spline->PosHermite[y];			
-			sPos.y = (m_Spline->PosHermite[y].y < 2.0f) ? -100.0f : (sPos.y - 1.0f);
+			D3DXVECTOR3 splPos = m_Spline->PosHermite[y];			
+			splPos.y = (m_Spline->PosHermite[y].y < 2.0f) ? -100.0f : (splPos.y - 1.0f);
 			D3DXVECTOR3 vec = VEC3_ZERO;
 
 			// 角度設定
@@ -108,6 +108,7 @@ void CEStructure::SetVtxBuff(void)
 			float cosWidthOuter = cosWidth * 1.1f;						// 外壁幅のX成分
 			float sinWidthOuter = sinWidth * 1.1f;						// 外壁幅のZ成分
 
+
 			for(int x = 0 ; x <= ESTRUCTURE_HORIZONTAL ; x++)
 			{
 				D3DXVECTOR3 pos = VEC3_ZERO;
@@ -115,37 +116,61 @@ void CEStructure::SetVtxBuff(void)
 				switch(x)
 				{
 				case 0:		// 基準点
-					pos = D3DXVECTOR3(sPos.x, sPos.y, sPos.z);
+					pos = D3DXVECTOR3(splPos.x, splPos.y, splPos.z);
 					break;
 				case 1:		// 基準左・内壁下部
-					pos = D3DXVECTOR3((sPos.x - cosWidth), sPos.y, (sPos.z + sinWidth));
+					pos = D3DXVECTOR3(
+						splPos.x - (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
+						splPos.y,
+						splPos.z + (sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f)));
 					break;
 				case 2:		// 基準左・内壁上部
-					pos = D3DXVECTOR3((sPos.x - cosWidth), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z + sinWidth));
+					pos = D3DXVECTOR3(
+						splPos.x - (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
+						(splPos.y + ESTRUCTURE_WALL_HEIGHT),
+						splPos.z + (sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f)));
 					break;
 				case 3:		// 基準左・外壁上部
-					pos = D3DXVECTOR3((sPos.x - sinWidthOuter), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z + cosWidthOuter));
+					pos = D3DXVECTOR3(
+						splPos.x - (cosf(rot) * (ESTRUCTURE_WIDTH * 0.6f)),
+						(splPos.y + ESTRUCTURE_WALL_HEIGHT),
+						splPos.z + (sinf(rot) * (ESTRUCTURE_WIDTH * 0.6f)));
 					break;
 				case 4:		// 基準左・外壁下部
-					pos = D3DXVECTOR3((sPos.x - sinWidthOuter), (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)), (sPos.z + cosWidthOuter));
+					pos = D3DXVECTOR3(
+						splPos.x - (cosf(rot) * (ESTRUCTURE_WIDTH * 0.6f)),
+						(splPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)),
+						splPos.z + (sinf(rot) * (ESTRUCTURE_WIDTH * 0.6f)));
 					break;
 				case 5:		// 基準真下の点
-					pos = D3DXVECTOR3(sPos.x, (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.3f)), sPos.z);
+					pos = D3DXVECTOR3(splPos.x,	(splPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.3f)), splPos.z);
 					break;
 				case 6:		// 基準右・外壁下部
-					pos = D3DXVECTOR3((sPos.x + sinWidthOuter), (sPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)), (sPos.z - cosWidthOuter));
+					pos = D3DXVECTOR3(
+						splPos.x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.6f)),
+						(splPos.y - (ESTRUCTURE_WALL_HEIGHT * 0.2f)),
+						splPos.z - (sinf(rot) * (ESTRUCTURE_WIDTH * 0.6f)));
 					break;
 				case 7:		// 基準右・外壁上部
-					pos = D3DXVECTOR3((sPos.x + sinWidthOuter), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z - cosWidthOuter));
+					pos = D3DXVECTOR3(
+						splPos.x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.6f)),
+						(splPos.y + ESTRUCTURE_WALL_HEIGHT),
+						splPos.z - (sinf(rot) * (ESTRUCTURE_WIDTH * 0.6f)));
 					break;
 				case 8:		// 基準右・内壁上部
-					pos = D3DXVECTOR3((sPos.x + cosWidth), (sPos.y + ESTRUCTURE_WALL_HEIGHT), (sPos.z - sinWidth));
+					pos = D3DXVECTOR3(
+						splPos.x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
+						(splPos.y + ESTRUCTURE_WALL_HEIGHT),
+						splPos.z - (sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f)));
 					break;
 				case 9:		// 基準右・内壁下部
-					pos = D3DXVECTOR3((sPos.x + cosWidth), sPos.y, (sPos.z - sinWidth));
+					pos = D3DXVECTOR3(
+						splPos.x + (cosf(rot) * (ESTRUCTURE_WIDTH * 0.5f)),
+						splPos.y,
+						splPos.z - (sinf(rot) * (ESTRUCTURE_WIDTH * 0.5f)));
 					break;
 				case 10:	// 基準点
-					pos = D3DXVECTOR3(sPos.x, sPos.y, sPos.z);
+					pos = D3DXVECTOR3(splPos.x, splPos.y, splPos.z);
 					break;
 				default:
 					break;
