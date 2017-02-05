@@ -64,10 +64,10 @@ void CGoal::Init(void)
 
 	Load();
 
-	CSceneXDX::Create(".\\data\\MODEL\\ekisha.x", NULL,
+	CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL,
 		D3DXVECTOR3(CGame::GetPlayer1()->GetPos().x, 0.0f, CGame::GetPlayer1()->GetPos().z + 300.0f),
 		D3DXVECTOR3(0.0, D3DX_PI, 0.0f));
-	CSceneXDX::Create(".\\data\\MODEL\\ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
+	CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
 }
 
 //=============================================================================

@@ -54,7 +54,7 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_NumParts	= 0;
 	m_NumMotion	= 0;
 	m_Pos		= VEC3_ZERO;
-	m_Rot		= VEC3_ZERO;
+	m_Rot		= D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
 	m_Move		= VEC3_ZERO;
 	m_RotMove	= VEC3_ZERO;
 	m_MoveVec	= VEC3_ZERO;
