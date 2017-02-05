@@ -9,6 +9,8 @@
 //
 //=============================================================================
 #include "rendererDX.h"
+#include "manager.h"
+
 //=============================================================================
 //	マクロ定義
 //=============================================================================
@@ -106,11 +108,9 @@ public:
 	int		GetCameraVibrateCnt(void) { return m_CS.Vib.Cnt; }
 	void	DisableCameraVibrate(void) { m_CS.Vib.vPos = VEC3_ZERO; m_CS.Vib.Cnt = 0; m_CS.Vib.Width = 0.0f; }
 
-	bool	GetCameraMode(void) { return m_flgCameraMode; }
-	void	ChangeCameraMode(void) { m_flgCameraMode = m_flgCameraMode ? false : true; }
 
-	D3DXVECTOR3	GetCameraPosV(void) { return m_flgCameraMode ? m_CSEdit.posV : m_CS.posV; }
-	D3DXVECTOR3	GetCameraPosR(void) { return m_flgCameraMode ? m_CSEdit.posR : m_CS.posR; }
+	D3DXVECTOR3	GetCameraPosV(void) { return CManager::GetEdhitMode() ? m_CSEdit.posV : m_CS.posV; }
+	D3DXVECTOR3	GetCameraPosR(void) { return CManager::GetEdhitMode() ? m_CSEdit.posR : m_CS.posR; }
 
 	bool ifCameraAnimInitialized(void) { return m_Anim.Status.size() > 0 ? true : false; }
 	int GetCameraAnimFrame(void);
@@ -127,9 +127,7 @@ protected:
 	CAMERA_ANIM2	m_Anim2;
 	uint m_Key;
 	uint m_Frame;
-
-	bool m_flgCameraMode;	// カメラモード、false->通常、true->エディットモード
-
+	
 	float m_DisVec;	// カメラ距離の変更量
 };
 

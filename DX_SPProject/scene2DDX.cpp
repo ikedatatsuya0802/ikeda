@@ -46,7 +46,7 @@ CScene2DDX::~CScene2DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene2DDX::Init(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size)
+void CScene2DDX::Init(cchar *str, cVec3 pos, cVec3 rot, cVec2 size)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
@@ -173,7 +173,7 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size)
+CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec3 rot, cVec2 size)
 {
 	CScene2DDX *instance;	// インスタンス
 

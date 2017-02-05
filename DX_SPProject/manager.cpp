@@ -25,8 +25,9 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CMode		*CManager::m_Mode;			// モードクラス
-CCameraDX	*CManager::m_Camera;		// カメラのインスタンス
+CMode		*CManager::m_Mode;
+CCameraDX	*CManager::m_Camera;
+bool		CManager::m_ifEdhitMode;
 
 //=============================================================================
 //	関数名	:Init
@@ -36,11 +37,10 @@ CCameraDX	*CManager::m_Camera;		// カメラのインスタンス
 //=============================================================================
 void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	m_ifEdhitMode = false;
+
 	// レンダラ―読み込み
 	CRendererDX::Init(hInstance, hWnd, TRUE);
-
-	// リソースのロード
-	//CNumber::Load();
 
 	// 各種インスタンス生成
 #ifdef _DEBUG

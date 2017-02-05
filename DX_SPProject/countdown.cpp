@@ -42,7 +42,7 @@ CCountdown::~CCountdown()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CCountdown::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size)
+void CCountdown::Init(cVec3 pos, cVec2 size)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
@@ -222,7 +222,7 @@ void CCountdown::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CCountdown *CCountdown::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CCountdown *CCountdown::Create(cVec3 pos, cVec2 size)
 {
 	CCountdown *instance;	// インスタンス
 

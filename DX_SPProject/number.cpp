@@ -50,7 +50,7 @@ CNumber::~CNumber()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+void CNumber::Init(int value, cVec3 pos, cVec2 size)
 {
 	VERTEX_2D *pVtx;	// 2D頂点情報
 
@@ -96,10 +96,10 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	}
 	
 	// テクスチャ座標設定
-	pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 1.0f);
+	pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.01f);
+	pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.01f);
+	pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 1);
+	pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 1);
 	
 	m_pVtxBuff->Unlock();
 
@@ -163,7 +163,7 @@ void CNumber::Update(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CNumber *CNumber::Create(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CNumber *CNumber::Create(int value, cVec3 pos, cVec2 size)
 {
 	CNumber *number;	// インスタンス
 	

@@ -34,13 +34,13 @@ public:
 	CGametime(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CGametime();
 	
-	void	Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure);
+	void	Init(cVec3 pos, cVec2 size, FIGURE figure);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CGametime	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO, FIGURE figure = 0);
+		cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO, FIGURE figure = 0);
 
 	void	SetValue(float value);
 

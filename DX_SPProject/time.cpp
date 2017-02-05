@@ -12,17 +12,12 @@
 #include "time.h"
 
 //=============================================================================
-//	静的メンバ変数
-//=============================================================================
-//LPDIRECT3DTEXTURE9	CTime::m_pTexture;
-
-//=============================================================================
 //	関数名	:CTime()
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CTime::CTime(int value) : CScene2DDX(true)
+CTime::CTime(bool ifListAdd, int priority, OBJTYPE objType) : CScene2DDX(ifListAdd, priority, objType)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
@@ -45,12 +40,32 @@ CTime::~CTime()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CTime::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+void CTime::Init(cVec3 pos, cVec2 size)
 {
 	m_ifCountStart	= false;
 	m_StartTime		= 0;
+	m_TimeValue		= 0;
 	m_Time.SetTime(0, 0, 0);
 
+
+	m_Instance[0] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[1] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[2] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
+		VEC3_ZERO, D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[3] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[4] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[5] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
+		VEC3_ZERO, D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[6] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+	m_Instance[7] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
+
+	CountStart();
 }
 
 //=============================================================================
@@ -72,18 +87,22 @@ void CTime::Uninit(void)
 //=============================================================================
 void CTime::Update(void)
 {
-	DWORD time = 0;
-
 	// カウント中の場合
 	if(m_ifCountStart)
 	{
 		// 現在時間取得
-		time = timeGetTime() - m_StartTime;
+		m_TimeValue = timeGetTime() - m_StartTime;
 
 		// 時間変換
-		m_Time.minute		= time / 1000 / 60;
-		m_Time.second		= time / 1000;
-		m_Time.millisec		= time % 1000;
+		TimeConvert(&m_Time, m_TimeValue);
+
+		// 時間をセット
+		((CNumber*)m_Instance[0])->SetNumber((m_Time.minute <= 0) ? 0 : (m_Time.minute / 10));
+		((CNumber*)m_Instance[1])->SetNumber((m_Time.minute <= 0) ? 0 : (m_Time.minute % 10));
+		((CNumber*)m_Instance[3])->SetNumber((m_Time.second <= 0) ? 0 : (m_Time.second / 10));
+		((CNumber*)m_Instance[4])->SetNumber((m_Time.second <= 0) ? 0 : (m_Time.second % 10));
+		((CNumber*)m_Instance[6])->SetNumber((m_Time.millisec <= 0) ? 0 : (m_Time.millisec / 10));
+		((CNumber*)m_Instance[7])->SetNumber((m_Time.millisec <= 0) ? 0 : (m_Time.millisec % 10));
 	}
 }
 
@@ -104,7 +123,7 @@ void CTime::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CTime *CTime::Create(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CTime *CTime::Create(cVec3 pos, cVec2 size)
 {
 	CTime *instance;	// インスタンス
 	
@@ -112,7 +131,7 @@ CTime *CTime::Create(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	instance = new CTime();
 	
 	// 初期化処理
-	instance->Init(value, pos, size);
+	instance->Init(pos, size);
 	
 	// インスタンスをリターン
 	return instance;
@@ -130,7 +149,24 @@ void CTime::SaveTime(void)
 
 	fopen_s(&fp, TIME_FILENAME, "w");
 
-
+	fprintf_s(fp, "%d", m_TimeValue);
 
 	fclose(fp);
+}
+
+//=============================================================================
+//	関数名	:TimeConvert
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ミリ秒で表された時間を分秒ミリ秒で表される時間に変換。
+//=============================================================================
+void CTime::TimeConvert(TIME* timeStr, DWORD time)
+{
+	timeStr->minute = time / 1000 / 60;
+	timeStr->second = time / 1000;
+	timeStr->millisec = time % 1000 / 10;
+
+	if(timeStr->minute > 99) timeStr->minute = 99;
+	if(timeStr->minute > 59) timeStr->minute = 59;
+	if(timeStr->minute > 99) timeStr->minute = 99;
 }

@@ -28,11 +28,11 @@ public:
 	CFarGoal(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CFarGoal();
 	
-	void	Init(uint defValue, D3DXVECTOR3 pos, D3DXVECTOR2 size);
+	void	Init(uint defValue, cVec3 pos, cVec2 size);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
-	static CFarGoal	*Create(uint defValue, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
+	static CFarGoal	*Create(uint defValue, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 
 	void	SetValue(int value);
 

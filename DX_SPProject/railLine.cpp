@@ -326,9 +326,9 @@ void CRailLine::Uninit(void)
 void CRailLine::Update(void)
 {
 	// 描画フラグ設定
-	m_flgDraw = DX_CAMERA->GetCameraMode() ? true : false;
+	m_flgDraw = CManager::GetEdhitMode() ? true : false;
 
-	if(DX_CAMERA->GetCameraMode())
+	if(CManager::GetEdhitMode())
 	{// エディットモードの場合のみ処理
 
 		// エディットモード変更
@@ -842,7 +842,7 @@ void CRailLine::Draw(void)
 
 	// デバッグ情報表示
 #ifdef _DEBUG
-	if(DX_CAMERA->GetCameraMode())
+	if(CManager::GetEdhitMode())
 	{
 		CDebugProc::DebugProc("エディットタイプ:%d\n", m_EditType);
 		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)

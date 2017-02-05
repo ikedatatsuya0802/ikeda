@@ -45,7 +45,7 @@ CCylinder::~CCylinder()
 //	戻り値	:無し
 //	説明	:初期化処理を行う。
 //=============================================================================
-void CCylinder::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CCylinder::Init(cVec3 pos, cVec3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -218,12 +218,12 @@ void CCylinder::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CCylinder *CCylinder::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CCylinder *CCylinder::Create(cVec3 pos, cVec3 rot)
 {
 	CCylinder *cylinder;	// インスタンス
 
 	// インスタンス生成
-	cylinder = new CCylinder(ifListAdd, priority, objtype);
+	cylinder = new CCylinder();
 
 	// 初期化処理
 	cylinder->Init(pos, rot);

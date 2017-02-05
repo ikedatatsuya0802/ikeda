@@ -45,7 +45,7 @@ CScene3DDX::~CScene3DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene3DDX::Init(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CScene3DDX::Init(cchar *str, cVec3 pos, cVec3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -173,7 +173,7 @@ void CScene3DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene3DDX *CScene3DDX::Create(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CScene3DDX *CScene3DDX::Create(cchar *str, cVec3 pos, cVec3 rot)
 {
 	CScene3DDX *instance;	// インスタンス
 
@@ -195,7 +195,7 @@ CScene3DDX *CScene3DDX::Create(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //	戻り値	:無し
 //	説明	:メッシュのインデックスをセットする。
 //=============================================================================
-void CScene3DDX::SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical)
+void CScene3DDX::SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, cint horizontal, cint vertical)
 {
 	WORD	*pIdx;
 	int		idxNum		= ((horizontal + 1) * 2) * vertical + ((vertical - 1) * 2);

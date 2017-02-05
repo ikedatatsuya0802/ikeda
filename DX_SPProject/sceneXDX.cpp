@@ -49,7 +49,7 @@ void CSceneXDX::Init(cchar* fileName, MODELSTATUS* mesh, const D3DXVECTOR3 pos, 
 {
 	// Šeí‰Šú‰»ˆ—
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VEC3_ZERO);
+	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
 
 	if(mesh)
 	{

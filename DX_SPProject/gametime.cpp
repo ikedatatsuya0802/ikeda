@@ -49,7 +49,7 @@ CGametime::~CGametime()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CGametime::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
+void CGametime::Init(cVec3 pos, cVec2 size, FIGURE figure)
 {
 	// 桁情報格納
 	m_Figure = figure;
@@ -131,7 +131,7 @@ void CGametime::Draw(void)
 	// ナンバー描画
 	for(int i = 0 ; i < m_NumFigure ; i++)
 	{
-		m_Number[i]->Draw();
+		if(!CManager::GetEdhitMode()) m_Number[i]->Draw();
 	}
 }
 
@@ -142,7 +142,7 @@ void CGametime::Draw(void)
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
 CGametime *CGametime::Create(bool ifListAdd, int priority, OBJTYPE objtype,
-	D3DXVECTOR3 pos, D3DXVECTOR2 size, FIGURE figure)
+	cVec3 pos, cVec2 size, FIGURE figure)
 {
 	CGametime *gametime;	// インスタンス
 

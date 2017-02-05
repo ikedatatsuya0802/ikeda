@@ -15,8 +15,8 @@
 //=============================================================================
 //	É}ÉNÉçíËã`
 //=============================================================================
-#define	SPEEDMETER_WIDTH	(SCREEN_HEIGHT * 0.3f)
-#define	SPEEDMETER_HEIGHT	(SCREEN_HEIGHT * 0.3f)
+cfloat	SPEEDMETER_WIDTH	= SCREEN_HEIGHT * 0.3f;
+cfloat	SPEEDMETER_HEIGHT	= SCREEN_HEIGHT * 0.3f;
 
 #define	SPEEDMETER_ROT_LOW	(-2.0f)						// êjÇÃäpìxÇÃâ∫å¿
 #define	SPEEDMETER_ROT_HIGH	(2.0f)						// êjÇÃäpìxÇÃè„å¿
@@ -33,24 +33,20 @@ public:
 	CSpeedmeter(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CSpeedmeter();
 
-	void	Init(float maxSpeed, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
-			D3DXVECTOR2 size = D3DXVECTOR2(SPEEDMETER_WIDTH, SPEEDMETER_HEIGHT),
-			char *str = SPEEDMETER_TEXFILENAME000);
+	void	Init(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
+		cVec2 size = D3DXVECTOR2(SPEEDMETER_WIDTH, SPEEDMETER_HEIGHT));
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSpeedmeter	*Create(float maxSpeed, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
-		D3DXVECTOR2 size = D3DXVECTOR2(SPEEDMETER_WIDTH, SPEEDMETER_HEIGHT),
-		char *str = SPEEDMETER_TEXFILENAME000);
+	static CSpeedmeter	*Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
+		cVec2 size = D3DXVECTOR2(SPEEDMETER_WIDTH, SPEEDMETER_HEIGHT));
 
 protected:
-	void SetVtxBuff(LPDIRECT3DVERTEXBUFFER9 *vtxBuff);
+	void SetVtxBuff(void);
 
 	LPDIRECT3DTEXTURE9	m_pTexture[2];
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff[2];
-
-	float m_MaxSpeed;	// ç≈ëÂë¨ìx
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
 };
 
 #endif

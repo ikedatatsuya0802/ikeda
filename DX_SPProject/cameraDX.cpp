@@ -51,9 +51,6 @@ CCameraDX::~CCameraDX()
 //=============================================================================
 void CCameraDX::Init(void)
 {
-	// カメラモード設定
-	m_flgCameraMode = false;
-
 	if(CManager::MatchMode(CTitle()))
 	{
 		// 通常時カメラ設定
@@ -119,7 +116,7 @@ void CCameraDX::Update(void)
 
 		CPlayer	*player = NULL;	// プレイヤーインスタンス
 
-		if(m_flgCameraMode)
+		if(CManager::GetEdhitMode())
 		{
 			CameraMove();
 
@@ -224,7 +221,7 @@ void CCameraDX::Update(void)
 
 		if(KT_L)
 		{
-			ChangeCameraMode();
+			CManager::ChangeEdhitMode();
 		}
 	}
 }
@@ -631,7 +628,7 @@ void CCameraDX::CameraVibrate(void)
 	uniform_int_distribution<float> width(-(m_CS.Vib.Width / 2), (m_CS.Vib.Width / 2));
 
 	// エディットモードでない場合のみ実行
-	if(!m_flgCameraMode)
+	if(!CManager::GetEdhitMode())
 	{
 		// カウンタが設定されている場合実行
 		if(m_CS.Vib.Cnt != 0)
@@ -664,7 +661,7 @@ void CCameraDX::CameraVibrate(void)
 //=============================================================================
 void CCameraDX::SetCamera(void)
 {
-	CAMERA* camera = m_flgCameraMode ? &m_CSEdit : &m_CS;
+	CAMERA* camera = CManager::GetEdhitMode() ? &m_CSEdit : &m_CS;
 
 	// プロジェクションマトリクスの初期化
 	D3DXMatrixIdentity(&camera->mtxProjection);
@@ -681,7 +678,7 @@ void CCameraDX::SetCamera(void)
 	// ビューマトリクスの初期化
 	D3DXMatrixIdentity(&camera->mtxView);
 	// ビューマトリクスの作成
-	if(m_flgCameraMode)
+	if(CManager::GetEdhitMode())
 	{
 		D3DXMatrixLookAtLH(&camera->mtxView, &camera->posV, &camera->posR, &camera->vecU);
 	}

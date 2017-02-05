@@ -25,7 +25,7 @@
 #define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
 #define	PLAYER_MOVEMENT			(0.005f)		// プレイヤーの加速度
-#define	PLAYER_SPEED_MAX		(0.3f)		// プレイヤーのスピード
+#define	PLAYER_SPEED_MAX		(10.0f)		// プレイヤーのスピード
 #define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (6000 / 12.f))		// プレイヤーのカーブの限界スピード
 #define	PLAYER_START_PER		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
@@ -118,8 +118,8 @@ protected:
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置
 	float		m_PerOld;		// スプライン上位置(旧)
-	float		m_PerMove;		// スプライン上位置の遷移量
-	float		m_SplineTime;	// スプライン上位置の遷移量
+	float		m_PerMove;		// スプライン上位置の移動量
+	float		m_SplineTime;	// スプライン上位置の移動量
 	float		m_RealSpeed;	// 絶対移動量
 	int			m_DriftCurve;	// どちらにドリフト中か
 	int			m_CntDrift;		// ドリフトカウンタ

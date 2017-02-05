@@ -12,7 +12,8 @@
 #include "sceneDX.h"
 #include "main.h"
 #include "rendererDX.h"
-#include "scene2DDX.h"
+#include "manager.h"
+#include "cameraDX.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -91,8 +92,16 @@ void CSceneDX::DrawAll(void)
 			{
 				if(i == PRIORITY_3D)
 				{
-					// フォグを有効にする
-					D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
+					if(!CManager::GetEdhitMode())
+					{
+						// フォグを有効にする
+						D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
+					}
+					else
+					{
+						// フォグを無効にする
+						D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+					}
 				}
 
 				// 描画処理

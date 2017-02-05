@@ -33,13 +33,13 @@ public:
 	CScene3DDX(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_3D);
 	~CScene3DDX();
 
-	void	Init(cchar *str = ".\\data\\TEXTURE\\field000.jpg", D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	void	Init(cchar *str = ".\\data\\TEXTURE\\field000.jpg", cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CScene3DDX	*Create(cchar* str = ".\\data\\TEXTURE\\field000.jpg",
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 
 	// ワールドマトリックスを取得
 	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }
@@ -55,7 +55,7 @@ protected:
 	D3DXMATRIX				m_mtxWorld;	// ワールドマトリックス
 
 	virtual void SetVtxBuff(void);
-	static void SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical);
+	static void SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, cint horizontal, cint vertical);
 	
 };
 

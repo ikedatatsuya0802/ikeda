@@ -51,7 +51,7 @@ CDriftMark	*CGame::m_DriftMark;
 CScene2DDX	*CGame::m_Hakushin;
 CPause		*CGame::m_Pause;
 
-int			CGame::m_GoalCount = GOAL_COUNT;
+int			CGame::m_GoalCount		= GOAL_COUNT;
 
 //=============================================================================
 //	ŠÖ”–¼	:Init
@@ -84,7 +84,7 @@ void CGame::Init(void)
 		D3DXVECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f), VEC3_ZERO,
 		D3DXVECTOR2(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f));
 	m_Hakushin->SetColor(0.0f);
-	//CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	CSpeedmeter::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.9f), (SCREEN_HEIGHT * 0.9f), 0.0f));
@@ -92,6 +92,7 @@ void CGame::Init(void)
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	m_Pause = CPause::Create();
 	m_Pause->UnlinkList();
+	CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.18f, SCREEN_HEIGHT * 0.05f, 0.0f), D3DXVECTOR2(400.0f, 60.0f));
 
 	// ƒtƒŒ[ƒ€‰Šú‰»
 	m_Frame = -1;

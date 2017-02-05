@@ -51,11 +51,6 @@ void CBuilding::Init(void)
 		modelFileName.append(".x");
 
 		CSceneXDX::LoadModel(modelFileName.c_str(), &m_BuildingMesh[i]);
-		/*
-		D3DXLoadMeshFromX(modelFileName.c_str(), D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
-			&mesh.pBuffMat, NULL, &mesh.NumMat, &mesh.pMesh);
-		m_BuildingMesh[i] = mesh;
-		CSceneXDX::AutomaticSetTexture(&m_BuildingMesh[i]);*/
 	}
 
 	// Œš•¨‚ğì¬
@@ -71,7 +66,7 @@ void CBuilding::Init(void)
 
 			// ¶¬‚·‚éƒrƒ‹‚Ìí—Ş‚ğƒ‰ƒ“ƒ_ƒ€‚Éİ’è
 			m_Instance.push_back(CSceneXDX::Create("", &m_BuildingMesh[typeNum],
-				D3DXVECTOR3((x * BUILDING_MARGIN), 0.0f, (z * BUILDING_MARGIN))));
+				D3DXVECTOR3((x * BUILDING_MARGIN), 0.0f, (z * BUILDING_MARGIN) + 1000.0f)));
 			m_Instance[m_Instance.size() - 1]->UnlinkList();
 		}
 	}

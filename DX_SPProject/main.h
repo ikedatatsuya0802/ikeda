@@ -30,7 +30,6 @@ using namespace std;
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define SIMPLE_FOR(max)			for(int i=0;i<max;i++)	// 単純複数回処理
 #define	uchar					unsigned char
 #define	uint					unsigned int
 #define	cbool					const bool

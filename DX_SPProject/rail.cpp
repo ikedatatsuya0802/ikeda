@@ -174,7 +174,7 @@ void CRail::Update(void)
 	static SPLINE spline = *CGame::GetRailLine()->GetSpline();
 
 	// 描画フラグ設定
-	m_flgDraw = DX_CAMERA->GetCameraMode() ? false : true;
+	m_flgDraw = CManager::GetEdhitMode() ? false : true;
 
 	// レールがエディットされた場合、更新
 	if(fabsf(spline.Length - m_Spline->Length) < 0.01f)
@@ -195,19 +195,14 @@ void CRail::Update(void)
 //=============================================================================
 void CRail::Draw(void)
 {
-	if(m_flgDraw)
+	if(!CManager::GetEdhitMode())
 	{
 		// マトリックス設定
 		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
-		// Zテスト開始
+		// アルファ・Zテスト開始
+		CRendererDX::EnableAlphaTest();
 		CRendererDX::EnableZTest();
-
-		// カリングをオフに
-		//D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-		// ライティング設定をオフに
-		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 描画処理
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
@@ -215,14 +210,9 @@ void CRail::Draw(void)
 		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
 		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, ((int)m_Spline->PosHermite.size() * 2));	// 描画
 
-		// ライティング設定をオンに
-		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-		// Zテスト終了
+		// アルファ・Zテスト終了
+		CRendererDX::DisableAlphaTest();
 		CRendererDX::DisableZTest();
-		
-		// 裏面カリング
-		D3D_DEVICE->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	}
 }
 

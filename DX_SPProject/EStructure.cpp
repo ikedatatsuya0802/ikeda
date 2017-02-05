@@ -222,7 +222,7 @@ void CEStructure::Update(void)
 	static SPLINE spline = *CGame::GetRailLine()->GetSpline();
 
 	// 描画フラグ設定
-	m_flgDraw = DX_CAMERA->GetCameraMode() ? false : true;
+	m_flgDraw = CManager::GetEdhitMode() ? false : true;
 
 	// レールがエディットされた場合、更新
 	if(fabsf(spline.Length - m_Spline->Length) < 0.01f)
@@ -242,16 +242,14 @@ void CEStructure::Update(void)
 //=============================================================================
 void CEStructure::Draw(void)
 {
-	//if(m_flgDraw)
+	if(!CManager::GetEdhitMode())
 	{
 		// マトリックス設定
 		CRendererDX::SetMatrix(&m_mtxWorld, VEC3_ZERO);
 
-		// Zテスト開始
+		// アルファ・Zテスト開始
+		CRendererDX::EnableAlphaTest();
 		CRendererDX::EnableZTest();
-
-		// ライティング設定をオフに
-		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 描画処理
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
@@ -259,11 +257,9 @@ void CEStructure::Draw(void)
 		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
 		D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, ESTRUCTURE_VERTEX_NUM, 0, ESTRUCTURE_POLYGON_NUM);
-
-		// ライティング設定をオンに
-		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-		// Zテスト終了
+		
+		// アルファ・Zテスト終了
+		CRendererDX::DisableAlphaTest();
 		CRendererDX::DisableZTest();
 	}
 }

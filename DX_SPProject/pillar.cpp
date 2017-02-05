@@ -306,38 +306,43 @@ void CPillar::Update(void)
 //=============================================================================
 void CPillar::Draw(void)
 {
-	// マトリックス設定
-	CRendererDX::SetMatrix(&m_mtxWorld, VEC3_ZERO, VEC3_ZERO);
-
-	// Zテスト開始
-	CRendererDX::EnableZTest();
-
-	// 描画処理
-	D3D_DEVICE->SetIndices(m_pIdxBuff);		// インデックスバッファのバインド
-	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);		// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);	// テクスチャの設定
-
-	for(int i = 0 ; i < (int)m_Spline->Pos.size() ; i++)
+	if(!CManager::GetEdhitMode())
 	{
-		// 最低ラインの高さには柱を出さない
-		if(m_Spline->Pos[i].y > 2.0f)
+		// マトリックス設定
+		CRendererDX::SetMatrix(&m_mtxWorld, VEC3_ZERO, VEC3_ZERO);
+
+		// アルファ・Zテスト開始
+		CRendererDX::EnableAlphaTest();
+		CRendererDX::EnableZTest();
+
+		// 描画処理
+		D3D_DEVICE->SetIndices(m_pIdxBuff);		// インデックスバッファのバインド
+		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);		// 頂点フォーマットの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture);	// テクスチャの設定
+
+		for(int i = 0 ; i < (int)m_Spline->Pos.size() ; i++)
 		{
-			// 設置位置・サイズの設定
-			CRendererDX::SetMatrix(&m_mtxWorld,
-				D3DXVECTOR3(m_Spline->Pos[i].x, 0.0f, m_Spline->Pos[i].z),
-				VEC3_ZERO,
-				D3DXVECTOR3(1.0f, (m_Spline->Pos[i].y / PILLAR_HEIGHT - 0.1f), 1.0f));
+			// 最低ラインの高さには柱を出さない
+			if(m_Spline->Pos[i].y > 2.0f)
+			{
+				// 設置位置・サイズの設定
+				CRendererDX::SetMatrix(&m_mtxWorld,
+					D3DXVECTOR3(m_Spline->Pos[i].x, 0.0f, m_Spline->Pos[i].z),
+					VEC3_ZERO,
+					D3DXVECTOR3(1.0f, (m_Spline->Pos[i].y / PILLAR_HEIGHT - 0.1f), 1.0f));
 
-			// 頂点バッファの設定
-			D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[i], 0, sizeof(VERTEX_3D));
+				// 頂点バッファの設定
+				D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[i], 0, sizeof(VERTEX_3D));
 
-			// 描画
-			D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, PILLAR_VERTEX_NUM, 0, PILLAR_POLYGON_NUM);
+				// 描画
+				D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, PILLAR_VERTEX_NUM, 0, PILLAR_POLYGON_NUM);
+			}
 		}
-	}
 
-	// Zテスト終了
-	CRendererDX::DisableZTest();
+		// アルファ・Zテスト終了
+		CRendererDX::DisableAlphaTest();
+		CRendererDX::DisableZTest();
+	}
 }
 
 //=============================================================================

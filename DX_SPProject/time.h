@@ -17,6 +17,8 @@
 //=============================================================================
 #define	TIME_FILENAME	".\\data\\time.txt"	// 時間の保存ファイル
 
+const int TIME_FIGURE = 8;	// 時間の桁数(mm:ss:mm)
+
 //=============================================================================
 //	マクロ定義
 //=============================================================================
@@ -34,25 +36,28 @@ public:
 class CTime : public CScene2DDX
 {
 public:
-	CTime(int value = 0);
+	CTime(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objType = OBJTYPE_NUMBER);
 	~CTime();
 	
-	void	Init(int value, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
+	void	Init(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CTime	*Create(int value = 0, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
+	static CTime	*Create(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 
-	void CountStart(void) { m_ifCountStart ? 0 : true; m_StartTime = timeGetTime(); }
+	void CountStart(void) { m_ifCountStart = true; m_StartTime = timeGetTime(); }
 	void CountStop(void) { m_ifCountStart = false; }
 	void SaveTime(void);
 
+	static void TimeConvert(TIME* timeStr, DWORD time);
+
 protected:
-	vector<CNumber>	m_Instance;		// ナンバーのインスタンス
-	bool			m_ifCountStart;	// カウント中かどうか
-	DWORD			m_StartTime;	// 計測開始時間
-	TIME			m_Time;			// 分秒ミリ秒の時間
+	CScene2DDX*		m_Instance[TIME_FIGURE];	// ナンバーのインスタンス
+	bool			m_ifCountStart;				// カウント中かどうか
+	DWORD			m_StartTime;				// 計測開始時間
+	DWORD			m_TimeValue;				// 経過時間
+	TIME			m_Time;						// 分秒ミリ秒の時間
 };
 
 #endif

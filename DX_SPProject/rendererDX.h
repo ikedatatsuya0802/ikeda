@@ -28,8 +28,13 @@
 #define	FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点情報
 #define	D3D_DEVICE		CRendererDX::m_pD3DDevice									// 3Dデバイス
 
+
 const int	VERTEX_SQUARE		= 4;	// 四角ポリゴンの頂点数
 const int	PRIMITIVE_SQUARE	= 2;	// 四角ポリゴンのプリミティブ数
+
+#define	cVec2		const D3DXVECTOR2
+#define	cVec3		const D3DXVECTOR3
+#define	cVec4		const D3DXVECTOR4
 
 #define	VEC2_ZERO	(D3DXVECTOR2(0.0f, 0.0f))				// 2Dベクトルの0
 #define	VEC3_ZERO	(D3DXVECTOR3(0.0f, 0.0f, 0.0f))			// 3Dベクトルの0

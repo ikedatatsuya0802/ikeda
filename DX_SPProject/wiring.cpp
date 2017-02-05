@@ -120,82 +120,81 @@ void CWiring::Draw(void)
 	D3DXMATERIAL		*pMat = NULL;		// マテリアル
 	D3DMATERIAL9		matDef;				// デフォルトのマテリアル
 
-	// Zテスト開始
-	CRendererDX::EnableZTest();
-
-	// アルファテスト開始
-	CRendererDX::EnableAlphaTest();
-
-	// 現在のマテリアルを取得
-	D3D_DEVICE->GetMaterial(&matDef);
-
-	for(int i = 2 ; i < (int)m_Spline->PosHermite.size() ; i += 3)
+	if(!CManager::GetEdhitMode())
 	{
-		float rot = 0.0f;
+		// アルファ・Zテスト開始
+		CRendererDX::EnableAlphaTest();
+		CRendererDX::EnableZTest();
 
-		// 架線柱の回転値計算
-		if((i > 0) && (i != (int)m_Spline->PosHermite.size() - 1))
+		// 現在のマテリアルを取得
+		D3D_DEVICE->GetMaterial(&matDef);
+
+		for(int i = 2 ; i < (int)m_Spline->PosHermite.size() ; i += 3)
 		{
-			rot = atan2f((m_Spline->PosHermite[i + 1].x - m_Spline->PosHermite[i - 1].x),
-				(m_Spline->PosHermite[i + 1].z - m_Spline->PosHermite[i - 1].z));
-		}
-		else
-		{
-			rot = 0.0f;
-		}
+			float rot = 0.0f;
 
-		// マトリックス設定
-		CRendererDX::SetMatrix(&m_mtxWorld,
-			D3DXVECTOR3(m_Spline->PosHermite[i].x, m_Spline->PosHermite[i].y, m_Spline->PosHermite[i].z),
-			D3DXVECTOR3(0.0f, rot, 0.0f));
-		
-		// マテリアル変換
-		pMat = (D3DXMATERIAL *)m_ModelStatus->pBuffMat->GetBufferPointer();
-
-		// 3Dモデル描画
-		for(int mat = 0 ; mat < (int)m_ModelStatus->NumMat ; mat++)
-		{
-			float			playerPos = CGame::GetPlayer1()->GetPerSpline();	// プレイヤのスプライン座標
-			D3DXMATERIAL	pMatAlpha = *pMat;									// 透明マテリアル
-
-
-			// プレイヤーに近づいたら透過させる
-			float length = (1.0f / m_Spline->PosHermite.size() * i) - playerPos;
-
-			if(length < WIRING_CLEAR_BORDER)
+			// 架線柱の回転値計算
+			if((i > 0) && (i != (int)m_Spline->PosHermite.size() - 1))
 			{
-				(&pMatAlpha)[mat].MatD3D.Diffuse.a = (1.0f + (length - WIRING_CLEAR_BORDER) / 0.005f);
-
-				if((&pMatAlpha)[mat].MatD3D.Diffuse.a < 0.0f)
-				{
-					(&pMatAlpha)[mat].MatD3D.Diffuse.a = 0.0f;
-				}
-
-				// マテリアルセット
-				D3D_DEVICE->SetMaterial(&(&pMatAlpha)[mat].MatD3D);
+				rot = atan2f((m_Spline->PosHermite[i + 1].x - m_Spline->PosHermite[i - 1].x),
+					(m_Spline->PosHermite[i + 1].z - m_Spline->PosHermite[i - 1].z));
 			}
 			else
 			{
-				// マテリアルセット
-				D3D_DEVICE->SetMaterial(&pMat[mat].MatD3D);
+				rot = 0.0f;
 			}
 
-			// テクスチャをセットしない
-			D3D_DEVICE->SetTexture(0, NULL);
-			
-			// モデル描画
-			m_ModelStatus->pMesh->DrawSubset(mat);
+			// マトリックス設定
+			CRendererDX::SetMatrix(&m_mtxWorld,
+				D3DXVECTOR3(m_Spline->PosHermite[i].x, m_Spline->PosHermite[i].y, m_Spline->PosHermite[i].z),
+				D3DXVECTOR3(0.0f, rot, 0.0f));
+
+			// マテリアル変換
+			pMat = (D3DXMATERIAL *)m_ModelStatus->pBuffMat->GetBufferPointer();
+
+			// 3Dモデル描画
+			for(int mat = 0 ; mat < (int)m_ModelStatus->NumMat ; mat++)
+			{
+				float			playerPos = CGame::GetPlayer1()->GetPerSpline();	// プレイヤのスプライン座標
+				D3DXMATERIAL	pMatAlpha = *pMat;									// 透明マテリアル
+
+
+				// プレイヤーに近づいたら透過させる
+				float length = (1.0f / m_Spline->PosHermite.size() * i) - playerPos;
+
+				if(length < WIRING_CLEAR_BORDER)
+				{
+					(&pMatAlpha)[mat].MatD3D.Diffuse.a = (1.0f + (length - WIRING_CLEAR_BORDER) / 0.005f);
+
+					if((&pMatAlpha)[mat].MatD3D.Diffuse.a < 0.0f)
+					{
+						(&pMatAlpha)[mat].MatD3D.Diffuse.a = 0.0f;
+					}
+
+					// マテリアルセット
+					D3D_DEVICE->SetMaterial(&(&pMatAlpha)[mat].MatD3D);
+				}
+				else
+				{
+					// マテリアルセット
+					D3D_DEVICE->SetMaterial(&pMat[mat].MatD3D);
+				}
+
+				// テクスチャをセットしない
+				D3D_DEVICE->SetTexture(0, NULL);
+
+				// モデル描画
+				m_ModelStatus->pMesh->DrawSubset(mat);
+			}
+
+			// マテリアルを元に戻す
+			D3D_DEVICE->SetMaterial(&matDef);
 		}
 
-		// マテリアルを元に戻す
-		D3D_DEVICE->SetMaterial(&matDef);
+		// アルファ・Zテスト終了
+		CRendererDX::DisableAlphaTest();
+		CRendererDX::DisableZTest();
 	}
-
-	// Zテスト終了
-	CRendererDX::DisableZTest();
-
-	// アルファテスト終了
-	CRendererDX::DisableAlphaTest();
 }
 
 //=============================================================================

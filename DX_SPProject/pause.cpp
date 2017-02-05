@@ -73,7 +73,7 @@ void CPause::Init(void)
 	VERTEX_2D	*pVtx;	// 3D頂点情報
 	m_pVtxBuff[2]->Lock(0, 0, (void**)&pVtx, 0);
 	{
-		SIMPLE_FOR(4)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].col = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 0.7f);
 		}
@@ -141,7 +141,7 @@ void CPause::SetVtxBuff(LPDIRECT3DVERTEXBUFFER9 *vtxBuff)
 void CPause::Uninit(void)
 {
 	// インスタンス削除
-	SIMPLE_FOR(PAUSE_TEXTURE_NUM)
+	for(int i = 0 ; i < PAUSE_TEXTURE_NUM ; i++)
 	{
 		SafetyRelease(m_pTexture[i]);
 	}

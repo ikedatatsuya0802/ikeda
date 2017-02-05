@@ -26,15 +26,15 @@ public:
 	~CScene2DDX();
 
 	void	Init(cchar *str = ".\\data\\TEXTURE\\field000.jpg",
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
-		D3DXVECTOR2 size = D3DXVECTOR2(100.0f, 100.0f));
+		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
+		cVec2 size = D3DXVECTOR2(100.0f, 100.0f));
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CScene2DDX	*Create(cchar *str = ".\\data\\TEXTURE\\field000.jpg",
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO,
-		D3DXVECTOR2 size = D3DXVECTOR2(100.0f, 100.0f));
+		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
+		cVec2 size = D3DXVECTOR2(100.0f, 100.0f));
 
 	// リソースのロード
 	void	Load(cchar* str) { D3DXCreateTextureFromFile(D3D_DEVICE, str, &m_pTexture); }

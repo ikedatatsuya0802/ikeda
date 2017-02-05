@@ -45,7 +45,7 @@ CFarGoal::~CFarGoal()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CFarGoal::Init(uint defValue, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+void CFarGoal::Init(uint defValue, cVec3 pos, cVec2 size)
 {
 	uint valueCal = defValue;	// 初期値の退避
 	m_FarLength = (float)defValue;
@@ -134,7 +134,7 @@ void CFarGoal::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CFarGoal *CFarGoal::Create(uint defValue, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CFarGoal *CFarGoal::Create(uint defValue, cVec3 pos, cVec2 size)
 {
 	CFarGoal *farGoal;	// インスタンス
 
@@ -158,7 +158,7 @@ void CFarGoal::SetValue(int value)
 {
 	int valueCal = value;
 
-	SIMPLE_FOR((int)m_Number.size())
+	for(int i = 0 ; i < (int)m_Number.size() ; i++)
 	{
 		// 値をセット
 		m_Number[i]->SetNumber(valueCal % 10);

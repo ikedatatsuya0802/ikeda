@@ -184,12 +184,12 @@ void CPlayer::UpdateMove(void)
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	
-	if((CGame::GetFrame() > COUNTDOWN_END_TIME) && !DX_CAMERA->GetCameraMode() && KH_W)
+	if((CGame::GetFrame() > COUNTDOWN_END_TIME) && !CManager::GetEdhitMode() && KH_W)
 	{// ‰Á‘¬
 
 		m_PerMove += PLAYER_MOVEMENT;
 	}
-	else if(!DX_CAMERA->GetCameraMode() && KH_S)
+	else if(!CManager::GetEdhitMode() && KH_S)
 	{// Œ¸‘¬
 
 		m_PerMove -= PLAYER_MOVEMENT * 2;
@@ -198,12 +198,12 @@ void CPlayer::UpdateMove(void)
 			m_PerMove = 0.0f;
 		}
 	}
-	/*
+	
 	// ‘¬“x§ŒÀ
 	if(m_PerMove > PLAYER_SPEED_MAX)
 	{
 		m_PerMove = PLAYER_SPEED_MAX;
-	}*/
+	}
 
 	// ˆÚ“®—Ê”½‰f
 	float	realPer = ((1.0f / 60.0f) * (m_PerMove / (m_Spline->LengthMin[posNum] / 10.0f)));

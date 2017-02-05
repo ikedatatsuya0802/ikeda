@@ -28,12 +28,12 @@ public:
 	CNumber(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objType = OBJTYPE_NUMBER);
 	~CNumber();
 	
-	void	Init(int value, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
+	void	Init(int value, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CNumber	*Create(int value = 0, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
+	static CNumber	*Create(int value = 0, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { if(!m_pTexture) D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }

@@ -46,7 +46,7 @@ CSkybox::~CSkybox()
 //	戻り値	:無し
 //	説明	:初期化処理を行う。
 //=============================================================================
-void CSkybox::Init(bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CSkybox::Init(bool ifLight, cVec3 pos, cVec3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -275,7 +275,7 @@ void CSkybox::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CSkybox *CSkybox::Create(bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CSkybox *CSkybox::Create(bool ifLight, cVec3 pos, cVec3 rot)
 {
 	CSkybox *instance;
 

@@ -48,7 +48,7 @@ CMeshfield::~CMeshfield()
 //	戻り値	:無し
 //	説明	:初期化処理を行う。
 //=============================================================================
-void CMeshfield::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CMeshfield::Init(cVec3 pos, cVec3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -276,16 +276,8 @@ void CMeshfield::Draw(void)
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
-	// フォグを有効にする
-	D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
-
 	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-		
-	// ライティング設定をオフに
-	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+	CRendererDX::EnableZTest();
 	
 	// 描画処理
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
@@ -293,17 +285,9 @@ void CMeshfield::Draw(void)
 	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
 	D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, MESHFIELD_VERTEX_NUM, 0, MESHFIELD_POLYGON_NUM);	// メッシュフィールド描画
-		
-	// ライティング設定をオフに
-	//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	
-	// フォグを無効にする
-	D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+	// Zテスト終了
+	CRendererDX::DisableZTest();
 }
 
 //=============================================================================
@@ -471,12 +455,12 @@ float CMeshfield::GetHeight(D3DXVECTOR3 pos)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CMeshfield *CMeshfield::Create(bool ifListAdd, int priority, OBJTYPE objtype, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CMeshfield *CMeshfield::Create(cVec3 pos, cVec3 rot)
 {
 	CMeshfield *instance;	// インスタンス
 
 	// インスタンス生成
-	instance = new CMeshfield(ifListAdd, priority, objtype);
+	instance = new CMeshfield();
 
 	// 初期化処理
 	instance->Init(pos, rot);

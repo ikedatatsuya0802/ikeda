@@ -44,16 +44,15 @@
 class CMeshfield : public CScene3DDX
 {
 public:
-	CMeshfield(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
+	CMeshfield(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CMeshfield();
 
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	void	Init(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CMeshfield	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
-		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	static CMeshfield	*Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_pTexture); }
