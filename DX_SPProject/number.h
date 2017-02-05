@@ -9,8 +9,6 @@
 //
 //=============================================================================
 #include "scene2DDX.h"
-#include "manager.h"
-#include "rendererDX.h"
 
 //=============================================================================
 //	マクロ定義
@@ -27,7 +25,7 @@
 class CNumber : public CScene2DDX
 {
 public:
-	CNumber(int value = 0);
+	CNumber(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objType = OBJTYPE_NUMBER);
 	~CNumber();
 	
 	void	Init(int value, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
@@ -38,14 +36,14 @@ public:
 	static CNumber	*Create(int value = 0, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR2 size = VEC2_ZERO);
 	
 	// リソースのロード
-	//static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
+	static void	Load(void) { if(!m_pTexture) D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
-	//static void	Unload(void) { SafetyRelease(m_pTexture); }
+	static void	Unload(void) { SafetyRelease(m_pTexture); }
 	
 	void	SetNumber(int value = 0);
 
 protected:
-	//static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
+	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
 };
 
 #endif

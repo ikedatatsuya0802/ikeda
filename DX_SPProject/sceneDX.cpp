@@ -17,8 +17,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-list<CSceneDX*>	CSceneDX::m_List[PRIORITY_NUM];
-list<CSceneDX*>::iterator	CSceneDX::m_ListItr;
+list<CSceneDX*>	CSceneDX::m_List[PRIORITY_MAX];
 
 //=============================================================================
 //	関数名	:CSceneDX()
@@ -38,7 +37,8 @@ CSceneDX::CSceneDX(bool ifListAdd, int priority, OBJTYPE objType)
 	m_Pos = VEC3_ZERO;
 	m_Rot = VEC3_ZERO;
 
-	m_flgDraw = true;
+	m_flgDraw		= true;
+	m_DebugProcCnt	= 0;
 }
 
 //=============================================================================
@@ -60,16 +60,14 @@ CSceneDX::~CSceneDX()
 //=============================================================================
 void CSceneDX::UpdateAll(void)
 {
-	list<CSceneDX*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
-	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
+	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
-		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
+		for each(CSceneDX* list in m_List[i])
 		{
 			// 更新処理
-			(*itr)->Update();
+			list->Update();
 		}
 	}
 }
@@ -82,16 +80,27 @@ void CSceneDX::UpdateAll(void)
 //=============================================================================
 void CSceneDX::DrawAll(void)
 {
-	list<CSceneDX*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
-	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
+	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に描画処理を行う
-		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
+		for each(CSceneDX* list in m_List[i])
 		{
-			// 描画処理
-			(*itr)->Draw();
+			// 描画フラグがオンの場合のみ描画
+			if(list->GetDrawFrag())
+			{
+				if(i == PRIORITY_3D)
+				{
+					// フォグを有効にする
+					D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
+				}
+
+				// 描画処理
+				list->Draw();
+
+				// フォグを無効にする
+				D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+			}
 		}
 	}
 }
@@ -107,7 +116,7 @@ void CSceneDX::DeleteAll(void)
 	list<CSceneDX*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストに登録されている全ての要素を削除する
 		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; )
@@ -120,6 +129,8 @@ void CSceneDX::DeleteAll(void)
 
 				// インスタンス削除
 				delete (*itr);
+
+				(*itr) = NULL;
 			}
 
 			// リストから削除
@@ -138,8 +149,8 @@ void CSceneDX::Release(void)
 {
 	list<CSceneDX*>::iterator itr;	// リストのイテレータ
 
-									// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	// 全リストを検索
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストから自身のインスタンスを探索する
 		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
@@ -177,7 +188,7 @@ void CSceneDX::UnlinkList(void)
 	list<CSceneDX*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストから自身のインスタンスを探索する
 		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)

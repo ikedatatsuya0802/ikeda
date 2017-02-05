@@ -16,6 +16,7 @@
 #include "title.h"
 #include "player.h"
 #include "mode.h"
+#include "manager.h"
 
 //=============================================================================
 //	関数名	:CCameraDX()
@@ -68,6 +69,8 @@ void CCameraDX::Init(void)
 	m_CS.vecU			= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_CS.Rot			= D3DXVECTOR3(0.0f, atan2f((m_CS.posR.x - m_CS.posV.x), (m_CS.posR.z - m_CS.posV.z)), 0.0f);
 	m_CS.Distance		= CAMERA_POSV_TOPLAYER;
+	m_CS.Near			= CAMERA_NEAR;
+	m_CS.Far			= CAMERA_FAR;
 	m_CS.Vib.vPos		= VEC3_ZERO;
 	m_CS.Vib.Cnt		= 0;
 	m_CS.Vib.Width	= 0.0f;
@@ -667,11 +670,11 @@ void CCameraDX::SetCamera(void)
 	D3DXMatrixIdentity(&camera->mtxProjection);
 	
 	// プロジェクションマトリクスの作成
-	D3DXMatrixPerspectiveFovLH(&camera->mtxProjection,						// プロジェクションマトリクス
-								(D3DX_PI * 0.25),								// 視野角
-								((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// アスペクト比
-								CAMERA_NEARZ,									// NearZ値
-								CAMERA_FARZ);									// FarZ値
+	D3DXMatrixPerspectiveFovLH(&camera->mtxProjection,	// プロジェクションマトリクス
+		(D3DX_PI * 0.25),								// 視野角
+		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// アスペクト比
+		m_CS.Near,										// Near値
+		m_CS.Far);										// Far値
 
 	// プロジェクションマトリクスの設定
 	D3D_DEVICE->SetTransform(D3DTS_PROJECTION, &camera->mtxProjection);

@@ -18,7 +18,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-//LPDIRECT3DTEXTURE9	CNumber::m_pTexture;
+LPDIRECT3DTEXTURE9	CNumber::m_pTexture = NULL;
 
 //=============================================================================
 //	関数名	:CNumber()
@@ -26,10 +26,11 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CNumber::CNumber(int value) : CScene2DDX(true)
+CNumber::CNumber(bool ifListAdd, int priority, OBJTYPE objType) : CScene2DDX(ifListAdd, priority, objType)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
+	m_pTexture	= NULL;
 }
 
 //=============================================================================
@@ -51,8 +52,11 @@ CNumber::~CNumber()
 //=============================================================================
 void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
-	VERTEX_2D			*pVtx;										// 2D頂点情報
+	VERTEX_2D *pVtx;	// 2D頂点情報
 
+	// 閾値チェック
+	(value) > 9 ? value = 9 : 0;
+	(value) < 0 ? value = 0 : 0;
 
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
@@ -61,7 +65,7 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	m_fAngle	= atan2f(size.x, size.y);
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -83,47 +87,50 @@ void CNumber::Init(int value, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	pVtx[3].Pos.z = 0.0f;
 	
 	// 除算係数設定
-	for(int i = 0 ; i < VERTEX_NUM ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		pVtx[i].rhw = 1.0f;
 
 		// スコア色設定
 		pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-
-	// 閾値チェック
-	if(value < -1)
-	{
-		value = 0;
-	}
-	else if(value > 9)
-	{
-		value = 9;
-	}
 	
-	if(value >= 0)
-	{// 値が数の場合
-
-		// テクスチャ座標設定
-		pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 0.5f);
-		pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.5f);
-	}
-	else
-	{// 小数点の場合
-
-		// テクスチャ座標設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.5f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.5f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-	}
-
+	// テクスチャ座標設定
+	pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 1.0f);
+	
 	m_pVtxBuff->Unlock();
 
-	//Load();
-	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"NUMBER_TEXFILENAME000, &m_pTexture);
+	Load();
+}
+
+//=============================================================================
+//	関数名	:Draw
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:描画処理を行う。
+//=============================================================================
+void CNumber::Draw(void)
+{
+	// アルファテスト開始
+	CRendererDX::EnableAlphaTest();
+
+	// 頂点フォーマットの設定
+	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
+
+	// 頂点フォーマットの設定
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+
+	// テクスチャの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);
+
+	// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
+
+	// アルファテスト終了
+	CRendererDX::DisableAlphaTest();
 }
 
 //=============================================================================
@@ -148,34 +155,6 @@ void CNumber::Uninit(void)
 void CNumber::Update(void)
 {
 
-}
-
-//=============================================================================
-//	関数名	:Draw
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:描画処理を行う。
-//=============================================================================
-void CNumber::Draw(void)
-{
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
-
-	// 頂点フォーマットの設定
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
-	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);
-	// メーター描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
-
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 
 //=============================================================================
@@ -209,35 +188,16 @@ void CNumber::SetNumber(int value)
 	VERTEX_2D	*pVtx;	// 2D頂点情報
 
 	// 閾値チェック
-	if(value < -1)
-	{
-		value = 0;
-	}
-	else if(value > 9)
-	{
-		value = 9;
-	}
+	(value) > 9 ? value = 9 : 0;
+	(value) < 0 ? value = 0 : 0;
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	
-	if(value != -1)
-	{// 値が数の場合
 
-		// テクスチャ座標設定
-		pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 0.5f);
-		pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.5f);
-	}
-	else
-	{// 小数点の場合
-
-		// テクスチャ座標設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.5f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.5f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-	}
+	// テクスチャ座標設定
+	pVtx[0].tex = D3DXVECTOR2(((float)value * 0.1f), 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(((float)value * 0.1f), 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(((float)value * 0.1f + 0.1f), 1.0f);
 
 	m_pVtxBuff->Unlock();
 }

@@ -29,7 +29,7 @@ void CRail_Title::Init(int line, D3DXVECTOR3 pos)
 	SetRot(VEC3_ZERO);
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(RAIL_TEXFILENAME000), &m_pTexture);
@@ -72,7 +72,7 @@ void CRail_Title::SetVtxBuff(void)
 	pVtx[3].Pos.y = 0.1f;
 	pVtx[3].Pos.z = -(MESHFIELD_TOTALHEIGHT * 0.5f);
 
-	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
+	for(int nCntSet = 0 ; nCntSet < VERTEX_SQUARE ; nCntSet++)
 	{
 		// 法線設定
 		pVtx[nCntSet].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -121,7 +121,7 @@ void CRail_Title::Draw(void)
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);	// 描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);	// 描画
 
 		// ライティング設定をオンに
 		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);

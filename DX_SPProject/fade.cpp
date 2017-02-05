@@ -34,7 +34,7 @@ void CFade::Init(void)
 	VERTEX_2D			*pVtx;	// 頂点情報
 
 	
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\fade000.jpg", &m_pTexture[0]);
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\fade001.jpg", &m_pTexture[1]);
 
@@ -60,39 +60,39 @@ void CFade::Init(void)
 	for(int i = 0 ; i < 2 ; i++)
 	{
 		// 描画座標設定
-		pVtx[i * VERTEX_NUM + 0].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 0].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 0].Pos.z = 0.0f;
+		pVtx[i * VERTEX_SQUARE + 0].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 0].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 0].Pos.z = 0.0f;
 	
-		pVtx[i * VERTEX_NUM + 1].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 1].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 1].Pos.z = 0.0f;
+		pVtx[i * VERTEX_SQUARE + 1].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 1].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 1].Pos.z = 0.0f;
 	
-		pVtx[i * VERTEX_NUM + 2].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 2].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 2].Pos.z = 0.0f;
+		pVtx[i * VERTEX_SQUARE + 2].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 2].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 2].Pos.z = 0.0f;
 	
-		pVtx[i * VERTEX_NUM + 3].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 3].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 3].Pos.z = 0.0f;
+		pVtx[i * VERTEX_SQUARE + 3].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 3].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 3].Pos.z = 0.0f;
 	
 		// 除算係数設定
-		for(int nCntRhw = 0 ; nCntRhw < VERTEX_NUM ; nCntRhw++)
+		for(int nCntRhw = 0 ; nCntRhw < VERTEX_SQUARE ; nCntRhw++)
 		{
-			pVtx[i * VERTEX_NUM + nCntRhw].rhw = 1.0f;
+			pVtx[i * VERTEX_SQUARE + nCntRhw].rhw = 1.0f;
 		}
 	
 		// フェード色設定
-		for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
+		for(int nCntSet = 0 ; nCntSet < VERTEX_SQUARE ; nCntSet++)
 		{
-			pVtx[i * VERTEX_NUM + nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[i * VERTEX_SQUARE + nCntSet].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	
 		// テクスチャ座標設定
-		pVtx[i * VERTEX_NUM + 0].tex = VEC2_ZERO;
-		pVtx[i * VERTEX_NUM + 1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[i * VERTEX_NUM + 2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[i * VERTEX_NUM + 3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		pVtx[i * VERTEX_SQUARE + 0].tex = VEC2_ZERO;
+		pVtx[i * VERTEX_SQUARE + 1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[i * VERTEX_SQUARE + 2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[i * VERTEX_SQUARE + 3].tex = D3DXVECTOR2(1.0f, 1.0f);
 	}
 
 	m_pVtxBuff->Unlock();
@@ -208,14 +208,14 @@ void CFade::Update(void)
 	
 	for(int i = 0 ; i < 2 ; i++)
 	{
-		pVtx[i * VERTEX_NUM + 0].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 0].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 1].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 1].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 2].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 2].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 3].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
-		pVtx[i * VERTEX_NUM + 3].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 0].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 0].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 1].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 1].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 2].Pos.x = m_Fade[i].Pos.x - (sinf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 2].Pos.y = m_Fade[i].Pos.y - (cosf(-m_Fade[i].fAngle - m_Fade[i].Rot.z + D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 3].Pos.x = m_Fade[i].Pos.x - (sinf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
+		pVtx[i * VERTEX_SQUARE + 3].Pos.y = m_Fade[i].Pos.y - (cosf(m_Fade[i].fAngle - m_Fade[i].Rot.z - D3DX_PI) * m_Fade[i].fLength);
 	}
 
 	m_pVtxBuff->Unlock();
@@ -238,11 +238,11 @@ void CFade::Draw(void)
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture[0]);
 		// フェード描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 0), PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_SQUARE * 0), PRIMITIVE_SQUARE);
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture[1]);
 		// フェード描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_NUM * 1), PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (VERTEX_SQUARE * 1), PRIMITIVE_SQUARE);
 	}
 }
 

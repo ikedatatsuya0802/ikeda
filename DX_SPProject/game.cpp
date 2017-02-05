@@ -36,6 +36,8 @@
 #include "pillar.h"
 #include "EStructure.h"
 #include "wiring.h"
+#include "building.h"
+#include "time.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -70,6 +72,7 @@ void CGame::Init(void)
 	CPillar::Create();
 	CEStructure::Create();
 	CWiring::Create();
+	CBuilding::Init();
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
@@ -77,10 +80,11 @@ void CGame::Init(void)
 	
 	// 2D
 	CDriftMark::Create();
-	m_Hakushin = CScene2DDX::Create(D3DXVECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f), "hakushin.png");
+	m_Hakushin = CScene2DDX::Create(".\\data\\TEXTURE\\hakushin.png",
+		D3DXVECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f));
 	m_Hakushin->SetColor(0.0f);
-	CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
+	//CSpeedmeter::Create(100.0f, D3DXVECTOR3((SCREEN_WIDTH * 0.12f), (SCREEN_HEIGHT * 0.8f), 0.0f));
 	CFarGoal::Create((int)RAILLINE_LENGTH, D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.05f, 0.0f),
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	CMap::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.9f), (SCREEN_HEIGHT * 0.9f), 0.0f));
@@ -104,6 +108,8 @@ void CGame::Init(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
+	CBuilding::Uninit();
+
 	// 終了処理・インスタンス削除
 	CSceneDX::DeleteAll();
 }
@@ -123,6 +129,8 @@ void CGame::Update(void)
 	{
 		// シーン更新
 		CSceneDX::UpdateAll();
+		
+		CBuilding::Update();
 
 		if(m_Player1->GetPerSpline() >= RAILLINE_GOAL)
 		{
@@ -146,6 +154,8 @@ void CGame::Update(void)
 //=============================================================================
 void CGame::Draw(void)
 {
+	CBuilding::Draw();
+
 	// シーン描画
 	CSceneDX::DrawAll();
 

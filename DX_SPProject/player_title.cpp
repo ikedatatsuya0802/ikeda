@@ -14,6 +14,7 @@
 #include "meshfield.h"
 #include "sceneXDX.h"
 #include "model.h"
+#include "manager.h"
 
 //=============================================================================
 //	ä÷êîñº	:Init

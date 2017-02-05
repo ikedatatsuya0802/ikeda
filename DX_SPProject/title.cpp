@@ -38,14 +38,17 @@ void CTitle::Init(void)
 	m_AlphaBlack = 0.0f;
 	m_AlphaButton = 0.0f;
 
-	m_TitleBG = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "titlelogo.png");
+	m_TitleBG = CScene2DDX::Create(".\\data\\TEXTURE\\titlelogo.png",
+		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
 	m_TitleBG->SetColor(0.0f, 1.0f, 1.0f, 1.0f);
-	m_PushEnter = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), "pushbutton000.png");
+	m_PushEnter = CScene2DDX::Create(".\\data\\TEXTURE\\pushbutton000.png",
+		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
+		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)));
 	m_PushEnter->SetColor(m_AlphaButton, 1.0f, 1.0f, 1.0f);
-	m_Black = CScene2DDX::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), "black.jpg");
+	m_Black = CScene2DDX::Create(".\\data\\TEXTURE\\black.jpg",
+		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
 	m_Black->SetColor(0.0f, 1.0f, 1.0f, 1.0f);
 
 	m_Frame = -1;
@@ -55,7 +58,7 @@ void CTitle::Init(void)
 
 	// 3D
 	CMeshfield::Create();
-	CSkybox::Create(true, 2, OBJTYPE_NONE, true);
+	CSkybox::Create(true);
 	CRail_Title::Create();
 	CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, -(30000.0f)));
 	//CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, 100.0f));

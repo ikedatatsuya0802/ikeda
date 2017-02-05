@@ -23,7 +23,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneXDX::CSceneXDX(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DDX(ifListAdd, priority, objtype)
+CSceneXDX::CSceneXDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
 	D3DXMatrixIdentity(&m_mtxWorld);
 }
@@ -45,35 +45,21 @@ CSceneXDX::~CSceneXDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CSceneXDX::Init(char* fileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CSceneXDX::Init(cchar* fileName, MODELSTATUS* mesh, const D3DXVECTOR3 pos, const D3DXVECTOR3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VEC3_ZERO);
 
-	LoadModel(fileName);
-}
-
-//=============================================================================
-//	関数名	:Load
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:。
-//=============================================================================
-void CSceneXDX::Load(void)
-{
-
-}
-
-//=============================================================================
-//	関数名	:Load
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:。
-//=============================================================================
-void CSceneXDX::Unload(void)
-{
-
+	if(mesh)
+	{
+		m_ModelStatus = mesh;
+	}
+	else
+	{
+		m_ModelStatus = new MODELSTATUS;
+		LoadModel(fileName, m_ModelStatus);
+	}
 }
 
 //=============================================================================
@@ -84,8 +70,9 @@ void CSceneXDX::Unload(void)
 //=============================================================================
 void CSceneXDX::Uninit(void)
 {
-	SafetyRelease(m_ModelStatus.pBuffMat);
-	SafetyRelease(m_ModelStatus.pMesh);
+	/*
+	SafetyRelease(m_ModelStatus->pBuffMat);
+	SafetyRelease(m_ModelStatus->pMesh);*/
 }
 
 //=============================================================================
@@ -118,18 +105,16 @@ void CSceneXDX::Draw(void)
 	CRendererDX::EnableZTest();
 
 	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 250);
+	CRendererDX::EnableAlphaTest();
 
 	// 描画処理
 	D3D_DEVICE->GetMaterial(&matDef);	// 現在のマテリアルを取得
 
 	// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+	pMat = (D3DXMATERIAL *)m_ModelStatus->pBuffMat->GetBufferPointer();
 
 	// 3Dモデル描画
-	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
+	for(int i = 0 ; i < (int)m_ModelStatus->NumMat ; i++)
 	{
 		// マテリアルセット
 		D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
@@ -138,8 +123,8 @@ void CSceneXDX::Draw(void)
 		if(pMat[i].pTextureFilename)
 		{// テクスチャ有り
 
-		 // リストから同名のテクスチャを探索し、セット
-			for each(TEXTURE list in m_pTexture)
+			// リストから同名のテクスチャを探索し、セット
+			for each(TEXTURE list in m_ModelStatus->Tex)
 			{
 				if(list.FileName == CharPToString(pMat[i].pTextureFilename))
 				{
@@ -155,16 +140,14 @@ void CSceneXDX::Draw(void)
 		}
 
 		// モデル描画
-		m_ModelStatus.pMesh->DrawSubset(i);
+		m_ModelStatus->pMesh->DrawSubset(i);
 	}
 
 	// マテリアルを元に戻す
 	D3D_DEVICE->SetMaterial(&matDef);
 
 	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	CRendererDX::DisableAlphaTest();
 
 	// Zテスト終了
 	CRendererDX::DisableZTest();
@@ -176,13 +159,13 @@ void CSceneXDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CSceneXDX *CSceneXDX::Create(char* fileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CSceneXDX *CSceneXDX::Create(cchar* fileName, MODELSTATUS* mesh, const D3DXVECTOR3 pos, const D3DXVECTOR3 rot)
 {
 	CSceneXDX *instance;
 
 	instance = new CSceneXDX(true);
 
-	instance->Init(fileName, pos, rot);
+	instance->Init(fileName, mesh, pos, rot);
 
 	return instance;
 }
@@ -195,26 +178,24 @@ CSceneXDX *CSceneXDX::Create(char* fileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //	戻り値	:無し
 //	説明	:モデルを読み込む。エラー回避付き。
 //=============================================================================
-void CSceneXDX::LoadModel(char *filename)
+void CSceneXDX::LoadModel(cchar* filename, MODELSTATUS* modelStatus)
 {
 	FILE *fp;	// ファイルポインタ
-	char str[1024] = ".\\data\\MODEL\\";
-	strcat(str, filename);
 
 	// もし3Dモデルファイルのファイル名が間違っていた場合、ダミーのモデルを読み込む。
-	if(fopen_s(&fp, str, "r") == NULL)
+	if(fopen_s(&fp, filename, "r") == NULL)
 	{// ファイル名が正常
 		fclose(fp);
-		D3DXLoadMeshFromX(str, D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
-			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
+		D3DXLoadMeshFromX(filename, D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
+			&modelStatus->pBuffMat, NULL, &modelStatus->NumMat, &modelStatus->pMesh);
 	}
 	else
 	{// 指定したファイルが存在していない
 		D3DXLoadMeshFromX(".\\data\\MODEL\\dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
-			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
+			&modelStatus->pBuffMat, NULL, &modelStatus->NumMat, &modelStatus->pMesh);
 	}
 
-	AutomaticSetTexture();
+	AutomaticSetTexture(modelStatus);
 }
 
 //=============================================================================
@@ -223,23 +204,20 @@ void CSceneXDX::LoadModel(char *filename)
 //	戻り値	:無し
 //	説明	:マテリアル情報より自動でテクスチャを追加する。
 //=============================================================================
-void CSceneXDX::AutomaticSetTexture(void)
+void CSceneXDX::AutomaticSetTexture(MODELSTATUS* modelStatus)
 {
 	D3DXMATERIAL	*pMat = NULL;	// マテリアル
 
-									// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+	// マテリアル変換
+	pMat = (D3DXMATERIAL *)modelStatus->pBuffMat->GetBufferPointer();
 
 	// プレイヤー描画
-	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
+	for(int i = 0 ; i < (int)modelStatus->NumMat ; i++)
 	{
-		// マテリアルセット
-		//D3D_DEVICE->SetMaterial(&pMat[i].MatD3D);
-
 		// テクスチャ読み込み
 		if(pMat[i].pTextureFilename)
 		{
-			AddTexture(m_pTexture, pMat[i].pTextureFilename);
+			AddTexture(modelStatus->Tex, pMat[i].pTextureFilename);
 		}
 	}
 }
@@ -252,11 +230,19 @@ void CSceneXDX::AutomaticSetTexture(void)
 //=============================================================================
 void CSceneXDX::AddTexture(vector<TEXTURE> &texture, char* fileName)
 {
-	char optional[1024] = ".\\data\\MODEL\\n700\\";
-	char* fName = strcat(optional, fileName);
+	char optional[1024] = ".\\";
+	string fName;
 	TEXTURE tex = { fileName, NULL };
 	texture.push_back(tex);
 
+	if(fileName[0] != '.')
+	{
+		fName = strcat(optional, fileName);
+	}
+	else
+	{
+		fName.append(fileName);
+	}
 
-	D3DXCreateTextureFromFile(D3D_DEVICE, fName, &texture[texture.size() - 1].pTexture);
+	D3DXCreateTextureFromFile(D3D_DEVICE, fName.c_str(), &texture[texture.size() - 1].pTexture);
 }

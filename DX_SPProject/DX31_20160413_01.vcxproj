@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="building.cpp" />
     <ClCompile Include="cameraDX.cpp" />
     <ClCompile Include="countdown.cpp" />
     <ClCompile Include="cylinder.cpp" />
@@ -119,11 +120,13 @@
     <ClCompile Include="gametime.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="speedmeter.cpp" />
+    <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="wiring.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="building.h" />
     <ClInclude Include="cameraDX.h" />
     <ClInclude Include="countdown.h" />
     <ClInclude Include="cylinder.h" />
@@ -162,6 +165,7 @@
     <ClInclude Include="gametime.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="speedmeter.h" />
+    <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="wiring.h" />

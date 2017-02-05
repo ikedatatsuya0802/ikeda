@@ -24,7 +24,8 @@
 //=============================================================================
 CScene3DDX::CScene3DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX(ifListAdd, priority, objtype)
 {
-
+	m_pTexture = NULL;
+	m_pVtxBuff = NULL;
 }
 
 //=============================================================================
@@ -44,14 +45,20 @@ CScene3DDX::~CScene3DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene3DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CScene3DDX::Init(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);	
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+
+	// 頂点バッファ設定
+	SetVtxBuff();
+
+	// テクスチャ読み込み
+	Load(str);
 }
 
 //=============================================================================
@@ -84,7 +91,7 @@ void CScene3DDX::SetVtxBuff(void)
 	pVtx[3].Pos.y = -(POLYGON3DDX_HEIGHT * 0.5f);
 	pVtx[3].Pos.z = 0.0f;
 
-	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
+	for(int nCntSet = 0 ; nCntSet < VERTEX_SQUARE ; nCntSet++)
 	{
 		// 法線設定
 		pVtx[nCntSet].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -110,6 +117,8 @@ void CScene3DDX::SetVtxBuff(void)
 //=============================================================================
 void CScene3DDX::Uninit(void)
 {
+	Unload();
+
 	// インスタンス削除
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
@@ -137,17 +146,25 @@ void CScene3DDX::Draw(void)
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 	
-	// ライティング設定をオフに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+	// アルファ・Zテスト開始
+	CRendererDX::EnableAlphaTest();
+	CRendererDX::EnableZTest();
+	
+	// 頂点フォーマットの設定
+	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);
 
-	// 描画処理
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);	// 描画
+	// 頂点フォーマットの設定
+	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
-	// ライティング設定をオンに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
+	// テクスチャの設定
+	D3D_DEVICE->SetTexture(0, m_pTexture);
+
+	// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
+
+	// アルファ・Zテスト終了
+	CRendererDX::DisableAlphaTest();
+	CRendererDX::DisableZTest();
 }
 
 //=============================================================================
@@ -156,16 +173,15 @@ void CScene3DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene3DDX *CScene3DDX::Create(bool ifListAdd, int priority, OBJTYPE objtype,
-	D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CScene3DDX *CScene3DDX::Create(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CScene3DDX *instance;	// インスタンス
 
 	// インスタンス生成
-	instance = new CScene3DDX(ifListAdd, priority, objtype);
+	instance = new CScene3DDX();
 
 	// 初期化処理
-	instance->Init(pos, rot);
+	instance->Init(str, pos, rot);
 
 	// インスタンスをリターン
 	return instance;

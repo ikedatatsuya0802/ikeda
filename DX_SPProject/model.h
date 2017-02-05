@@ -44,8 +44,6 @@ public:
 	static CModel	*Create(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
 
 private:
-	void	LoadModel(char *filename);
-	void	AutomaticSetTexture(void);
 	void	AddTexture(vector<TEXTURE> &texture, char* fileName);
 
 	CModel				*m_Parent;		// 親パーツ
@@ -56,6 +54,7 @@ private:
 	D3DXVECTOR3			m_Rot;			// 回転
 	D3DXMATRIX			m_mtxWorld;		// ワールドマトリックス
 	MODELSTATUS			m_ModelStatus;	// 3Dモデル情報
+	vector<TEXTURE>		m_pTexture;	// テクスチャへのポインタ
 	
 	D3DXMATRIX			GetWorldMatrix(void) { return m_mtxWorld; }	// ワールドマトリックス受け渡し
 };

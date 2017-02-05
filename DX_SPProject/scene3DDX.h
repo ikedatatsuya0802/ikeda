@@ -9,8 +9,6 @@
 //
 //=============================================================================
 #include "sceneDX.h"
-#include "manager.h"
-#include "rendererDX.h"
 
 //=============================================================================
 //	マクロ定義
@@ -32,28 +30,33 @@
 class CScene3DDX : public CSceneDX
 {
 public:
-	void	Init(D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	CScene3DDX(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_3D);
+	~CScene3DDX();
+
+	void	Init(cchar *str = ".\\data\\TEXTURE\\field000.jpg", D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
-	static CScene3DDX	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
+
+	static CScene3DDX	*Create(cchar* str = ".\\data\\TEXTURE\\field000.jpg",
 		D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
 
-	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
+	// ワールドマトリックスを取得
+	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }
 	
 	// リソースのロード
-	void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"POLYGON3DDX_TEXFILENAME000, &m_pTexture); }
+	void	Load(cchar* str) { D3DXCreateTextureFromFile(D3D_DEVICE, str, &m_pTexture); }
 	// リソースのアンロード
 	void	Unload(void) { SafetyRelease(m_pTexture); }
 
 protected:
-	CScene3DDX(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
-	~CScene3DDX();
+	LPDIRECT3DTEXTURE9		m_pTexture;	// テクスチャへのポインタ
+	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff;	// 頂点バッファへのポインタ
+	D3DXMATRIX				m_mtxWorld;	// ワールドマトリックス
 
 	virtual void SetVtxBuff(void);
-	void SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical);
+	static void SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, const int horizontal, const int vertical);
 	
-	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
 };
 
 #endif

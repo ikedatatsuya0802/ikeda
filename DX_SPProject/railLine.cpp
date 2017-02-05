@@ -13,6 +13,7 @@
 #include "main.h"
 #include <time.h>
 #include "input.h"
+#include "manager.h"
 #include "cameraDX.h"
 
 //=============================================================================
@@ -62,10 +63,10 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 	// 頂点バッファ生成
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ((int)m_Spline.PosHermite.size() + 1)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ((int)m_Spline.Pos.size() * 2)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffVec, NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffSPoints, NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffLPoints, NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffPointer, NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffDrift, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffSPoints, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffLPoints, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffPointer, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuffDrift, NULL);
 
 	// 頂点データセット
 	SetSplineVtx();
@@ -170,7 +171,7 @@ void CRailLine::SetSplineVtxSPoints(int line)
 	pVtx[3].Pos = D3DXVECTOR3((RAILLINE_SPOINT_SIZE / 2), -(RAILLINE_SPOINT_SIZE / 2), 0.0f);
 
 	// 法線設定
-	for(int i = 0 ; i < VERTEX_NUM ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
@@ -207,7 +208,7 @@ void CRailLine::SetSplineVtxLPoints(int line)
 		pVtx[3].Pos = D3DXVECTOR3((RAILLINE_LPOINT_SIZE / 2), -(RAILLINE_LPOINT_SIZE / 2), 0.0f);
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
@@ -244,7 +245,7 @@ void CRailLine::SetSplineVtxPointer(int line)
 		pVtx[3].Pos = D3DXVECTOR3((RAILLINE_DRAG_SIZE / 2), 0.5f, -(RAILLINE_DRAG_SIZE / 2));
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
@@ -281,7 +282,7 @@ void CRailLine::SetSplineVtxDrift(int line)
 		pVtx[3].Pos = D3DXVECTOR3(75.0f, 0.0f, 0.0f);
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
@@ -754,7 +755,7 @@ void CRailLine::Draw(void)
 				CRendererDX::SetMatrixBB(&m_mtxWorld, m_Spline.PosHermite[i], VEC3_ZERO, scl);
 
 				// 描画
-				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_SQUARE);
 			}
 		}
 
@@ -769,7 +770,7 @@ void CRailLine::Draw(void)
 			CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 
 			// 描画
-			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_SQUARE);
 		}
 
 		// 頂点フォーマットの設定
@@ -778,7 +779,7 @@ void CRailLine::Draw(void)
 		scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f) * (m_YScale / 2);
 		CRendererDX::SetMatrix(&m_mtxWorld, CInput::GetMouseWorldPos(), VEC3_ZERO, scl);
 		// 描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_SQUARE);
 
 		if(m_EditType == ET_DRIFT)
 		{
@@ -793,7 +794,7 @@ void CRailLine::Draw(void)
 				// テクスチャ座標の設定
 				m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
 				tex = m_Spline.Drift[i].Curve ? 0.25f : 0.0f;
-				for(int texture = 0 ; texture < VERTEX_NUM ; texture++)
+				for(int texture = 0 ; texture < VERTEX_SQUARE ; texture++)
 					pVtx[texture].tex = D3DXVECTOR2(tex + ((texture % 2) * 0.25f), ((float)(texture / 2)));
 				m_pVtxBuffDrift->Unlock();
 				// 頂点フォーマットの設定
@@ -803,12 +804,12 @@ void CRailLine::Draw(void)
 				// マトリックス設定
 				CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 				// 描画
-				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_SQUARE);
 
 				// テクスチャ座標の設定
 				m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
 				tex = m_Spline.Drift[i].Curve ? 0.75f : 0.5f;
-				for(int texture = 0 ; texture < VERTEX_NUM ; texture++)
+				for(int texture = 0 ; texture < VERTEX_SQUARE ; texture++)
 					pVtx[texture].tex = D3DXVECTOR2(tex + ((texture % 2) * 0.25f), ((float)(texture / 2)));
 				m_pVtxBuffDrift->Unlock();
 				// 頂点フォーマットの設定
@@ -818,7 +819,7 @@ void CRailLine::Draw(void)
 				// マトリックス設定
 				CRendererDX::SetMatrixBB(&m_mtxWorld, pos, VEC3_ZERO, scl);
 				// 描画
-				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_NUM);
+				D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, VERTEX_SQUARE);
 			}
 		}
 

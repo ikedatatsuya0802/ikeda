@@ -1,3 +1,5 @@
-﻿  player.cpp
-cl : コマンド ライン warning D9028: 簡易リビルド時のエラーです、通常のビルドに戻します
+﻿  building.cpp
+  コードを生成中...
+  スキップ中... (関連する変更は検出されませんでした)
+  game.cpp
   DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

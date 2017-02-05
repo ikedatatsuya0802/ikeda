@@ -198,19 +198,28 @@ void CPlayer::UpdateMove(void)
 			m_PerMove = 0.0f;
 		}
 	}
-
+	/*
 	// ‘¬“x§ŒÀ
 	if(m_PerMove > PLAYER_SPEED_MAX)
 	{
 		m_PerMove = PLAYER_SPEED_MAX;
-	}
+	}*/
 
 	// ˆÚ“®—Ê”½‰f
-	float	length = m_Spline->LengthMin[posNum];
-	float	lengthPer = length / 1000.0f;
-	m_Per += (m_PerMove * lengthPer);
+	float	realPer = ((1.0f / 60.0f) * (m_PerMove / (m_Spline->LengthMin[posNum] / 10.0f)));
+	float	farT = m_Per + realPer;
+	int		farPosNum = (int)(farT * ((int)m_Spline->Pos.size() - 1));
+
+	if(posNum != farPosNum)
+	{
+		//float farRealPer = ((1.0f / 60.0f) * (m_PerMove / (m_Spline->LengthMin[farPosNum] / 10.0f)));
+		//realPer = (realPer + farRealPer) / 2.0f;
+	}
+
+	m_Per += realPer;
+	CDebugProc::DebugProc("Per:%f\n", m_Per);
 	CDebugProc::DebugProc("Œ»Ý‹æŠÔ:%d->%d\n", posNum, posNum + 1);
-	CDebugProc::DebugProc("lengthPer:%f\n", lengthPer);
+	CDebugProc::DebugProc("ŽÀ‘¬“x:%f\n", realPer);
 
 	// â‘ÎˆÚ“®—Ê‚ÌŒv‘ª
 	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));

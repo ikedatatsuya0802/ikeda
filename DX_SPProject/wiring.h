@@ -30,7 +30,7 @@ public:
 	static CWiring	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
-	CWiring(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
+	CWiring(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CWiring();
 
 	void SetVtxBuff(void);

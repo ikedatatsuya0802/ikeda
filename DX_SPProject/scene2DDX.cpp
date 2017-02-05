@@ -25,6 +25,8 @@ CScene2DDX::CScene2DDX(bool ifListAdd, int priority, OBJTYPE objtype) : CSceneDX
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
+	m_pTexture	= NULL;
+	m_pVtxBuff	= NULL;
 }
 
 //=============================================================================
@@ -44,7 +46,7 @@ CScene2DDX::~CScene2DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
+void CScene2DDX::Init(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
@@ -53,12 +55,13 @@ void CScene2DDX::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *
 	m_fAngle	= atan2f(size.x, size.y);
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	
+	// 頂点バッファ設定
+	SetVtxBuff();
 
 	// テクスチャのロード
-	D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(str, TEX_FILEPASS), &m_pTexture);
-	
-	SetVtxBuff();
+	Load(str);
 }
 
 //=============================================================================
@@ -91,7 +94,7 @@ void CScene2DDX::SetVtxBuff(void)
 	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
 	pVtx[3].Pos.z = 0.0f;
 
-	for(int i = 0 ; i < VERTEX_NUM ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		// 除算係数設定
 		pVtx[i].rhw = 1.0f;
@@ -117,6 +120,8 @@ void CScene2DDX::SetVtxBuff(void)
 //=============================================================================
 void CScene2DDX::Uninit(void)
 {
+	Unload();
+
 	// インスタンス削除
 	SafetyRelease(m_pVtxBuff);
 	SafetyRelease(m_pTexture);
@@ -142,23 +147,22 @@ void CScene2DDX::Update(void)
 void CScene2DDX::Draw(void)
 {
 	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	CRendererDX::EnableAlphaTest();
+
+	// 頂点フォーマットの設定
+	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
 
 	// 頂点フォーマットの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
+
 	// テクスチャの設定
 	D3D_DEVICE->SetTexture(0, m_pTexture);
-	// メーター描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+
+	// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+	CRendererDX::DisableAlphaTest();
 }
 
 //=============================================================================
@@ -169,7 +173,7 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size, char *str)
+CScene2DDX *CScene2DDX::Create(cchar *str, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 size)
 {
 	CScene2DDX *instance;	// インスタンス
 
@@ -177,7 +181,7 @@ CScene2DDX *CScene2DDX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR2 siz
 	instance = new CScene2DDX();
 
 	// 初期化処理
-	instance->Init(pos, rot, size, str);
+	instance->Init(str, pos, rot, size);
 
 	// インスタンスをリターン
 	return instance;
@@ -245,11 +249,10 @@ void CScene2DDX::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for(int i = 0 ; i < 4 ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		pVtx[i].col = D3DCOLOR_COLORVALUE(r, g, b, a);
 	}
 	
 	m_pVtxBuff->Unlock();
-
 }

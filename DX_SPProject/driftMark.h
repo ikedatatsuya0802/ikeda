@@ -52,7 +52,7 @@ public:
 	void	SetColor(float a = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 protected:
-	CDriftMark(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
+	CDriftMark(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CDriftMark();
 
 	void SetVtxBuff(void);

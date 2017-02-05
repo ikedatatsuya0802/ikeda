@@ -24,18 +24,23 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	FVF_VERTEX_2D		(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 頂点情報
-#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点情報
+#define	FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)				// 頂点情報
+#define	FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点情報
+#define	D3D_DEVICE		CRendererDX::m_pD3DDevice									// 3Dデバイス
 
-#define	VERTEX_NUM			(4)							// 頂点数
-#define	PRIMITIVE_NUM		(2)							// プリミティブ数
-#define	D3D_DEVICE			CRendererDX::m_pD3DDevice	// 3Dデバイス
+const int	VERTEX_SQUARE		= 4;	// 四角ポリゴンの頂点数
+const int	PRIMITIVE_SQUARE	= 2;	// 四角ポリゴンのプリミティブ数
 
-#define	VEC2_ZERO			(D3DXVECTOR2(0.0f, 0.0f))		// 2Dベクトルの0
-#define	VEC3_ZERO			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 3Dベクトルの0
+#define	VEC2_ZERO	(D3DXVECTOR2(0.0f, 0.0f))				// 2Dベクトルの0
+#define	VEC3_ZERO	(D3DXVECTOR3(0.0f, 0.0f, 0.0f))			// 3Dベクトルの0
+#define	VEC4_ZERO	(D3DXVECTOR4(0.0f, 0.0f, 0.0f, 0.0f))	// 4Dベクトルの0
 
 #define	TEX_FILEPASS		".\\data\\TEXTURE\\"	// テクスチャ保存ディレクトリ
 #define	WHITE				1.0f, 1.0f, 1.0f		// †白†
+
+#define	FOG_COLOR			0.2f, 0.2f, 0.5f		// フォグの色
+const float	FOG_START		= 500.0f;					// フォグの開始距離
+const float	FOG_END			= 3000.0f;				// フォグの開始距離
 
 //=============================================================================
 //	構造体
@@ -53,10 +58,6 @@ typedef struct {
 	D3DCOLOR	col;	// 頂点色
 	D3DXVECTOR2 tex;	// テクスチャ座標
 }VERTEX_3D;
-
-//=============================================================================
-//	前方宣言
-//============================================================================
 
 //=============================================================================
 //	クラス定義

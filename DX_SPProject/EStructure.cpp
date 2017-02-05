@@ -190,7 +190,7 @@ void CEStructure::SetVtxBuff(void)
 			pVtx[i].col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 
 			// テクスチャ座標設定
-			pVtx[i].tex = D3DXVECTOR2((float)(i % 2), (float)i * 0.75f);
+			pVtx[i].tex = D3DXVECTOR2((float)(i % 3), (float)i * 1.0f);
 		}
 
 	}

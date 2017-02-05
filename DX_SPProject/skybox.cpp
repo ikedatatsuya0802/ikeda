@@ -11,6 +11,7 @@
 //=============================================================================
 #include "skybox.h"
 #include "cameraDX.h"
+#include "manager.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -249,9 +250,9 @@ void CSkybox::Draw(void)
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
 	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
-	for(int i = 0 ; i < SKYBOX_PRIMITIVE_NUM ; i++)
+	for(int i = 0 ; i < SKYBOX_PRIMITIVE_SQUARE ; i++)
 	{
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_NUM), PRIMITIVE_NUM);	// 描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_SQUARE), PRIMITIVE_SQUARE);	// 描画
 	}
 	/*
 	// Zテスト方法更新
@@ -274,11 +275,11 @@ void CSkybox::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行う。
 //=============================================================================
-CSkybox *CSkybox::Create(bool ifListAdd, int priority, OBJTYPE objtype, bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CSkybox *CSkybox::Create(bool ifLight, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CSkybox *instance;
 
-	instance = new CSkybox(ifListAdd, priority, objtype);
+	instance = new CSkybox();
 
 	instance->Init(ifLight, pos, rot);
 

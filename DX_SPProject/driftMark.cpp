@@ -57,7 +57,7 @@ void CDriftMark::Init(void)
 	m_DriftMark.Col = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
 	
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(DRIFTMARK_TEXNAME000, TEX_FILEPASS), &m_pTexture[0]);
@@ -99,7 +99,7 @@ void CDriftMark::SetVtxBuff(void)
 	pVtx[6].Pos.y = (m_DriftMark.Pos.y + (m_DriftMark.Size.y * 0.5f));
 	pVtx[7].Pos.y = (m_DriftMark.Pos.y + (m_DriftMark.Size.y * 0.5f));
 
-	for(int i = 0 ; i < VERTEX_NUM * 2 ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE * 2 ; i++)
 	{
 		pVtx[i].Pos.z = 0.0f;
 
@@ -288,9 +288,9 @@ void CDriftMark::Draw(void)
 	// テクスチャの設定
 	D3D_DEVICE->SetTexture(0, (m_Curve ? m_pTexture[1] : m_pTexture[0]));
 	// メーター描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 	// メーター描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, PRIMITIVE_NUM);
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, PRIMITIVE_SQUARE);
 
 	// アルファテスト終了
 	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

@@ -61,11 +61,11 @@ void CMap::Init(D3DXVECTOR3 pos)
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * ((int)m_Spline->PosHermite.size() + 1)), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[2], NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[3], NULL);
-	//D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[4], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[3], NULL);
+	//D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[4], NULL);
 
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MAP_TEXFILENAME000, &m_pTexture);
@@ -104,7 +104,7 @@ void CMap::SetVtxBuff(void)
 		pVtx[3].Pos = D3DXVECTOR3(m_Pos.x + (MAP_WIDTH / 2), m_Pos.y + (MAP_WIDTH / 2), 0.0f);
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].rhw = 1.0f;
 
@@ -130,7 +130,7 @@ void CMap::SetVtxBuff(void)
 		pVtx[3].Pos = D3DXVECTOR3(+ (MAP_WIDTH / 2), + (MAP_WIDTH / 2), 0.0f);
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].rhw = 1.0f;
 
@@ -207,7 +207,7 @@ void CMap::SetVtxBuff(void)
 			0.0f);
 
 		// 法線設定
-		for(int i = 0 ; i < VERTEX_NUM ; i++)
+		for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 		{
 			pVtx[i].rhw = 1.0f;
 
@@ -290,7 +290,7 @@ void CMap::Draw(void)
 	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);	// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, NULL);	// テクスチャの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[1], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);		// 描画
 
 	D3D_DEVICE->SetTexture(0, NULL);	// テクスチャの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[2], 0, sizeof(VERTEX_2D));			// 頂点フォーマットの設定
@@ -298,13 +298,13 @@ void CMap::Draw(void)
 
 	D3D_DEVICE->SetTexture(0, m_pTexture);	// テクスチャの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[3], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);		// 描画
 	D3D_DEVICE->SetRenderTarget(0, m_BackBufferSurf);
 
 	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);	// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, m_pMapTexture);	// テクスチャの設定
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));	// 頂点フォーマットの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);		// 描画
 
 	/*
 	// Zテスト方法更新

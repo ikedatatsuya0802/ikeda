@@ -14,8 +14,8 @@
 //=============================================================================
 #define DX_CAMERA					(CManager::GetCamera())
 
-#define	CAMERA_NEARZ				(10.0f)			// NearZ値
-#define	CAMERA_FARZ					(100000.0f)		// FarZ値
+#define	CAMERA_NEAR				(10.0f)			// NearZ値
+#define	CAMERA_FAR					(100000.0f)		// FarZ値
 #define	CAMERA_DEFAULT_DISTANCE		(200.0f)		// 初期の視点―注視点間距離
 #define	CAMERA_WHEEL_CHANGE_Y		(150.0f)		// マウスホイールによる高さの変化量
 #define	CAMERA_EDIT_V1				D3DXVECTOR3(0.0, 3000.0f, -10.0f)	// 注視点の移動量(上下)
@@ -51,6 +51,8 @@ typedef struct{
 	D3DXMATRIX	mtxView;		// ビューマトリックス
 	D3DXVECTOR3 Rot;			// 回転角
 	float		Distance;		// 視点―注視点間距離
+	float		Near;			// 
+	float		Far;			// 
 	CAMERA_VIBRATE Vib;			// 揺れ情報
 } CAMERA;// カメラ情報
 
@@ -98,8 +100,10 @@ public:
 	void	SetCameraPosV(D3DXVECTOR3 v) { m_CS.posV = v; }
 	void	SetCameraPosR(D3DXVECTOR3 r) { m_CS.posR = r; }
 	void	SetCameraPos(D3DXVECTOR3 v, D3DXVECTOR3 r) { m_CS.posV = v; m_CS.posR = r; }
-	int		GetCameraVibrateCnt(void) { return m_CS.Vib.Cnt; }
+	void	SetCameraNearFar(float nearZ, float farZ) { m_CS.Near = nearZ; m_CS.Far = farZ; }
+
 	void	SetCameraVibrate(int time, float width) { m_CS.Vib.MaxCnt = time; m_CS.Vib.Cnt = time; m_CS.Vib.Width = width; }
+	int		GetCameraVibrateCnt(void) { return m_CS.Vib.Cnt; }
 	void	DisableCameraVibrate(void) { m_CS.Vib.vPos = VEC3_ZERO; m_CS.Vib.Cnt = 0; m_CS.Vib.Width = 0.0f; }
 
 	bool	GetCameraMode(void) { return m_flgCameraMode; }

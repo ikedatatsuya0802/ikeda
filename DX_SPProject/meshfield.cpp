@@ -276,6 +276,9 @@ void CMeshfield::Draw(void)
 	// マトリックス設定
 	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
+	// フォグを有効にする
+	D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
+
 	// Zテスト方法更新
 	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -298,6 +301,9 @@ void CMeshfield::Draw(void)
 	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
 	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	
+	// フォグを無効にする
+	D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
 }
 
 //=============================================================================

@@ -61,7 +61,7 @@ void CModel::Init(char *filename, D3DXVECTOR3 pos)
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	// モデル読み込み
-	LoadModel(filename);
+	LoadModel(filename, &m_ModelStatus);
 }
 
 //=============================================================================
@@ -160,7 +160,7 @@ void CModel::Draw(void)
 		{// テクスチャ有り
 
 			// リストから同名のテクスチャを探索し、セット
-			for each(TEXTURE list in m_pTexture)
+			for each(TEXTURE list in m_ModelStatus.Tex)
 			{
 				if(list.FileName == CharPToString(pMat[i].pTextureFilename))
 				{
@@ -209,59 +209,6 @@ CModel *CModel::Create(char *filename, D3DXVECTOR3 pos)
 
 	// インスタンスをリターン
 	return model;
-}
-
-//=============================================================================
-//	関数名	:LoadModel
-//	引数	:char *filename -> ファイル名
-//			:LPDIRECT3DDEVICE9 D3D_DEVICE -> 3Dデバイス
-//			:MODELSTATUS ms -> 3Dモデルの各種情報
-//	戻り値	:無し
-//	説明	:モデルを読み込む。エラー回避付き。
-//=============================================================================
-void CModel::LoadModel(char *filename)
-{
-	FILE *fp;	// ファイルポインタ
-
-
-	// もし3Dモデルファイルのファイル名が間違っていた場合、ダミーのモデルを読み込む。
-	if(fopen_s(&fp, filename, "r") == NULL)
-	{// ファイル名が正常
-		fclose(fp);
-		D3DXLoadMeshFromX(filename, D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
-			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
-	}
-	else
-	{// 指定したファイルが存在していない
-		D3DXLoadMeshFromX("./data/MODEL/dummy.x", D3DXMESH_SYSTEMMEM, D3D_DEVICE, NULL,
-			&m_ModelStatus.pBuffMat, NULL, &m_ModelStatus.NumMat, &m_ModelStatus.pMesh);
-	}
-
-	AutomaticSetTexture();
-}
-
-//=============================================================================
-//	関数名	:AutomaticSetTexture
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:マテリアル情報より自動でテクスチャを追加する。
-//=============================================================================
-void CModel::AutomaticSetTexture(void)
-{
-	D3DXMATERIAL	*pMat = NULL;	// マテリアル
-
-	// マテリアル変換
-	pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
-
-	// プレイヤー描画
-	for(int i = 0 ; i < (int)m_ModelStatus.NumMat ; i++)
-	{
-		// テクスチャ読み込み
-		if(pMat[i].pTextureFilename)
-		{
-			AddTexture(m_pTexture, pMat[i].pTextureFilename);
-		}
-	}
 }
 
 //=============================================================================

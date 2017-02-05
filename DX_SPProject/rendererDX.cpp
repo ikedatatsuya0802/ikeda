@@ -104,6 +104,22 @@ HRESULT CRendererDX::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);		// 透過設定
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);		// 透過設定
 
+	// フォグの設定
+	m_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);						// フォグを有効にする
+	m_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(FOG_COLOR, 1.0f));	// フォグカラー設定
+	//m_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);			// 頂点フォグを使用
+	m_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE);				 //頂点モード
+	m_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);			 //テーブルモード
+
+	float FogStart	= FOG_START; // 開始点
+	float FogEnd	= FOG_END; // 終了点
+	m_pD3DDevice->SetRenderState(D3DRS_FOGSTART, *((LPDWORD)(&FogStart)));	// 開始点の設定
+	m_pD3DDevice->SetRenderState(D3DRS_FOGEND, *((LPDWORD)(&FogEnd)));		// 終了点の設定
+	m_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, TRUE);				// 範囲ベースのフォグを使用
+	//m_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP2);			// ピクセルフォグ(指数の２乗)を使用
+	// フォグ密度設定
+	float FogDensity = 0.05f; // フォグ密度
+	m_pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, *((LPDWORD)(&FogDensity)));
 
 	// アンビエントライトの設定
 	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -220,7 +236,7 @@ LPDIRECT3DVERTEXBUFFER9 CRendererDX::SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *p
 {
 	VERTEX_2D *pVtx;
 
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, pVtxBuff, NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, pVtxBuff, NULL);
 
 
 	(*pVtxBuff)->Lock(0, 0, (void**)&pVtx, 0);
@@ -231,7 +247,7 @@ LPDIRECT3DVERTEXBUFFER9 CRendererDX::SetFullScreenVtx(LPDIRECT3DVERTEXBUFFER9 *p
 	pVtx[2].Pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
 	pVtx[3].Pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 
-	for(int i = 0 ; i < VERTEX_NUM ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		// 除算係数設定
 		pVtx[i].rhw = 1.0f;
@@ -280,7 +296,7 @@ void CRendererDX::DrawPrimitiveForTarget(LPDIRECT3DVERTEXBUFFER9 pVtxBuff, LPDIR
 	m_pD3DDevice->SetFVF(FVF_VERTEX_2D);
 
 	// 全画面ポリゴン描画
-	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 	// アルファブレンド有効化
 	if(alphafalse) m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);

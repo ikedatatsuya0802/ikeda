@@ -59,7 +59,9 @@ void CWiring::Init(D3DXVECTOR3 pos)
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	// 3Dモデル読み込み
-	LoadModel("kasen.x");
+	m_ModelStatus	= new MODELSTATUS;
+	//m_pTexture		= new TEXTURE;
+	LoadModel(".\\data\\MODEL\\wiring.x", m_ModelStatus);
 }
 
 //=============================================================================
@@ -82,6 +84,12 @@ void CWiring::SetVtxBuff(void)
 void CWiring::Uninit(void)
 {
 	CSceneXDX::Uninit();
+	
+	if(m_ModelStatus)
+	{
+		delete m_ModelStatus;
+		m_ModelStatus = NULL;
+	}
 }
 
 //=============================================================================
@@ -142,10 +150,10 @@ void CWiring::Draw(void)
 			D3DXVECTOR3(0.0f, rot, 0.0f));
 		
 		// マテリアル変換
-		pMat = (D3DXMATERIAL *)m_ModelStatus.pBuffMat->GetBufferPointer();
+		pMat = (D3DXMATERIAL *)m_ModelStatus->pBuffMat->GetBufferPointer();
 
 		// 3Dモデル描画
-		for(int mat = 0 ; mat < (int)m_ModelStatus.NumMat ; mat++)
+		for(int mat = 0 ; mat < (int)m_ModelStatus->NumMat ; mat++)
 		{
 			float			playerPos = CGame::GetPlayer1()->GetPerSpline();	// プレイヤのスプライン座標
 			D3DXMATERIAL	pMatAlpha = *pMat;									// 透明マテリアル
@@ -176,7 +184,7 @@ void CWiring::Draw(void)
 			D3D_DEVICE->SetTexture(0, NULL);
 			
 			// モデル描画
-			m_ModelStatus.pMesh->DrawSubset(mat);
+			m_ModelStatus->pMesh->DrawSubset(mat);
 		}
 
 		// マテリアルを元に戻す

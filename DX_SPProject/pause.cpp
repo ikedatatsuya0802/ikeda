@@ -48,9 +48,9 @@ void CPause::Init(void)
 {
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[2], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff[2], NULL);
 
 	// テクスチャのロード
 	D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"PAUSE_TEXFILENAME000, &m_pTexture[0]);
@@ -114,7 +114,7 @@ void CPause::SetVtxBuff(LPDIRECT3DVERTEXBUFFER9 *vtxBuff)
 	pVtx[3].Pos.y = (m_Pos.y - (cosf(m_fAngle - m_Rot.z - D3DX_PI) * m_fLength));
 	pVtx[3].Pos.z = 0.0f;
 
-	for(int i = 0 ; i < VERTEX_NUM ; i++)
+	for(int i = 0 ; i < VERTEX_SQUARE ; i++)
 	{
 		// 除算係数設定
 		pVtx[i].rhw = 1.0f;
@@ -237,26 +237,26 @@ void CPause::Draw(void)
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, NULL);
 		// プリミティブ描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 		// 頂点バッファの設定
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_2D));
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture[0]);
 		// プリミティブ描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture[m_PauseMenu + 2]);
 		// プリミティブ描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 		// 頂点バッファの設定
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[1], 0, sizeof(VERTEX_2D));
 		// テクスチャの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture[1]);
 		// プリミティブ描画
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
 		// アルファテスト終了
 		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

@@ -56,15 +56,15 @@ void CGoal::Init(void)
 	D3DXVec3Normalize(&m_Vec, &(CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL + 0.01f) - m_Pos));
 
 	// 頂点バッファ生成
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
-	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_NUM), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[0], NULL);
+	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_3D) * VERTEX_SQUARE), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff[1], NULL);
 
 	// レール情報セット
 	SetVtxBuff();
 
 	Load();
 
-	CSceneXDX::Create("ekisha.x", D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
+	CSceneXDX::Create("ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
 }
 
 //=============================================================================
@@ -105,7 +105,7 @@ void CGoal::SetVtxBuff(void)
 	pVtx[3].Pos.y = 1.0f;
 	pVtx[3].Pos.z = m_Pos.z + (cosf((rot + D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 
-	for(int nCntSet = 0 ; nCntSet < VERTEX_NUM ; nCntSet++)
+	for(int nCntSet = 0 ; nCntSet < VERTEX_SQUARE ; nCntSet++)
 	{
 		// 法線設定
 		pVtx[nCntSet].Nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -172,7 +172,7 @@ void CGoal::Draw(void)
 	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff[0], 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
 	D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_NUM);		// 描画
+	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);		// 描画
 
 	// ライティング設定をオンに
 	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);

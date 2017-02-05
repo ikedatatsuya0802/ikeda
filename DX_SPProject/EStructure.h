@@ -49,7 +49,7 @@ public:
 	static CEStructure	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
-	CEStructure(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
+	CEStructure(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
 	~CEStructure();
 
 	void SetVtxBuff(void);

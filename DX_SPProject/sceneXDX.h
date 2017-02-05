@@ -31,46 +31,45 @@
 //	構造体
 //=============================================================================
 typedef struct {
-	LPD3DXMESH		pMesh;		// メッシュ情報
-	LPD3DXBUFFER	pBuffMat;	// マテリアル情報
-	DWORD			NumMat;		// マテリアル数
-} MODELSTATUS;					// 3Dモデル情報
-
-typedef struct {
 	string				FileName;	// メッシュ情報
 	LPDIRECT3DTEXTURE9	pTexture;	// テクスチャへのポインタ
 } TEXTURE;	// テクスチャ情報
 
+typedef struct {
+	LPD3DXMESH		pMesh;		// メッシュ情報
+	LPD3DXBUFFER	pBuffMat;	// マテリアル情報
+	DWORD			NumMat;		// マテリアル数
+	vector<TEXTURE>	Tex;		// テクスチャ情報
+} MODELSTATUS;					// 3Dモデル情報
+
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CSceneXDX : public CScene3DDX
+class CSceneXDX : public CSceneDX
 {
 public:
-	void	Init(char* fileName, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	CSceneXDX(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
+	~CSceneXDX();
+
+	void	Init(cchar* fileName, MODELSTATUS* mesh = NULL, const D3DXVECTOR3 pos = VEC3_ZERO, const D3DXVECTOR3 rot = VEC3_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneXDX	*Create(char* fileName, D3DXVECTOR3 pos = VEC3_ZERO, D3DXVECTOR3 rot = VEC3_ZERO);
+	static CSceneXDX	*Create(cchar* fileName, MODELSTATUS* mesh = NULL, const D3DXVECTOR3 pos = VEC3_ZERO, const D3DXVECTOR3 rot = VEC3_ZERO);
 	
-	// リソースのロード
-	static void	Load(void);
-	// リソースのアンロード
-	static void	Unload(void);
+	static void	LoadModel(cchar* filename, MODELSTATUS* modelStatus);
+	static void	AutomaticSetTexture(MODELSTATUS* modelStatus);
+	static void	AddTexture(vector<TEXTURE> &texture, char* fileName);
+
+	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 
 
 protected:
-	CSceneXDX(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);
-	~CSceneXDX();
+	D3DXMATRIX		m_mtxWorld;		// ワールドマトリックス
 
-	void	LoadModel(char *filename);
-	void	AutomaticSetTexture(void);
-	void	AddTexture(vector<TEXTURE> &texture, char* fileName);
-
-	MODELSTATUS	m_ModelStatus;	// 3Dモデル情報
-
-	vector<TEXTURE>	m_pTexture;	// テクスチャへのポインタ
+	MODELSTATUS*	m_ModelStatus;	// 3Dモデル情報
 };
 
 #endif
