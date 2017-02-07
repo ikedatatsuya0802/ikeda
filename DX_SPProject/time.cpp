@@ -40,32 +40,32 @@ CTime::~CTime()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CTime::Init(cVec3 pos, cVec2 size)
+void CTime::Init(DWORD time, cVec3 pos, cVec2 size)
 {
 	m_ifCountStart	= false;
 	m_StartTime		= 0;
-	m_TimeValue		= 0;
+	m_TimeValue		= time;
 	m_Time.SetTime(0, 0, 0);
+	TimeConvert(&m_Time, m_TimeValue);
 
 
-	m_Instance[0] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
+	// 時刻のセット
+	m_Instance[0] = CNumber::Create((m_Time.minute / 10), D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[1] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
+	m_Instance[1] = CNumber::Create((m_Time.minute % 10), D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
 	m_Instance[2] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
-		VEC3_ZERO, D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[3] = CNumber::Create(0, D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y), 0.0f);
+	m_Instance[3] = CNumber::Create((m_Time.second / 10), D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[4] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
+	m_Instance[4] = CNumber::Create((m_Time.second % 10), D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
 	m_Instance[5] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
-		VEC3_ZERO, D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[6] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
+		D3DXVECTOR2((size.x / TIME_FIGURE), size.y), 0.0f);
+	m_Instance[6] = CNumber::Create((m_Time.millisec / 10), D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[7] = CNumber::Create(0, D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
+	m_Instance[7] = CNumber::Create((m_Time.millisec % 10), D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 3.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-
-	CountStart();
 }
 
 //=============================================================================
@@ -123,7 +123,7 @@ void CTime::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CTime *CTime::Create(cVec3 pos, cVec2 size)
+CTime *CTime::Create(DWORD time, cVec3 pos, cVec2 size)
 {
 	CTime *instance;	// インスタンス
 	
@@ -131,7 +131,7 @@ CTime *CTime::Create(cVec3 pos, cVec2 size)
 	instance = new CTime();
 	
 	// 初期化処理
-	instance->Init(pos, size);
+	instance->Init(time, pos, size);
 	
 	// インスタンスをリターン
 	return instance;

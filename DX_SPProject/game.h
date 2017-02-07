@@ -8,12 +8,21 @@
 //	作成日		2016/07/12
 //
 //=============================================================================
+#include "main.h"
 #include "mode.h"
 
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	GOAL_COUNT	(180)	// ゴールしてからフェードまでの字間
+cint	START_COUNT	= 360;	// スタートまでの時間
+cint	GOAL_COUNT	= 180;	// ゴールしてからフェードまでの時間
+
+typedef enum {
+	GAMESTATE_COUNT = 0,
+	GAMESTATE_RACE,
+	GAMESTATE_GOAL,
+	GAMESTATE_MAX,
+} GAMESTATE;
 
 //=============================================================================
 //	前方宣言
@@ -39,6 +48,7 @@ public:
 	void	Draw(void);
 
 	static int		GetFrame(void) { return m_Frame; }
+	static int		GetGameState(void) { return m_GameState; }
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
 	static CRailLine	*GetRailLine(void) { return m_RailLine; }
@@ -59,6 +69,7 @@ private:
 
 	static int	m_Frame;		// 汎用カウンタ
 	static int	m_GoalCount;
+	static int	m_GameState;
 };
 
 #endif

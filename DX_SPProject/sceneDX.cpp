@@ -95,12 +95,12 @@ void CSceneDX::DrawAll(void)
 					if(!CManager::GetEdhitMode())
 					{
 						// フォグを有効にする
-						D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
+						//D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, TRUE);
 					}
 					else
 					{
 						// フォグを無効にする
-						D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+						//D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
 					}
 				}
 
@@ -108,7 +108,7 @@ void CSceneDX::DrawAll(void)
 				list->Draw();
 
 				// フォグを無効にする
-				D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+				//D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
 			}
 		}
 	}

@@ -39,12 +39,12 @@ public:
 	CTime(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objType = OBJTYPE_NUMBER);
 	~CTime();
 	
-	void	Init(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
+	void	Init(DWORD time = 0, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
-	static CTime	*Create(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
+	static CTime	*Create(DWORD time = 0, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 
 	void CountStart(void) { m_ifCountStart = true; m_StartTime = timeGetTime(); }
 	void CountStop(void) { m_ifCountStart = false; }

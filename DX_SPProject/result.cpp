@@ -14,6 +14,7 @@
 #include "input.h"
 #include "fade.h"
 #include "scene2DDX.h"
+#include "ranking.h"
 
 //=============================================================================
 //	ê√ìIÉÅÉìÉoïœêî
@@ -28,12 +29,15 @@ int CResult::m_Frame;
 //=============================================================================
 void CResult::Init(void)
 {
-	m_ResultBG = CScene2DDX::Create(".\\data\\TEXTURE\\result000.jpg",
-		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
+	m_ResultBG = CScene2DDX::Create(".\\data\\TEXTURE\\result00.jpg",
+		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f),
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.0f);
 	m_PushEnter = CScene2DDX::Create(".\\data\\TEXTURE\\pushbutton000.png",
-		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)));
+		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.9f), 0.0f),
+		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), 0.0f);
+
+	CRanking::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT* 0.4f, 0.0f),
+		D3DXVECTOR2(SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.7f), 10.0f);
 
 	m_Alpha = 0.0f;
 	m_Frame = -1;

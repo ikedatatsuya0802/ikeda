@@ -109,6 +109,7 @@
     <ClCompile Include="rail.cpp" />
     <ClCompile Include="railLine.cpp" />
     <ClCompile Include="rail_title.cpp" />
+    <ClCompile Include="ranking.cpp" />
     <ClCompile Include="readfile.cpp" />
     <ClCompile Include="rendererDX.cpp" />
     <ClCompile Include="result.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="rail.h" />
     <ClInclude Include="railLine.h" />
     <ClInclude Include="rail_title.h" />
+    <ClInclude Include="ranking.h" />
     <ClInclude Include="readfile.h" />
     <ClInclude Include="rendererDX.h" />
     <ClInclude Include="result.h" />

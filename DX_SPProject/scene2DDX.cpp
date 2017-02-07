@@ -46,11 +46,11 @@ CScene2DDX::~CScene2DDX()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene2DDX::Init(cchar *str, cVec3 pos, cVec3 rot, cVec2 size)
+void CScene2DDX::Init(cchar *str, cVec3 pos, cVec2 size, cfloat rot)
 {
 	// 各種初期化処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, 0.0f));
-	SetRot(D3DXVECTOR3(rot.x, rot.y, rot.z));
+	SetRot(D3DXVECTOR3(0.0f, 0.0f, rot));
 	m_fLength	= hypotf(size.x, size.y) * 0.5f;
 	m_fAngle	= atan2f(size.x, size.y);
 
@@ -173,7 +173,7 @@ void CScene2DDX::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec3 rot, cVec2 size)
+CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec2 size, cfloat rot)
 {
 	CScene2DDX *instance;	// インスタンス
 
@@ -181,7 +181,7 @@ CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec3 rot, cVec2 size)
 	instance = new CScene2DDX();
 
 	// 初期化処理
-	instance->Init(str, pos, rot, size);
+	instance->Init(str, pos, size, rot);
 
 	// インスタンスをリターン
 	return instance;
@@ -254,5 +254,26 @@ void CScene2DDX::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
 		pVtx[i].col = D3DCOLOR_COLORVALUE(r, g, b, a);
 	}
 	
+	m_pVtxBuff->Unlock();
+}
+
+//=============================================================================
+//	関数名	:SetUV
+//	引数	:cVec2	leftTop		-> 左上UV座標
+//			:cVec2	rightButtom	-> 右下UV座標
+//	戻り値	:無し
+//	説明	:ポリゴンのUV座標を設定する。
+//=============================================================================
+void CScene2DDX::SetUV(cVec2 leftTop, cVec2 rightButtom)
+{
+	VERTEX_2D	*pVtx;	// 2D頂点情報
+
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	pVtx[0].tex = D3DXVECTOR2(leftTop.x, leftTop.y);
+	pVtx[1].tex = D3DXVECTOR2(rightButtom.x, leftTop.y);
+	pVtx[2].tex = D3DXVECTOR2(leftTop.x, rightButtom.y);
+	pVtx[3].tex = D3DXVECTOR2(rightButtom.x, rightButtom.y);
+
 	m_pVtxBuff->Unlock();
 }

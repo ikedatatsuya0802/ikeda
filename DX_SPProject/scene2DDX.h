@@ -26,15 +26,13 @@ public:
 	~CScene2DDX();
 
 	void	Init(cchar *str = ".\\data\\TEXTURE\\field000.jpg",
-		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
-		cVec2 size = D3DXVECTOR2(100.0f, 100.0f));
+		cVec3 pos = VEC3_ZERO, cVec2 size = D3DXVECTOR2(100.0f, 100.0f), cfloat rot = 0.0f);
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CScene2DDX	*Create(cchar *str = ".\\data\\TEXTURE\\field000.jpg",
-		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
-		cVec2 size = D3DXVECTOR2(100.0f, 100.0f));
+		cVec3 pos = VEC3_ZERO, cVec2 size = D3DXVECTOR2(100.0f, 100.0f), cfloat rot = 0.0f);
 
 	// リソースのロード
 	void	Load(cchar* str) { D3DXCreateTextureFromFile(D3D_DEVICE, str, &m_pTexture); }
@@ -43,6 +41,7 @@ public:
 
 	void	SetSize(cbool mode, cfloat x, cfloat y);
 	void	SetColor(cfloat a = 1.0f, cfloat r = 1.0f, cfloat g = 1.0f, cfloat b = 1.0f);
+	void	SetUV(cVec2 leftTop, cVec2 rightButtom);
 
 protected:
 	virtual void SetVtxBuff(void);

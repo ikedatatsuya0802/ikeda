@@ -44,7 +44,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
-	m_Mode = new CGame();
+	m_Mode = new CResult();
 #else
 	m_Mode = new CGame();
 #endif // DEBUG
@@ -120,9 +120,9 @@ void CManager::Draw(void)
 	// フェード描画
 	CFade::Draw();
 
+#ifdef _DEBUG
 	// デバッグプロシージャ
 	CDebugProc::Draw();
-#ifdef _DEBUG
 	CDebugProc::DebugProc("FPS:%d\n", GetFPS());
 #endif
 

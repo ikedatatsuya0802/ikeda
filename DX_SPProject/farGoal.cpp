@@ -80,11 +80,11 @@ void CFarGoal::Init(uint defValue, cVec3 pos, cVec2 size)
 	}
 
 	CScene2DDX::Create(".\\data\\TEXTURE\\farGoal000.png",
-		D3DXVECTOR3((SCREEN_WIDTH * 0.62f), (SCREEN_HEIGHT * 0.05f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2((250.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)));
+		D3DXVECTOR3((SCREEN_WIDTH * 0.62f), (SCREEN_HEIGHT * 0.05f), 0.0f),
+		D3DXVECTOR2((250.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)), 0.0f);
 	CScene2DDX::Create(".\\data\\TEXTURE\\farGoal001.png",
-		D3DXVECTOR3((SCREEN_WIDTH * 0.95f), (SCREEN_HEIGHT * 0.05f), 0.0f), VEC3_ZERO,
-		D3DXVECTOR2((70.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)));
+		D3DXVECTOR3((SCREEN_WIDTH * 0.95f), (SCREEN_HEIGHT * 0.05f), 0.0f),
+		D3DXVECTOR2((70.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)), 0.0f);
 }
 
 //=============================================================================

@@ -26,7 +26,7 @@
 
 #define	PLAYER_MOVEMENT			(0.005f)		// プレイヤーの加速度
 #define	PLAYER_SPEED_MAX		(10.0f)		// プレイヤーのスピード
-#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (6000 / 12.f))		// プレイヤーのカーブの限界スピード
+#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (1.0f / 12.0f))		// プレイヤーのカーブの限界スピード
 #define	PLAYER_START_PER		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ

@@ -16,8 +16,8 @@
 //=============================================================================
 const int	BUILDING_TYPE_NUM		= 17;		// 建物の種類
 const float	BUILDING_MARGIN			= 100.0f;	// 建物同士の間隔
-const int	BUILDING_INSIDE			= 10;		// 建物の縦ブロック数
-const int	BUILDING_HORIZONTAL		= 10;		// 建物の横ブロック数
+const int	BUILDING_INSIDE			= 5;		// 建物の縦ブロック数
+const int	BUILDING_HORIZONTAL		= 5;		// 建物の横ブロック数
 const float	BUILDING_CLEAR_LENGTH	= 200.0f;	// 建物を非表示にする距離
 const float	BUILDING_INVISIBLE_FAR	= 2000.0f;	// 建物を非表示にする距離
 

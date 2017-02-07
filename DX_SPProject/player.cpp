@@ -346,6 +346,8 @@ void CPlayer::UpdateDrift(void)
 				// ƒJƒƒ‰‹——£Ý’è
 				CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
 			}
+
+			CGame::GetHakushin()->SetColor(0.0f);
 		}
 	}
 
