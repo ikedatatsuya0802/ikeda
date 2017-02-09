@@ -53,7 +53,7 @@ CRail::~CRail()
 //=============================================================================
 void CRail::Init(int line, D3DXVECTOR3 pos)
 {	
-	char			*str	= NULL;	// ファイル内容格納配列
+	char		* str	= NULL;	// ファイル内容格納配列
 	unsigned int	offset	= 0;	// 文字列指定子
 
 	// 各種初期化処理
@@ -84,7 +84,7 @@ void CRail::Init(int line, D3DXVECTOR3 pos)
 //=============================================================================
 void CRail::SetVtxBuff(void)
 {
-	VERTEX_3D			*pVtx;		// 3D頂点情報
+	VERTEX_3D		* pVtx;		// 3D頂点情報
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{

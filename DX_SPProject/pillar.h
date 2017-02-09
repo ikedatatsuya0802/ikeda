@@ -47,7 +47,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CPillar	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
+	static CPillar* Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CPillar(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);

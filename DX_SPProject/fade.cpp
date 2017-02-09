@@ -17,7 +17,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CMode		*CFade::m_NextMode;
+CMode	* CFade::m_NextMode;
 FADESTATUS	CFade::m_FadeState;
 FADE		CFade::m_Fade[2];		// フェード
 LPDIRECT3DVERTEXBUFFER9	CFade::m_pVtxBuff;
@@ -31,7 +31,7 @@ LPDIRECT3DTEXTURE9		CFade::m_pTexture[2];
 //=============================================================================
 void CFade::Init(void)
 {
-	VERTEX_2D			*pVtx;	// 頂点情報
+	VERTEX_2D		* pVtx;	// 頂点情報
 
 	
 	D3D_DEVICE->CreateVertexBuffer((sizeof(VERTEX_2D) * VERTEX_SQUARE * 2), D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
@@ -129,7 +129,7 @@ void CFade::Uninit(void)
 //=============================================================================
 void CFade::Update(void)
 {
-	VERTEX_2D	*pVtx;	// 頂点情報
+	VERTEX_2D* pVtx;	// 頂点情報
 
 	if(m_FadeState.State == FS_FIRST)
 	{// 初期フェーズ

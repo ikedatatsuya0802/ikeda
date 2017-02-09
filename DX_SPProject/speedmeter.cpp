@@ -69,7 +69,7 @@ void CSpeedmeter::Init(cVec3 pos, cVec3 rot, cVec2 size)
 //=============================================================================
 void CSpeedmeter::SetVtxBuff(void)
 {
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -140,7 +140,7 @@ void CSpeedmeter::Uninit(void)
 //=============================================================================
 void CSpeedmeter::Update(void)
 {
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 	CPlayer* player = CGame::GetPlayer1();
 
 

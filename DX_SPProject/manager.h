@@ -40,8 +40,8 @@ public:
 	static bool		GetEdhitMode(void) { return m_ifEdhitMode; }
 	static void		ChangeEdhitMode(void) { m_ifEdhitMode = m_ifEdhitMode ? false : true; }
 	
-	static CCameraDX	*GetCamera(void){ return m_Camera; }	
-	static CMode		*GetMode(void){ return m_Mode; }
+	static CCameraDX* GetCamera(void){ return m_Camera; }	
+	static CMode	* GetMode(void){ return m_Mode; }
 	static void			SetMode(CMode *mode);
 
 	template<class M>
@@ -55,8 +55,8 @@ public:
 	static D3DXVECTOR2 GetCWAspect(void);
 
 private:
-	static CMode		*m_Mode;		// モードのインスタンス
-	static CCameraDX	*m_Camera;		// カメラのインスタンス
+	static CMode	* m_Mode;		// モードのインスタンス
+	static CCameraDX* m_Camera;		// カメラのインスタンス
 
 	static bool m_ifEdhitMode;	// エディットモードかどうか、false->通常、true->エディットモード
 };

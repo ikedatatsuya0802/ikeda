@@ -94,7 +94,7 @@ void CSceneXDX::Update(void)
 //=============================================================================
 void CSceneXDX::Draw(void)
 {
-	D3DXMATERIAL		*pMat = NULL;		// マテリアル
+	D3DXMATERIAL	* pMat = NULL;		// マテリアル
 	D3DMATERIAL9		matDef;				// デフォルトのマテリアル
 
 
@@ -206,7 +206,7 @@ void CSceneXDX::LoadModel(cchar* filename, MODELSTATUS* modelStatus)
 //=============================================================================
 void CSceneXDX::AutomaticSetTexture(MODELSTATUS* modelStatus)
 {
-	D3DXMATERIAL	*pMat = NULL;	// マテリアル
+	D3DXMATERIAL* pMat = NULL;	// マテリアル
 
 	// マテリアル変換
 	pMat = (D3DXMATERIAL *)modelStatus->pBuffMat->GetBufferPointer();

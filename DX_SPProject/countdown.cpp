@@ -72,7 +72,7 @@ void CCountdown::Init(cVec3 pos, cVec2 size)
 //=============================================================================
 void CCountdown::SetVtxBuff(void)
 {
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -218,7 +218,7 @@ void CCountdown::Draw(void)
 //	関数名	:Create
 //	引数	:D3DXVECTOR3	pos		-> 初期位置
 //			:D3DXVECTOR2	size	-> ポリゴンのサイズ
-//			:char			*str	-> テクスチャのファイルパス
+//			:char		* str	-> テクスチャのファイルパス
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================

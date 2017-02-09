@@ -38,11 +38,11 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CScene3DDX	*Create(cchar* str = ".\\data\\TEXTURE\\field000.jpg",
+	static CScene3DDX* Create(cchar* str = ".\\data\\TEXTURE\\field000.jpg",
 		cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 
 	// ワールドマトリックスを取得
-	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }
+	D3DXMATRIX* GetWMatrix(void) { return &m_mtxWorld; }
 	
 	// リソースのロード
 	void	Load(cchar* str) { D3DXCreateTextureFromFile(D3D_DEVICE, str, &m_pTexture); }

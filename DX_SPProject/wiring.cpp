@@ -117,7 +117,7 @@ void CWiring::Update(void)
 //=============================================================================
 void CWiring::Draw(void)
 {
-	D3DXMATERIAL		*pMat = NULL;		// マテリアル
+	D3DXMATERIAL	* pMat = NULL;		// マテリアル
 	D3DMATERIAL9		matDef;				// デフォルトのマテリアル
 
 	if(!CManager::GetEdhitMode())

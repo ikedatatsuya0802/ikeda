@@ -29,7 +29,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer_Title	*Create(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE,
+	static CPlayer_Title* Create(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE,
 		D3DXVECTOR3 pos = VEC3_ZERO);
 
 private:

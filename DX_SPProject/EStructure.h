@@ -46,7 +46,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CEStructure	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
+	static CEStructure* Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CEStructure(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);

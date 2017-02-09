@@ -88,7 +88,7 @@ void CRailLine::Init(int line, D3DXVECTOR3 pos)
 //=============================================================================
 void CRailLine::SetSplineVtx(int line)
 {
-	VERTEX_3D	*pVtx;	// 3D頂点情報
+	VERTEX_3D* pVtx;	// 3D頂点情報
 	
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -125,7 +125,7 @@ void CRailLine::SetSplineVtx(int line)
 //=============================================================================
 void CRailLine::SetSplineVtxVec(int line)
 {
-	VERTEX_3D	*pVtx;	// 3D頂点情報
+	VERTEX_3D* pVtx;	// 3D頂点情報
 
 	m_pVtxBuffVec->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -159,7 +159,7 @@ void CRailLine::SetSplineVtxVec(int line)
 //=============================================================================
 void CRailLine::SetSplineVtxSPoints(int line)
 {
-	VERTEX_3D	*pVtx;	// 頂点情報
+	VERTEX_3D* pVtx;	// 頂点情報
 	
 
 	m_pVtxBuffSPoints->Lock(0, 0, (void**)&pVtx, 0);
@@ -196,7 +196,7 @@ void CRailLine::SetSplineVtxSPoints(int line)
 //=============================================================================
 void CRailLine::SetSplineVtxLPoints(int line)
 {
-	VERTEX_3D	*pVtx;	// 頂点情報
+	VERTEX_3D* pVtx;	// 頂点情報
 	
 	
 	m_pVtxBuffLPoints->Lock(0, 0, (void**)&pVtx, 0);
@@ -233,7 +233,7 @@ void CRailLine::SetSplineVtxLPoints(int line)
 //=============================================================================
 void CRailLine::SetSplineVtxPointer(int line)
 {
-	VERTEX_3D	*pVtx;	// 頂点情報
+	VERTEX_3D* pVtx;	// 頂点情報
 
 
 	m_pVtxBuffPointer->Lock(0, 0, (void**)&pVtx, 0);
@@ -270,7 +270,7 @@ void CRailLine::SetSplineVtxPointer(int line)
 //=============================================================================
 void CRailLine::SetSplineVtxDrift(int line)
 {
-	VERTEX_3D	*pVtx;	// 頂点情報
+	VERTEX_3D* pVtx;	// 頂点情報
 
 
 	m_pVtxBuffDrift->Lock(0, 0, (void**)&pVtx, 0);
@@ -898,7 +898,7 @@ CRailLine *CRailLine::Create(int line, D3DXVECTOR3 pos)
 //=============================================================================
 void CRailLine::SaveSpline(void)
 {
-	FILE	*fp = NULL;					// ファイルポインタ
+	FILE* fp = NULL;					// ファイルポインタ
 	time_t now = time(NULL);			// 現在時刻
 	struct tm *pnow = localtime(&now);	// 現在時刻
 
@@ -956,7 +956,7 @@ void CRailLine::SaveSpline(void)
 //=============================================================================
 void CRailLine::LoadSpline(int line)
 {
-	FILE	*fp = NULL;	// ファイルポインタ
+	FILE* fp = NULL;	// ファイルポインタ
 	int posnum = 0;
 
 	fp = fopen("./data/spline.txt", "r");

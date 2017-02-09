@@ -39,7 +39,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CSpeedmeter	*Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
+	static CSpeedmeter* Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO,
 		cVec2 size = D3DXVECTOR2(SPEEDMETER_WIDTH, SPEEDMETER_HEIGHT));
 
 protected:

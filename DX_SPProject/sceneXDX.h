@@ -57,13 +57,13 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneXDX	*Create(cchar* fileName, MODELSTATUS* mesh = NULL, const D3DXVECTOR3 pos = VEC3_ZERO, const D3DXVECTOR3 rot = VEC3_ZERO);
+	static CSceneXDX* Create(cchar* fileName, MODELSTATUS* mesh = NULL, const D3DXVECTOR3 pos = VEC3_ZERO, const D3DXVECTOR3 rot = VEC3_ZERO);
 	
 	static void	LoadModel(cchar* filename, MODELSTATUS* modelStatus);
 	static void	AutomaticSetTexture(MODELSTATUS* modelStatus);
 	static void	AddTexture(vector<TEXTURE> &texture, char* fileName);
 
-	D3DXMATRIX	*GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
+	D3DXMATRIX* GetWMatrix(void) { return &m_mtxWorld; }	// ワールドマトリックスを取得
 
 
 protected:

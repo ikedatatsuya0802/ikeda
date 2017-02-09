@@ -75,7 +75,7 @@ void CRanking::Init(cVec3 pos, cVec2 size, cfloat margin)
 		float height = (size.y - (RANKING_NUM - 1) * margin) / RANKING_NUM;
 		float y = pos.y + (i - (RANKING_NUM / 2)) * (height + margin);
 
-		CScene2DDX::Create(".\\data\\TEXTURE\\ranking000.png", D3DXVECTOR3((pos.x - SCREEN_WIDTH * 0.3f), y, 0.0f), D3DXVECTOR2(height * 2, height))
+		CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\ranking000.png", D3DXVECTOR3((pos.x - SCREEN_WIDTH * 0.3f), y, 0.0f), D3DXVECTOR2(height * 2, height))
 			->SetUV(D3DXVECTOR2(0.0f, (i / 10.0f)), D3DXVECTOR2(1.0f, (i / 10.0f + 0.1f)));
 		m_Instance[i] = CTime::Create(m_NewRanking[i], D3DXVECTOR3(pos.x, y, 0.0f), D3DXVECTOR2(size.x, height));
 	}

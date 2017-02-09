@@ -29,9 +29,9 @@ public:
 private:
 	static int	m_Frame;	// 汎用カウンタ
 
-	CScene2DDX	*m_Black;
-	CScene2DDX	*m_TitleBG;
-	CScene2DDX	*m_PushEnter;
+	CScene2DDX* m_Black;
+	CScene2DDX* m_TitleBG;
+	CScene2DDX* m_PushEnter;
 	float		m_Alpha;
 	float		m_AlphaBlack;
 	float		m_AlphaButton;

@@ -31,7 +31,7 @@ public:
 	//=========================================================================
 	//	ÉÅÉ\ÉbÉh
 	//=========================================================================
-	static char	*ReadBinaryFile(char *filename);
+	static char* ReadBinaryFile(char *filename);
 	static int	SearchWordByString(char *str, unsigned int offset, char *word);
 	static int	SearchWordNumByString(char *str, unsigned int offset, char *word);
 	static int	SearchWordNumByString(char *str, unsigned int offset, char *word, char *endword);

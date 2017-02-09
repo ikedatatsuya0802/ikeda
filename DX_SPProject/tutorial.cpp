@@ -28,10 +28,10 @@ int	CTutorial::m_Frame;
 //=============================================================================
 void CTutorial::Init(void)
 {
-	m_TutorialBG = CScene2DDX::Create(".\\data\\TEXTURE\\tutorial000.jpg",
+	m_TutorialBG = CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\tutorial000.jpg",
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.5f), 0.0f),
 		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.0f);
-	m_PushEnter = CScene2DDX::Create(".\\data\\TEXTURE\\pushbutton000.png",
+	m_PushEnter = CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\pushbutton000.png",
 		D3DXVECTOR3((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.8f), 0.0f),
 		D3DXVECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)), 0.0f);
 

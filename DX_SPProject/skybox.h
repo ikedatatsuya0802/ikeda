@@ -36,7 +36,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CSkybox	*Create(bool ifLight = false, cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
+	static CSkybox* Create(bool ifLight = false, cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, CRendererDX::FileName(SKYBOX_TEXFILENAME000), &m_pTexture); }

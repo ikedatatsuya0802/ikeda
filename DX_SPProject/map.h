@@ -45,7 +45,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CMap	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
+	static CMap* Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CMap(bool ifListAdd = true, int priority = PRIORITY_2D, OBJTYPE objtype = OBJTYPE_NONE);

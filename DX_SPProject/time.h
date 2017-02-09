@@ -44,7 +44,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CTime	*Create(DWORD time = 0, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
+	static CTime* Create(DWORD time = 0, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 
 	void SetColor(cfloat a = 1.0f, cfloat r = 1.0f, cfloat g = 1.0f, cfloat b = 1.0f);
 	void CountStart(void) { m_ifCountStart = true; m_StartTime = timeGetTime(); }

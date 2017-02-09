@@ -74,7 +74,7 @@ void CDebugProc::Draw(void)
 	m_pFont->DrawText(NULL, &m_aStrDebug[0], -1, &rect, DT_LEFT, D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// ƒƒ‚ƒŠ‰Šú‰»
-	memset(m_aStrDebug, 0, sizeof(m_aStrDebug));
+	Clear();
 }
 
 //=============================================================================

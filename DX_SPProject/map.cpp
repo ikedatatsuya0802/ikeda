@@ -92,7 +92,7 @@ void CMap::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CMap::SetVtxBuff(void)
 {
-	VERTEX_2D			*pVtx;		// 3D’¸“_î•ñ
+	VERTEX_2D		* pVtx;		// 3D’¸“_î•ñ
 
 
 	m_pVtxBuff[0]->Lock(0, 0, (void**)&pVtx, 0);

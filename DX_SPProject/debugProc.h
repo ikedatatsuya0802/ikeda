@@ -24,6 +24,7 @@ public:
 	static void	Uninit(void);
 	static void	Update(void);
 	static void	Draw(void);
+	static void	Clear(void) { memset(m_aStrDebug, 0, sizeof(m_aStrDebug)); }
 
 	static void	DebugProc(char *fmt, ...);
 

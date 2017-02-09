@@ -25,8 +25,8 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CMode		*CManager::m_Mode;
-CCameraDX	*CManager::m_Camera;
+CMode*		CManager::m_Mode;
+CCameraDX*	CManager::m_Camera;
 bool		CManager::m_ifEdhitMode;
 
 //=============================================================================
@@ -44,7 +44,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
-	m_Mode = new CResult();
+	m_Mode = new CGame();
 #else
 	m_Mode = new CGame();
 #endif // DEBUG
@@ -123,6 +123,9 @@ void CManager::Draw(void)
 #ifdef _DEBUG
 	// デバッグプロシージャ
 	CDebugProc::Draw();
+#endif
+	CDebugProc::Clear();
+#ifdef _DEBUG
 	CDebugProc::DebugProc("FPS:%d\n", GetFPS());
 #endif
 

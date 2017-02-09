@@ -41,12 +41,12 @@ public:
 	void			SetPos(D3DXVECTOR3 pos = VEC3_ZERO) { m_Pos = pos; }
 	void			SetRot(D3DXVECTOR3 rot = VEC3_ZERO) { m_Rot = rot; }
 
-	static CModel	*Create(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
+	static CModel* Create(char *filename, D3DXVECTOR3 pos = VEC3_ZERO);
 
 private:
 	void	AddTexture(vector<TEXTURE> &texture, char* fileName);
 
-	CModel				*m_Parent;		// 親パーツ
+	CModel			* m_Parent;		// 親パーツ
 	
 	D3DXVECTOR3			m_PosDef;		// 基準座標
 	D3DXVECTOR3			m_RotDef;		// 基準回転

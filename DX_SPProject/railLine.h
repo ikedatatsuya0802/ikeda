@@ -83,7 +83,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CRailLine	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
+	static CRailLine* Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) {

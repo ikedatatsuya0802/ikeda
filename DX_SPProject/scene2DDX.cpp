@@ -72,7 +72,7 @@ void CScene2DDX::Init(cchar *str, cVec3 pos, cVec2 size, cfloat rot)
 //=============================================================================
 void CScene2DDX::SetVtxBuff(void)
 {
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -169,16 +169,16 @@ void CScene2DDX::Draw(void)
 //	関数名	:Create
 //	引数	:D3DXVECTOR3	pos		-> 初期位置
 //			:D3DXVECTOR2	size	-> ポリゴンのサイズ
-//			:char			*str	-> テクスチャのファイルパス
+//			:char		* str	-> テクスチャのファイルパス
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec2 size, cfloat rot)
+CScene2DDX *CScene2DDX::Create(uint priority, cchar *str, cVec3 pos, cVec2 size, cfloat rot)
 {
 	CScene2DDX *instance;	// インスタンス
 
 	// インスタンス生成
-	instance = new CScene2DDX();
+	instance = new CScene2DDX(true, priority);
 
 	// 初期化処理
 	instance->Init(str, pos, size, rot);
@@ -197,7 +197,7 @@ CScene2DDX *CScene2DDX::Create(cchar *str, cVec3 pos, cVec2 size, cfloat rot)
 //=============================================================================
 void CScene2DDX::SetSize(cbool mode, cfloat x, cfloat y)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
+	VERTEX_2D* pVtx;	// 2D頂点情報
 
 	if(mode)
 	{// 倍率指定
@@ -245,7 +245,7 @@ void CScene2DDX::SetSize(cbool mode, cfloat x, cfloat y)
 //=============================================================================
 void CScene2DDX::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
+	VERTEX_2D* pVtx;	// 2D頂点情報
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
@@ -266,7 +266,7 @@ void CScene2DDX::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
 //=============================================================================
 void CScene2DDX::SetUV(cVec2 leftTop, cVec2 rightButtom)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
+	VERTEX_2D* pVtx;	// 2D頂点情報
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 

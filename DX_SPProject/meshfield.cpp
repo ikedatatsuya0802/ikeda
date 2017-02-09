@@ -298,8 +298,8 @@ void CMeshfield::Draw(void)
 //=============================================================================
 inline int	CMeshfield::GetFrontMesh(D3DXVECTOR3 pos)
 {
-	VERTEX_3D	*pVtx;						// 頂点バッファ
-	WORD		*pIdx;						// インデックスバッファ
+	VERTEX_3D* pVtx;						// 頂点バッファ
+	WORD	* pIdx;						// インデックスバッファ
 	int			onPolygon = 0;				// どのポリゴンに乗っているか
 
 
@@ -382,8 +382,8 @@ inline int	CMeshfield::GetFrontMesh(D3DXVECTOR3 pos)
 //=============================================================================
 float CMeshfield::GetHeight(D3DXVECTOR3 pos)
 {
-	VERTEX_3D	*pVtx;							// 頂点バッファ
-	WORD		*pIdx;							// インデックスバッファ
+	VERTEX_3D* pVtx;							// 頂点バッファ
+	WORD	* pIdx;							// インデックスバッファ
 	float		height		= 0.0f;
 	int			onPolygon	= GetFrontMesh(pos);// どのポリゴンに乗っているか
 	D3DXVECTOR3	vc1, vc2, vc3;

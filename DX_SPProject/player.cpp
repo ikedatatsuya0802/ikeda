@@ -48,7 +48,7 @@ CPlayer::~CPlayer()
 //=============================================================================
 void CPlayer::Init(D3DXVECTOR3 pos)
 {
-	char			*str	= NULL;	// ファイル内容格納配列
+	char		* str	= NULL;	// ファイル内容格納配列
 	unsigned int	offset	= 0;	// 文字列指定子
 
 	m_NumParts	= 0;
@@ -176,7 +176,7 @@ void CPlayer::Update(void)
 //=============================================================================
 void CPlayer::UpdateMove(void)
 {
-	CCameraDX	*camera		= DX_CAMERA;	// カメラ
+	CCameraDX* camera		= DX_CAMERA;	// カメラ
 	int			posNum = (int)(m_Per * ((int)m_Spline->Pos.size() - 1));
 	
 
@@ -494,7 +494,7 @@ CPlayer *CPlayer::Create(bool ifListAdd, D3DXVECTOR3 pos)
 void CPlayer::LoadMotion(char *fileName)
 {
 	int		nCntData	= 0;	// 配列生成用カウンタ
-	char	*str		= NULL;	// ファイル内容格納文字列
+	char* str		= NULL;	// ファイル内容格納文字列
 	int		offset		= 0;	// オフセット
 	
 

@@ -78,7 +78,7 @@ void CGoal::Init(void)
 //=============================================================================
 void CGoal::SetVtxBuff(void)
 {
-	VERTEX_3D	*pVtx;	// 3D頂点情報
+	VERTEX_3D* pVtx;	// 3D頂点情報
 	SPLINE*		spline = CGame::GetRailLine()->GetSpline();		// スプライン情報
 	D3DXVECTOR3 posFar = VEC3_ZERO;
 	float rot = 0.0f;

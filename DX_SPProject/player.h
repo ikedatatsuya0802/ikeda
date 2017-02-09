@@ -50,13 +50,13 @@ typedef struct{
 
 typedef struct{
 	int	Frame;
-	KEY	*Key;
+	KEY* Key;
 } KEY_INFO;
 
 typedef struct{
 	bool		Loop;
 	int			NumKey;
-	KEY_INFO	*KeyInfo;
+	KEY_INFO* KeyInfo;
 } MOTION;
 
 typedef enum{
@@ -79,7 +79,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(bool ifListAdd = true, D3DXVECTOR3 pos = VEC3_ZERO);
+	static CPlayer* Create(bool ifListAdd = true, D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
 	D3DXVECTOR3	GetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
@@ -113,7 +113,7 @@ protected:
 	// モーション関連
 	void		LoadMotion(char *fileName = "./data/motion.txt");
 
-	MOTION		*m_Motion;		// モーション情報
+	MOTION	* m_Motion;		// モーション情報
 
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置

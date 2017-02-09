@@ -42,7 +42,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CCountdown	*Create(D3DXVECTOR3 pos = VEC3_ZERO,
+	static CCountdown* Create(D3DXVECTOR3 pos = VEC3_ZERO,
 		D3DXVECTOR2 size = D3DXVECTOR2(COUNTDOWN_WIDTH, COUNTDOWN_HEIGHT));
 
 protected:

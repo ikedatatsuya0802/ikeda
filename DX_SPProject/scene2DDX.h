@@ -31,7 +31,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CScene2DDX	*Create(cchar *str = ".\\data\\TEXTURE\\field000.jpg",
+	static CScene2DDX* Create(uint priority = PRIORITY_2D, cchar *str = ".\\data\\TEXTURE\\field000.jpg",
 		cVec3 pos = VEC3_ZERO, cVec2 size = D3DXVECTOR2(100.0f, 100.0f), cfloat rot = 0.0f);
 
 	// リソースのロード

@@ -52,7 +52,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CCylinder	*Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
+	static CCylinder* Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"CYLINDER_TEXFILENAME000, &m_pTexture); }

@@ -114,7 +114,7 @@ void CCameraDX::Update(void)
 	else if(CManager::MatchMode(CGame()))
 	{// ゲームモードの場合のみ処理実行
 
-		CPlayer	*player = NULL;	// プレイヤーインスタンス
+		CPlayer* player = NULL;	// プレイヤーインスタンス
 
 		if(CManager::GetEdhitMode())
 		{
@@ -566,7 +566,7 @@ void CCameraDX::CameraAnimation(void)
 //=============================================================================
 void CCameraDX::LoadCameraAnim(void)
 {
-	FILE	*fp = NULL;	// ファイルポインタ
+	FILE* fp = NULL;	// ファイルポインタ
 
 	fp = fopen("./data/camera_anim.txt", "r");
 

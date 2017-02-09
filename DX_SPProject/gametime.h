@@ -39,7 +39,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CGametime	*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
+	static CGametime* Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO, FIGURE figure = 0);
 
 	void	SetValue(float value);
@@ -48,7 +48,7 @@ protected:
 	static FIGURE	m_Figure;
 	static int		m_NumFigure;
 
-	CNumber	**m_Number;
+	CNumber* *m_Number;
 	float	m_Time;
 };
 

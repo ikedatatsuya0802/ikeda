@@ -43,13 +43,13 @@
 //	静的メンバ変数
 //=============================================================================
 int			CGame::m_Frame;
-CMeshfield	*CGame::m_Meshfield;
-CRailLine	*CGame::m_RailLine;
-CPlayer		*CGame::m_Player1;
-CPlayer		*CGame::m_Player2;
-CDriftMark	*CGame::m_DriftMark;
-CScene2DDX	*CGame::m_Hakushin;
-CPause		*CGame::m_Pause;
+CMeshfield*	CGame::m_Meshfield;
+CRailLine*	CGame::m_RailLine;
+CPlayer*	CGame::m_Player1;
+CPlayer*	CGame::m_Player2;
+CDriftMark*	CGame::m_DriftMark;
+CScene2DDX*	CGame::m_Hakushin;
+CPause*		CGame::m_Pause;
 
 int			CGame::m_GoalCount		= GOAL_COUNT;
 int			CGame::m_GameState		= GAMESTATE_COUNT;
@@ -81,7 +81,7 @@ void CGame::Init(void)
 	
 	// 2D
 	CDriftMark::Create();
-	m_Hakushin = CScene2DDX::Create(".\\data\\TEXTURE\\hakushin.png",
+	m_Hakushin = CScene2DDX::Create(PRIORITY_2D_2, ".\\data\\TEXTURE\\hakushin.png",
 		D3DXVECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f),
 		D3DXVECTOR2(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f), 0.0f);
 	m_Hakushin->SetColor(0.0f);
@@ -93,6 +93,7 @@ void CGame::Init(void)
 		D3DXVECTOR2((250.f * WINDOW_ASPECT_X), (60.f * WINDOW_ASPECT_Y)));
 	m_Pause = CPause::Create();
 	m_Pause->UnlinkList();
+	m_Pause->Init();
 
 	// フレーム初期化
 	m_Frame = -1;
@@ -199,8 +200,6 @@ void CGame::Draw(void)
 	// シーン描画
 	CSceneDX::DrawAll();
 	
-	if(m_Pause->GetPause())
-	{
-		m_Pause->Draw();
-	}
+	m_Pause->Draw();
+
 }

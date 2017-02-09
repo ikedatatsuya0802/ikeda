@@ -74,7 +74,7 @@ void CDriftMark::Init(void)
 //=============================================================================
 void CDriftMark::SetVtxBuff(void)
 {
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -148,7 +148,7 @@ void CDriftMark::Update(void)
 {
 	static float tex = 0.0f;
 	// テクスチャ座標移動
-	VERTEX_2D	*pVtx;	// 3D頂点情報
+	VERTEX_2D* pVtx;	// 3D頂点情報
 	float oldt	= CGame::GetPlayer1()->GetOldPerSpline();
 	float t		= CGame::GetPlayer1()->GetPerSpline();
 	float futureoldt = CGame::GetPlayer1()->GetOldPerSpline() + DRIFTMARK_FUTURE;
@@ -307,7 +307,7 @@ void CDriftMark::Draw(void)
 //	関数名	:Create
 //	引数	:D3DXVECTOR3	pos		-> 初期位置
 //			:D3DXVECTOR2	size	-> ポリゴンのサイズ
-//			:char			*str	-> テクスチャのファイルパス
+//			:char		* str	-> テクスチャのファイルパス
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
@@ -336,7 +336,7 @@ CDriftMark* CDriftMark::Create(void)
 //=============================================================================
 void CDriftMark::SetColor(float a, float r, float g, float b)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
+	VERTEX_2D* pVtx;	// 2D頂点情報
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 

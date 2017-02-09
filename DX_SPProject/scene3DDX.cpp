@@ -69,7 +69,7 @@ void CScene3DDX::Init(cchar *str, cVec3 pos, cVec3 rot)
 //=============================================================================
 void CScene3DDX::SetVtxBuff(void)
 {
-	VERTEX_3D	*pVtx;	// 3D’¸“_î•ñ
+	VERTEX_3D* pVtx;	// 3D’¸“_î•ñ
 
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -197,7 +197,7 @@ CScene3DDX *CScene3DDX::Create(cchar *str, cVec3 pos, cVec3 rot)
 //=============================================================================
 void CScene3DDX::SetMeshIndex(LPDIRECT3DINDEXBUFFER9 *idxBuff, cint horizontal, cint vertical)
 {
-	WORD	*pIdx;
+	WORD* pIdx;
 	int		idxNum		= ((horizontal + 1) * 2) * vertical + ((vertical - 1) * 2);
 	int		idxStd		= ((horizontal + 1) * 2 + 2);
 	int		idxVtxNum	= (horizontal + 1) * (vertical + 1);

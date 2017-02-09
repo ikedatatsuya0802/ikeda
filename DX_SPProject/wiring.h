@@ -27,7 +27,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CWiring	*Create(D3DXVECTOR3 pos = VEC3_ZERO);
+	static CWiring* Create(D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CWiring(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);

@@ -49,7 +49,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static COrbit		*Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
+	static COrbit	* Create(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE,
 		D3DXVECTOR3 pos = VEC3_ZERO);
 	
 	// リソースのロード

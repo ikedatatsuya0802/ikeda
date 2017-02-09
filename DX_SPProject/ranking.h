@@ -34,7 +34,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CRanking	*Create(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO, cfloat margin = 0.0f);
+	static CRanking* Create(cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO, cfloat margin = 0.0f);
 
 	void SaveRanking(void);
 	void LoadRanking(void);

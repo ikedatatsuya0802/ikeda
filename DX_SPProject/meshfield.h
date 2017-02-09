@@ -52,7 +52,7 @@ public:
 	void	Update(void);
 	void	Draw(void);
 
-	static CMeshfield	*Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
+	static CMeshfield* Create(cVec3 pos = VEC3_ZERO, cVec3 rot = VEC3_ZERO);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"MESHFIELD_TEXFILENAME000, &m_pTexture); }
@@ -63,7 +63,7 @@ public:
 	float		GetHeight(D3DXVECTOR3 pos);
 	
 	D3DXVECTOR3			GetMeshfieldPos(void){ return m_Pos; }
-	D3DXVECTOR3			*GetMeshfieldNor(void){ return m_Nor; }
+	D3DXVECTOR3		* GetMeshfieldNor(void){ return m_Nor; }
 	static D3DXVECTOR3	GetVtxPos(int nNumVtx);
 	static D3DXVECTOR3	GetVtxNor(int nNumVtx);
 

@@ -97,7 +97,7 @@ void CModel::Draw(void)
 {
 	D3DXMATRIX		mtxView, mtxScl, mtxRot, mtxTrans;	// マトリックス
 	D3DXMATRIX		parentMatrix;						// 親オブジェクトのマトリックス
-	D3DXMATERIAL	*pMat		= NULL;					// マテリアル
+	D3DXMATERIAL* pMat		= NULL;					// マテリアル
 	D3DMATERIAL9	matDef;								// デフォルトのマテリアル
 
 	

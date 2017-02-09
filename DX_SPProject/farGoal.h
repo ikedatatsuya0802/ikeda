@@ -32,7 +32,7 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
-	static CFarGoal	*Create(uint defValue, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
+	static CFarGoal* Create(uint defValue, cVec3 pos = VEC3_ZERO, cVec2 size = VEC2_ZERO);
 
 	void	SetValue(int value);
 

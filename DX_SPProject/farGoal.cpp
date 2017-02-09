@@ -79,10 +79,10 @@ void CFarGoal::Init(uint defValue, cVec3 pos, cVec2 size)
 		m_Number[0] = CNumber::Create((valueCal % 10), pos, D3DXVECTOR2((size.x / m_Number.size()), size.y));
 	}
 
-	CScene2DDX::Create(".\\data\\TEXTURE\\farGoal000.png",
+	CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\farGoal000.png",
 		D3DXVECTOR3((SCREEN_WIDTH * 0.62f), (SCREEN_HEIGHT * 0.05f), 0.0f),
 		D3DXVECTOR2((250.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)), 0.0f);
-	CScene2DDX::Create(".\\data\\TEXTURE\\farGoal001.png",
+	CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\farGoal001.png",
 		D3DXVECTOR3((SCREEN_WIDTH * 0.95f), (SCREEN_HEIGHT * 0.05f), 0.0f),
 		D3DXVECTOR2((70.0f * WINDOW_ASPECT_X), (60.0f * WINDOW_ASPECT_Y)), 0.0f);
 }

@@ -21,8 +21,8 @@
 //=============================================================================
 char *CReadFile::ReadBinaryFile(char *filename)
 {
-	FILE			*fp;			// ファイルポインタ
-	char	*str = NULL;	// ファイル内容格納文字列
+	FILE		* fp;			// ファイルポインタ
+	char* str = NULL;	// ファイル内容格納文字列
 	int				cnt = 0;		// ファイルの文字数カウンタ
 	
 	// ファイルオープン
@@ -110,8 +110,8 @@ int CReadFile::SearchWordByString(char *str, unsigned int offset, char *word)
 //=============================================================================
 int CReadFile::SearchWordNumByString(char *str, unsigned int offset, char *word)
 {
-	char	*strBuff	= str;	// 文字列バッファ
-	char	*wordBuff	= word;	// 検索文字退避文字列
+	char* strBuff	= str;	// 文字列バッファ
+	char* wordBuff	= word;	// 検索文字退避文字列
 	int		nNumCmp		= 0;	// 文字列カウント
 	int		nNumWard	= 0;	// 発見した文字列の個数
 
@@ -167,9 +167,9 @@ int CReadFile::SearchWordNumByString(char *str, unsigned int offset, char *word)
 //=============================================================================
 int CReadFile::SearchWordNumByString(char *str, unsigned int offset, char *word, char *endword)
 {
-	char	*strBuff	= str;		// 文字列バッファ
-	char	*wordBuff	= word;		// 検索文字退避文字列
-	char	*endwordBuff= endword;	// 検索終了文字退避文字列
+	char* strBuff	= str;		// 文字列バッファ
+	char* wordBuff	= word;		// 検索文字退避文字列
+	char* endwordBuff= endword;	// 検索終了文字退避文字列
 	int		nNumWard	= 0;		// 発見した文字列の個数
 
 

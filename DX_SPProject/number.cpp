@@ -185,7 +185,7 @@ CNumber *CNumber::Create(int value, cVec3 pos, cVec2 size)
 //=============================================================================
 void CNumber::SetNumber(int value)
 {
-	VERTEX_2D	*pVtx;	// 2D頂点情報
+	VERTEX_2D* pVtx;	// 2D頂点情報
 
 	// 閾値チェック
 	(value) > 9 ? value = 9 : 0;

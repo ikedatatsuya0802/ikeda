@@ -37,7 +37,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CGoal	*Create(void);
+	static CGoal* Create(void);
 
 protected:
 	CGoal(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);

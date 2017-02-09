@@ -157,7 +157,7 @@ void CPause::Uninit(void)
 //=============================================================================
 void CPause::Update(void)
 {
-	VERTEX_2D	*pVtx;	// 3D’¸“_î•ñ
+	VERTEX_2D	*pVtx;	// 2D’¸“_î•ñ
 
 	if((CGame::GetFrame() > COUNTDOWN_END_TIME) && KT_P)
 	{

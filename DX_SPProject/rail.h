@@ -41,7 +41,7 @@ public:
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CRail	*Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
+	static CRail* Create(int line = 0, D3DXVECTOR3 pos = VEC3_ZERO);
 
 protected:
 	CRail(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);

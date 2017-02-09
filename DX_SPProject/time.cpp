@@ -54,13 +54,13 @@ void CTime::Init(DWORD time, cVec3 pos, cVec2 size)
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
 	m_Instance[1] = CNumber::Create((m_Time.minute % 10), D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[2] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
+	m_Instance[2] = CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y), 0.0f);
 	m_Instance[3] = CNumber::Create((m_Time.second / 10), D3DXVECTOR3(pos.x + (-size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
 	m_Instance[4] = CNumber::Create((m_Time.second % 10), D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 0.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));
-	m_Instance[5] = CScene2DDX::Create(".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
+	m_Instance[5] = CScene2DDX::Create(PRIORITY_2D, ".\\data\\TEXTURE\\number001.png", D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 1.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y), 0.0f);
 	m_Instance[6] = CNumber::Create((m_Time.millisec / 10), D3DXVECTOR3(pos.x + (size.x / TIME_FIGURE * 2.5f), pos.y, 0.0f),
 		D3DXVECTOR2((size.x / TIME_FIGURE), size.y));

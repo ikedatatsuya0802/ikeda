@@ -69,7 +69,7 @@ private:
 	static LPDIRECT3DTEXTURE9		m_pTexture[2];	// テクスチャへのポインタ
 	static FADE						m_Fade[2];		// フェード
 
-	static CMode		*m_NextMode;
+	static CMode	* m_NextMode;
 	static FADESTATUS	m_FadeState;	// フェードの状態
 };
 
