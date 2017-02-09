@@ -11,7 +11,7 @@
 #include "main.h"
 #include "scene2DDX.h"
 #include "number.h"
-#include <windows.h>
+#include "time.h"
 
 //=============================================================================
 //	É}ÉNÉçíËã`
@@ -40,9 +40,11 @@ public:
 	void LoadRanking(void);
 	
 private:
+	int				m_RankIn;
 	DWORD			m_NowValue;
 	vector<DWORD>	m_Ranking;
 	vector<DWORD>	m_NewRanking;
+	CTime*			m_Instance[RANKING_NUM];
 };
 
 #endif

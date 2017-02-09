@@ -163,10 +163,27 @@ void CTime::SaveTime(void)
 void CTime::TimeConvert(TIME* timeStr, DWORD time)
 {
 	timeStr->minute = time / 1000 / 60;
-	timeStr->second = time / 1000;
+	timeStr->second = time / 1000 % 60;
 	timeStr->millisec = time % 1000 / 10;
 
 	if(timeStr->minute > 99) timeStr->minute = 99;
 	if(timeStr->minute > 59) timeStr->minute = 59;
 	if(timeStr->minute > 99) timeStr->minute = 99;
+}
+
+//=============================================================================
+//	関数名	:SetColor
+//	引数	:float	a		-> アルファ値
+//			:float	r		-> R値
+//			:float	g		-> G値
+//			:float	b		-> B値
+//	戻り値	:無し
+//	説明	:ポリゴン色を設定する。
+//=============================================================================
+void CTime::SetColor(cfloat a, cfloat r, cfloat g, cfloat b)
+{
+	for(int i = 0 ; i < TIME_FIGURE ; i++)
+	{
+		m_Instance[i]->SetColor(a, r, g, b);
+	}
 }
