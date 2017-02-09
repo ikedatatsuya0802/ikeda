@@ -1,6 +1,6 @@
 //=============================================================================
 //
-//	タイトル	高架
+//	タイトル	建物
 //	ファイル名	building.cpp
 //	作成者		AT13A284_07 池田達哉
 //	作成日		2016/06/29
@@ -17,10 +17,17 @@
 #include "game.h"
 #include "player.h"
 #include "cameraDX.h"
+#include <process.h>
 
+bool				CBuilding::m_ifInitialize = false;
 SPLINE*				CBuilding::m_Spline;
 vector<CSceneXDX*>	CBuilding::m_Instance;
 MODELSTATUS			CBuilding::m_BuildingMesh[BUILDING_TYPE_NUM];
+
+uint				CBuilding::m_thIDUpdate;
+HANDLE				CBuilding::m_hThUpdate;
+uint				CBuilding::m_thIDDraw;
+HANDLE				CBuilding::m_hThDraw;
 
 //=============================================================================
 //	関数名	:Init
@@ -30,6 +37,8 @@ MODELSTATUS			CBuilding::m_BuildingMesh[BUILDING_TYPE_NUM];
 //=============================================================================
 void CBuilding::Init(void)
 {
+	m_ifInitialize = false;
+
 	// スプライン情報の取得
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
@@ -83,6 +92,13 @@ void CBuilding::Init(void)
 			}
 		}
 	}
+
+	// 初期化が完了
+	m_ifInitialize = true;
+	
+	// †スレッド起動†
+	m_hThUpdate	= (HANDLE)_beginthreadex(NULL, 0, UpdateThread, NULL, 0, &m_thIDUpdate);
+	m_hThDraw	= (HANDLE)_beginthreadex(NULL, 0, UpdateThread, NULL, 0, &m_thIDDraw);
 }
 
 //=============================================================================
@@ -105,6 +121,9 @@ void CBuilding::Uninit(void)
 		SafetyRelease(m_BuildingMesh[i].pBuffMat);
 		SafetyRelease(m_BuildingMesh[i].pMesh);
 	}
+
+	// 初期化が必要
+	m_ifInitialize = false;
 }
 
 //=============================================================================
@@ -115,45 +134,48 @@ void CBuilding::Uninit(void)
 //=============================================================================
 void CBuilding::Update(void)
 {
-	static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
-	D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
-
-	
-	// 位置更新
-	for each(CSceneXDX* list in m_Instance)
+	if(m_ifInitialize)
 	{
-		D3DXVECTOR3 listPos = list->GetPos();
+		static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
+		D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
 
-		if(playerPos.z > listPos.z + FOG_END / 2)
-		{
-			list->SetPos(D3DXVECTOR3(listPos.x, listPos.y, listPos.z + FOG_END));
-		}
-	}
 
-	// スプライン情報が更新された場合
-	if(fabsf(oldSpline.Length - m_Spline->Length) < 0.01f)
-	{
-		// 建物が線路に近接している場合非表示にする
+		// 位置更新
 		for each(CSceneXDX* list in m_Instance)
 		{
-			for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
+			D3DXVECTOR3 listPos = list->GetPos();
+
+			if(playerPos.z > listPos.z + FOG_END / 2)
 			{
-				if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
+				list->SetPos(D3DXVECTOR3(listPos.x, listPos.y, listPos.z + FOG_END));
+			}
+		}
+
+		// スプライン情報が更新された場合
+		if(fabsf(oldSpline.Length - m_Spline->Length) < 0.01f)
+		{
+			// 建物が線路に近接している場合非表示にする
+			for each(CSceneXDX* list in m_Instance)
+			{
+				for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
 				{
-					if(list->GetDrawFrag())
-						list->ChangeDrawFrag();
-				}
-				else
-				{
-					//if(!list->GetDrawFrag())
-						//list->SetDrawFrag(true);
+					if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
+					{
+						if(list->GetDrawFrag())
+							list->ChangeDrawFrag();
+					}
+					else
+					{
+						//if(!list->GetDrawFrag())
+							//list->SetDrawFrag(true);
+					}
 				}
 			}
 		}
-	}
 
-	// スプライン情報保存
-	oldSpline = (*m_Spline);
+		// スプライン情報保存
+		oldSpline = (*m_Spline);
+	}
 }
 
 //=============================================================================
@@ -164,16 +186,100 @@ void CBuilding::Update(void)
 //=============================================================================
 void CBuilding::Draw(void)
 {
-	for each(CSceneXDX* list in m_Instance)
+	if(m_ifInitialize)
 	{
-		if(list->GetDrawFrag())
+		for each(CSceneXDX* list in m_Instance)
 		{
-			D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
-
-			if(D3DXVec3Length(&(list->GetPos() - playerPos)) < BUILDING_INVISIBLE_FAR)
+			if(list->GetDrawFrag())
 			{
-				list->Draw();
+				D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
+
+				if(D3DXVec3Length(&(list->GetPos() - playerPos)) < BUILDING_INVISIBLE_FAR)
+				{
+					list->Draw();
+				}
 			}
 		}
 	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+uint CBuilding::UpdateThread(void*)
+{
+	if(m_ifInitialize)
+	{
+		static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
+		D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
+
+
+		// 位置更新
+		for each(CSceneXDX* list in m_Instance)
+		{
+			D3DXVECTOR3 listPos = list->GetPos();
+
+			if(playerPos.z > listPos.z + FOG_END / 2)
+			{
+				list->SetPos(D3DXVECTOR3(listPos.x, listPos.y, listPos.z + FOG_END));
+			}
+		}
+
+		// スプライン情報が更新された場合
+		if(fabsf(oldSpline.Length - m_Spline->Length) < 0.01f)
+		{
+			// 建物が線路に近接している場合非表示にする
+			for each(CSceneXDX* list in m_Instance)
+			{
+				for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
+				{
+					if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
+					{
+						if(list->GetDrawFrag())
+							list->ChangeDrawFrag();
+					}
+					else
+					{
+						//if(!list->GetDrawFrag())
+						//list->SetDrawFrag(true);
+					}
+				}
+			}
+		}
+
+		// スプライン情報保存
+		oldSpline = (*m_Spline);
+	}
+
+	return 0;
+}
+
+//=============================================================================
+//	関数名	:Draw
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:描画処理を行う。
+//=============================================================================
+uint CBuilding::DrawThread(void*)
+{
+	if(m_ifInitialize)
+	{
+		for each(CSceneXDX* list in m_Instance)
+		{
+			if(list->GetDrawFrag())
+			{
+				D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
+
+				if(D3DXVec3Length(&(list->GetPos() - playerPos)) < BUILDING_INVISIBLE_FAR)
+				{
+					list->Draw();
+				}
+			}
+		}
+	}
+
+	return 0;
 }

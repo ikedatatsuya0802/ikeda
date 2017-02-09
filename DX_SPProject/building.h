@@ -33,10 +33,18 @@ public:
 	static void	Draw(void);
 
 protected:
-	static SPLINE*		m_Spline;	// スプライン情報
+	static bool		m_ifInitialize;	// 初期化完了フラグ
+	static SPLINE*	m_Spline;		// スプライン情報
 
 	static vector<CSceneXDX*> m_Instance;					// 建物のインスタンス
 	static MODELSTATUS m_BuildingMesh[BUILDING_TYPE_NUM];	// メッシュへのポインタ
+
+	static uint __stdcall	UpdateThread(void*);
+	static uint				m_thIDUpdate;			// スレッドID1
+	static HANDLE			m_hThUpdate;			// スレッドハンドル1
+	static uint __stdcall	DrawThread(void*);
+	static HANDLE			m_hThDraw;				// スレッドハンドル1
+	static uint				m_thIDDraw;				// スレッドID1
 };
 
 #endif

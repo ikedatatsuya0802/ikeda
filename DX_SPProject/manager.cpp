@@ -44,11 +44,11 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
-	m_Mode = new CGame();
+	m_Mode = new CResult();
 #else
 	m_Mode = new CGame();
 #endif // DEBUG
-	m_Camera		= new CCameraDX();
+	m_Camera = new CCameraDX();
 
 	// 初期化処理
 	CInput::Init(hInstance, hWnd);
@@ -68,10 +68,6 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(void)
 {
-	// リソースの開放
-	//CNumber::Unload();
-
-
 	CInput::Uninit();
 	CRendererDX::Uninit();
 	CDebugProc::Uninit();
