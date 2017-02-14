@@ -1,56 +1,8 @@
-﻿  building.cpp
-  コードを生成中...
-  コンパイル中...
-  wiring.cpp
-  tutorial.cpp
+﻿  wiring.cpp
   title.cpp
-  time.cpp
   speedmeter.cpp
-  sound.cpp
-  skydome.cpp
-  skybox.cpp
-  sceneXDX.cpp
-  sceneDX.cpp
-  scene3DDX.cpp
-  scene2DDX.cpp
-  result.cpp
-  rendererDX.cpp
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\rendererdx.cpp(226): warning C4172: ローカル変数またはテンポラリのアドレスを返します。
-  readfile.cpp
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\readfile.cpp(29): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : 'fopen' の宣言を確認してください。
-  ranking.cpp
-  rail_title.cpp
-  railLine.cpp
-  rail.cpp
   player_title.cpp
-  コードを生成中...
-  コンパイル中...
   player.cpp
-  pillar.cpp
   pause.cpp
-  orbit.cpp
-  number.cpp
-  model.cpp
-  meshfield.cpp
-  map.cpp
-  manager.cpp
-  main.cpp
-  lightDX.cpp
-  input.cpp
-  goal.cpp
-  gametime.cpp
-  game.cpp
-  farGoal.cpp
-  fade.cpp
-  driftMark.cpp
-  debugProc.cpp
-  cylinder.cpp
-  コードを生成中...
-  コンパイル中...
-  countdown.cpp
-  cameraDX.cpp
-c:\users\ikeda.tatsuya\desktop\shupure\dx_spproject\cameradx.cpp(590): warning C4800: 'int' : ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
-  EStructure.cpp
   コードを生成中...
   DX31_20160413_01.vcxproj -> C:\Users\ikeda.tatsuya\Desktop\shupure\DX_SPProject\Debug\DX_SPProject.exe

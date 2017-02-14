@@ -176,26 +176,29 @@ void CSpeedmeter::Update(void)
 //=============================================================================
 void CSpeedmeter::Draw(void)
 {
-	// アルファテスト開始
-	CRendererDX::EnableAlphaTest();
+	if(!CManager::GetEdhitMode())
+	{
+		// アルファテスト開始
+		CRendererDX::EnableAlphaTest();
 
-	// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
-	// 頂点バッファの設定
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+		// 頂点フォーマットの設定
+		D3D_DEVICE->SetFVF(FVF_VERTEX_2D);
+		// 頂点バッファの設定
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 
-	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture[1]);
-	// プリミティブ描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, PRIMITIVE_SQUARE);
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture[1]);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, PRIMITIVE_SQUARE);
 
-	// テクスチャの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture[0]);
-	// プリミティブ描画
-	D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
+		// テクスチャの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture[0]);
+		// プリミティブ描画
+		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, PRIMITIVE_SQUARE);
 
-	// アルファテスト終了
-	CRendererDX::DisableAlphaTest();
+		// アルファテスト終了
+		CRendererDX::DisableAlphaTest();
+	}
 }
 
 //=============================================================================

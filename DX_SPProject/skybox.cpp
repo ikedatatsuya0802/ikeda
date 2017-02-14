@@ -230,43 +230,46 @@ void CSkybox::Update(void)
 //=============================================================================
 void CSkybox::Draw(void)
 {
-	// マトリックス設定
-	CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
-
-	// ライティング設定をオフに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
-		
-	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-
-	// アルファテスト開始
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
-	// 描画処理
-	D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
-	D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
-	D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
-	for(int i = 0 ; i < SKYBOX_PRIMITIVE_SQUARE ; i++)
+	if(!CManager::GetEdhitMode())
 	{
-		D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_SQUARE), PRIMITIVE_SQUARE);	// 描画
+	// マトリックス設定
+		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
+
+		// ライティング設定をオフに
+		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+		// Zテスト方法更新
+		D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+		D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+		// アルファテスト開始
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+		// 描画処理
+		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));		// 頂点フォーマットの設定
+		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
+		D3D_DEVICE->SetTexture(0, m_pTexture);									// テクスチャの設定
+		for(int i = 0 ; i < SKYBOX_PRIMITIVE_SQUARE ; i++)
+		{
+			D3D_DEVICE->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * VERTEX_SQUARE), PRIMITIVE_SQUARE);	// 描画
+		}
+		/*
+		// Zテスト方法更新
+		D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+		D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);*/
+
+		// アルファテスト終了
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
+
+		// ライティング設定をオンに
+		D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
-	/*
-	// Zテスト方法更新
-	D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	D3D_DEVICE->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);*/
-
-	// アルファテスト終了
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
-	// ライティング設定をオンに
-	D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================

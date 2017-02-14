@@ -139,10 +139,11 @@ void CRail::SetVtxBuff(void)
 		// テクスチャ座標設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		float railLength = 10000.0f / CGame::GetRailLine()->GetSpline()->LengthMin[0];
 		for(int i = 1 ; i < (int)m_Spline->PosHermite.size() ; i++)
 		{
-			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * 0.75f);
-			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * 0.75f);
+			pVtx[i * 2 + 0].tex = D3DXVECTOR2(0.0f, (float)i * railLength);
+			pVtx[i * 2 + 1].tex = D3DXVECTOR2(1.0f, (float)i * railLength);
 		}
 
 	}

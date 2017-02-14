@@ -146,6 +146,7 @@ void CBuilding::Uninit(void)
 void CBuilding::Update(void)
 {
 	GOALPOS goalPos = CGame::GetGoal()->GetGoalPos();
+	D3DXVECTOR3 moveDir = CGame::GetPlayer1()->GetMoveDir();
 
 	if(m_ifInitialize)
 	{
@@ -155,29 +156,57 @@ void CBuilding::Update(void)
 
 		// 位置更新
 		bool flug = false;
+#pragma omp parallel for
 		for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
 		{
-			if(playerPos.x < (m_Building[x].Pos.x - BUILDING_MOVE_STRIDE))
+			if(moveDir.x > 0.0f)
 			{
-				for(int z = 0 ; z < BUILDING_INSIDE ; z++)
+				if(playerPos.x > (m_Building[x].Pos.x + BUILDING_MOVE_STRIDE))
 				{
-					m_Building[z * BUILDING_INSIDE + x].Pos.x -= BUILDING_STRIDE_X;
+					for(int z = 0 ; z < BUILDING_INSIDE ; z++)
+					{
+						m_Building[z * BUILDING_INSIDE + x].Pos.x += BUILDING_STRIDE_X;
+					}
+					flug = true;
 				}
-				flug = true;
-				break;
+			}
+			else if(moveDir.x < 0.0f)
+			{
+				if(playerPos.x < (m_Building[x].Pos.x - BUILDING_MOVE_STRIDE))
+				{
+					for(int z = 0 ; z < BUILDING_INSIDE ; z++)
+					{
+						m_Building[z * BUILDING_INSIDE + x].Pos.x -= BUILDING_STRIDE_X;
+					}
+					flug = true;
+				}
 			}
 		}
 
+#pragma omp parallel for
 		for(int z = 0 ; z < BUILDING_INSIDE ; z++)
 		{
-			if(playerPos.z > (m_Building[z * BUILDING_INSIDE].Pos.z + BUILDING_MOVE_STRIDE))
+			if(moveDir.z > 0.0f)
 			{
-				for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
+				if(playerPos.z > (m_Building[z * BUILDING_INSIDE].Pos.z + BUILDING_MOVE_STRIDE))
 				{
-					m_Building[z * BUILDING_INSIDE + x].Pos.z += BUILDING_STRIDE_Z;
+					for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
+					{
+						m_Building[z * BUILDING_INSIDE + x].Pos.z += BUILDING_STRIDE_Z;
+					}
+					flug = true;
 				}
-				flug = true;
-				break;
+			}
+			else if(moveDir.z < 0.0f)
+			{
+				if(playerPos.z < (m_Building[z * BUILDING_INSIDE].Pos.z - BUILDING_MOVE_STRIDE))
+				{
+					for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
+					{
+						m_Building[z * BUILDING_INSIDE + x].Pos.z -= BUILDING_STRIDE_Z;
+					}
+					flug = true;
+				}
 			}
 		}
 
@@ -185,9 +214,7 @@ void CBuilding::Update(void)
 		if(flug || (oldSpline.Length - m_Spline->Length > 1.0f))
 		{
 			// 建物が線路に近接している場合非表示にする
-#ifdef _OPENMP
 #pragma omp parallel for
-#endif
 			for(int i = 0 ; i < BUILDING_ALL ; i++)
 			{
 				bool ifNearBuilding = false;
@@ -247,7 +274,7 @@ void CBuilding::Draw(void)
 	D3DMATERIAL9	matDef;				// デフォルトのマテリアル
 
 
-	if(m_ifInitialize)
+	if(!CManager::GetEdhitMode() && m_ifInitialize)
 	{
 		// Zテスト開始
 		CRendererDX::EnableZTest();

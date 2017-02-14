@@ -453,6 +453,7 @@ void CRailLine::MouseEdit(void)
 			// ドリフト方向切り替え
 			if(CInput::GetKeyTrigger(DIK_F4))
 			{
+#pragma omp parallel for
 				for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
 				{
 					if(m_Spline.Drift[i].ifHoldBegin || m_Spline.Drift[i].ifHoldEnd)
@@ -468,6 +469,8 @@ void CRailLine::MouseEdit(void)
 				// スプラインの最近点探索
 				float per = 0.0f;
 				int maxHermite = 0;
+
+#pragma omp parallel for
 				for(int j = 0 ; j < RAILLINE_DRIFT_SEARCH ; j++)
 				{
 					float tMax = (1.0f / RAILLINE_DRIFT_SEARCH * maxHermite);
@@ -613,15 +616,20 @@ void CRailLine::MouseEdit(void)
 				}
 			}
 		}
+
+		// スプラインの再計算
+		CalcSpline();
 	}
 	else if(CInput::GetMouseRelease(MBTN_LEFT) || CInput::GetMouseRelease(MBTN_RIGHT))
 	{// マウスがリリースされた場合
 
 		// 全頂点のホールドを解除
+#pragma omp parallel for
 		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
 		{
 			m_Spline.ifHold[i] = 0;
 		}
+#pragma omp parallel for
 		for(int i = 0 ; i < (int)m_Spline.Drift.size() ; i++)
 		{
 			m_Spline.Drift[i].ifHoldBegin	= false;
@@ -717,7 +725,8 @@ void CRailLine::Draw(void)
 		CRendererDX::SetMatrix(&m_mtxWorld, m_Pos, m_Rot);
 
 		// Zテスト開始
-		CRendererDX::EnableZTest();
+		D3D_DEVICE->SetRenderState(D3DRS_ZENABLE, TRUE);
+		D3D_DEVICE->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 
 		// アルファテスト開始
 		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -831,13 +840,9 @@ void CRailLine::Draw(void)
 		D3D_DEVICE->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		D3D_DEVICE->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-		// アルファテスト終了
-		D3D_DEVICE->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-		D3D_DEVICE->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-		D3D_DEVICE->SetRenderState(D3DRS_ALPHAREF, 0);
-
-		// Zテスト終了
+		// Z・アルファテスト終了
 		CRendererDX::DisableZTest();
+		CRendererDX::DisableAlphaTest();
 	}
 
 	// デバッグ情報表示
@@ -1078,6 +1083,9 @@ void CRailLine::CalcSpline(int line)
 
 		// スプライン長を計算する
 		m_Spline.Length = 0.0f;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
 		for(int i = 1 ; i < RAILLINE_DRIFT_SEARCH ; i++)
 		{
 			float oldT = (1.0f / RAILLINE_DRIFT_SEARCH * (i - 1));	// i-1のスプライン位置
@@ -1091,6 +1099,9 @@ void CRailLine::CalcSpline(int line)
 		}
 
 		// スプライン区間長を計算する
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
 		for(int i = 0 ; i < ((int)m_Spline.LengthMin.size() - 1) ; i++)
 		{
 			m_Spline.LengthMin[i] = 0.0f;

@@ -11,6 +11,7 @@
 #include "sceneDX.h"
 #include "sceneXDX.h"
 #include "model.h"
+#include "game.h"
 #include "rail.h"
 #include "railLine.h"
 
@@ -18,16 +19,13 @@
 //	マクロ定義
 //=============================================================================
 #define	PLAYER_PARTS			(1)			// プレイヤーのパーツ数
-#define	PLAYER_TEXTURENUM		(4)
-#define	PLAYER_TEXFILENAME000	"player000.png"	// テクスチャのファイル名
-#define	PLAYER_TEXFILENAME001	"player001.png"	// テクスチャのファイル名
-#define	PLAYER_TEXFILENAME002	"player002.jpg"	// テクスチャのファイル名
-#define	PLAYER_TEXFILENAME003	"player003.jpg"	// テクスチャのファイル名
 
-#define	PLAYER_MOVEMENT			(0.005f)		// プレイヤーの加速度
-#define	PLAYER_SPEED_MAX		(10.0f)		// プレイヤーのスピード
-#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (1.0f / 12.0f))		// プレイヤーのカーブの限界スピード
-#define	PLAYER_START_PER		(0.02f)			// プレイヤーの回転ステップ
+#define PLAYER_MOVEMENT			(0.05f / CGame::GetRailLine()->GetSpline()->LengthMin[0])	// 加速度
+#define PLAYER_SPEED_MAX		(PLAYER_MOVEMENT * 1200.0f)									// 最高速
+#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (1.0f / 12.0f))							// カーブの限界スピード
+
+#define	PLAYER_START_PER		(0.02f)		// プレイヤーのスタート地点
+
 #define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
 #define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.2f)		// プレイヤーの回転ステップ
@@ -82,7 +80,9 @@ public:
 	static CPlayer* Create(bool ifListAdd = true, D3DXVECTOR3 pos = VEC3_ZERO);
 
 	//SPLINE	GetSpline(void) { return m_Spline; }
-	D3DXVECTOR3	GetSplineRot(void) { return m_Spline->Rot; }			// スプラインの回転情報をリターン
+	D3DXVECTOR3	GetPlayerPos(void) { return CGame::GetRailLine()->GetSplinePos(m_Per); }	// 現在座標をリターン
+	D3DXVECTOR3	GetSplineRot(void) { return m_Spline->Rot; }		// スプラインの回転情報をリターン
+	D3DXVECTOR3	GetMoveDir(void) { return m_MoveVec; }				// 進行方向を取得
 	float	GetSpeed(void) { return m_PerMove; }					// スプライン情報を取得
 	float	GetOldPerSpline(void) { return m_PerOld; }				// スプライン情報を取得
 	float	GetPerSpline(void) { return m_Per; }					// スプライン情報を取得
@@ -102,9 +102,9 @@ protected:
 	int				m_NumParts;		// パーツ数
 	int				m_NumMotion;	// モーション数
 	
-	int				m_nCntMove;		// 移動カウンタ
 	D3DXVECTOR3		m_Move;			// モデルの相対移動量
 	D3DXVECTOR3		m_RotMove;		// モデルの相対回転量
+	int				m_CntRot;		// 移動カウンタ
 	bool			m_bJump;		// ジャンプ状態
 	D3DXVECTOR3		m_MoveVec;		// 進行方向
 	D3DXVECTOR3		m_VecQuat;		// 傾斜クォータニオンの回転ベクトル
@@ -113,7 +113,7 @@ protected:
 	// モーション関連
 	void		LoadMotion(char *fileName = "./data/motion.txt");
 
-	MOTION	* m_Motion;		// モーション情報
+	MOTION*		m_Motion;		// モーション情報
 
 	SPLINE*		m_Spline;		// スプライン情報
 	float		m_Per;			// スプライン上位置

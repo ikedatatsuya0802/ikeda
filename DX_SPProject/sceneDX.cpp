@@ -62,7 +62,8 @@ CSceneDX::~CSceneDX()
 void CSceneDX::UpdateAll(void)
 {
 	// 全リストを検索
-	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
+#pragma omp parallel for
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
 		for each(CSceneDX* list in m_List[i])
