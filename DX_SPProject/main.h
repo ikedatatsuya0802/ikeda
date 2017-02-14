@@ -20,6 +20,9 @@
 #include <random>
 #include <string>
 #include <sstream>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 using namespace std;
 
 //=============================================================================

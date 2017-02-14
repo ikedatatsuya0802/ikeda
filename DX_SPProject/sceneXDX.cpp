@@ -94,8 +94,8 @@ void CSceneXDX::Update(void)
 //=============================================================================
 void CSceneXDX::Draw(void)
 {
-	D3DXMATERIAL	* pMat = NULL;		// マテリアル
-	D3DMATERIAL9		matDef;				// デフォルトのマテリアル
+	D3DXMATERIAL	*pMat = NULL;		// マテリアル
+	D3DMATERIAL9	matDef;				// デフォルトのマテリアル
 
 
 	// マトリックス設定

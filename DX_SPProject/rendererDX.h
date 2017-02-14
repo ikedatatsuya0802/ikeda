@@ -44,7 +44,7 @@ const int	PRIMITIVE_SQUARE	= 2;	// 四角ポリゴンのプリミティブ数
 #define	WHITE				1.0f, 1.0f, 1.0f		// †白†
 
 #define	FOG_COLOR			0.2f, 0.2f, 0.5f		// フォグの色
-const float	FOG_START		= 500.0f;					// フォグの開始距離
+const float	FOG_START		= 1000.0f;					// フォグの開始距離
 const float	FOG_END			= 3000.0f;				// フォグの開始距離
 
 //=============================================================================

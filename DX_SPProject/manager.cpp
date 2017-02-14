@@ -44,7 +44,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
-	m_Mode = new CResult();
+	m_Mode = new CGame();
 #else
 	m_Mode = new CGame();
 #endif // DEBUG

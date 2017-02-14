@@ -80,25 +80,24 @@ void CGoal::SetVtxBuff(void)
 {
 	VERTEX_3D* pVtx;	// 3D頂点情報
 	SPLINE*		spline = CGame::GetRailLine()->GetSpline();		// スプライン情報
-	D3DXVECTOR3 posFar = VEC3_ZERO;
 	float rot = 0.0f;
 
-	posFar.x = m_Pos.x + m_Vec.x * RAIL_LENGTH;
-	posFar.y = m_Pos.y;
-	posFar.z = m_Pos.z + m_Vec.z * RAIL_LENGTH;
+	m_PosFar.x = m_Pos.x + m_Vec.x * RAIL_LENGTH;
+	m_PosFar.y = m_Pos.y;
+	m_PosFar.z = m_Pos.z + m_Vec.z * RAIL_LENGTH;
 
 	rot = atan2f(m_Vec.x, m_Vec.z);
 
 	m_pVtxBuff[0]->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 描画座標設定
-	pVtx[0].Pos.x = posFar.x + (sinf(rot - (D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
+	pVtx[0].Pos.x = m_PosFar.x + (sinf(rot - (D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 	pVtx[0].Pos.y = 1.0f;
-	pVtx[0].Pos.z = posFar.z + (cosf(rot - (D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
+	pVtx[0].Pos.z = m_PosFar.z + (cosf(rot - (D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 
-	pVtx[1].Pos.x = posFar.x + (sinf((rot + D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
+	pVtx[1].Pos.x = m_PosFar.x + (sinf((rot + D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 	pVtx[1].Pos.y = 1.0f;
-	pVtx[1].Pos.z = posFar.z + (cosf((rot + D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
+	pVtx[1].Pos.z = m_PosFar.z + (cosf((rot + D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 
 	pVtx[2].Pos.x = m_Pos.x + (sinf(rot - (D3DX_PI / 2)) * (RAIL_WIDTH * 0.5f));
 	pVtx[2].Pos.y = 1.0f;

@@ -22,6 +22,7 @@
 #include "meshfield.h"
 #include "cylinder.h"
 #include "skybox.h"
+#include "skydome.h"
 #include "player.h"
 #include "gametime.h"
 #include "railLine.h"
@@ -45,6 +46,7 @@
 int			CGame::m_Frame;
 CMeshfield*	CGame::m_Meshfield;
 CRailLine*	CGame::m_RailLine;
+CGoal*		CGame::m_Goal;
 CPlayer*	CGame::m_Player1;
 CPlayer*	CGame::m_Player2;
 CDriftMark*	CGame::m_DriftMark;
@@ -67,17 +69,18 @@ void CGame::Init(void)
 	// 3D
 	m_Meshfield	= CMeshfield::Create();
 	CSkybox::Create();
+	//CSkydome::Create();
 	//CCylinder::Create();
 	m_RailLine = CRailLine::Create(0);
 	//m_RailLine->ChangeDrawFrag();
 	CPillar::Create();
 	CEStructure::Create();
 	CWiring::Create();
-	CBuilding::Init();
 	CRail::Create(0);
 	//CRail::Create(1);
 	m_Player1 = CPlayer::Create();
-	CGoal::Create();
+	m_Goal = CGoal::Create();
+	CBuilding::Init();
 	
 	// 2D
 	CDriftMark::Create();
@@ -150,8 +153,6 @@ void CGame::Update(void)
 		{
 			// シーン更新
 			CSceneDX::UpdateAll();
-
-			CBuilding::Update();
 		}
 
 		if(m_Player1->GetPerSpline() >= RAILLINE_GOAL)
@@ -182,6 +183,9 @@ void CGame::Update(void)
 	default:
 		break;
 	}
+
+
+	CBuilding::Update();
 
 	// フレーム加算
 	m_Frame++;

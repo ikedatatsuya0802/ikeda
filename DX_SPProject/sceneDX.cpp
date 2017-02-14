@@ -108,7 +108,7 @@ void CSceneDX::DrawAll(void)
 				list->Draw();
 
 				// ƒtƒHƒO‚ð–³Œø‚É‚·‚é
-				//D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
+				D3D_DEVICE->SetRenderState(D3DRS_FOGENABLE, FALSE);
 			}
 		}
 	}

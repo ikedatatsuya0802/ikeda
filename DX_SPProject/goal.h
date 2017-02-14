@@ -20,6 +20,10 @@
 //=============================================================================
 //	構造体
 //=============================================================================
+typedef struct {
+	D3DXVECTOR3 nearPos;
+	D3DXVECTOR3 farPos;
+} GOALPOS;
 
 //=============================================================================
 //	クラス定義
@@ -31,13 +35,18 @@ public:
 	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
+
+	static CGoal* Create(void);
 	
 	// リソースのロード
 	static void	Load(void) { D3DXCreateTextureFromFile(D3D_DEVICE, ".\\data\\TEXTURE\\"RAIL_TEXFILENAME000, &m_pTexture); }
 	// リソースのアンロード
 	static void	Unload(void) { SafetyRelease(m_pTexture); }
 
-	static CGoal* Create(void);
+	GOALPOS GetGoalPos(void) {
+		GOALPOS pos ={ m_Pos, m_PosFar };
+		return pos;
+	}
 
 protected:
 	CGoal(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objtype = OBJTYPE_NONE);
@@ -48,6 +57,7 @@ protected:
 	static LPDIRECT3DTEXTURE9	m_pTexture;		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff[2];
 
+	D3DXVECTOR3 m_PosFar;
 	D3DXVECTOR3 m_Vec;
 };
 

@@ -111,8 +111,8 @@ HRESULT CRendererDX::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE);				 //頂点モード
 	m_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);			 //テーブルモード
 
-	float FogStart	= FOG_START; // 開始点
-	float FogEnd	= FOG_END; // 終了点
+	float FogStart	= 1000.0f; // 開始点
+	float FogEnd	= 3000.0f; // 終了点
 	m_pD3DDevice->SetRenderState(D3DRS_FOGSTART, *((LPDWORD)(&FogStart)));	// 開始点の設定
 	m_pD3DDevice->SetRenderState(D3DRS_FOGEND, *((LPDWORD)(&FogEnd)));		// 終了点の設定
 	m_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, TRUE);				// 範囲ベースのフォグを使用

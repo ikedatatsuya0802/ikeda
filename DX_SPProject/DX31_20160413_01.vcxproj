@@ -54,6 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +120,7 @@
     <ClCompile Include="sceneXDX.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="gametime.cpp" />
+    <ClCompile Include="skydome.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="speedmeter.cpp" />
     <ClCompile Include="time.cpp" />
@@ -165,6 +167,7 @@
     <ClInclude Include="sceneXDX.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="gametime.h" />
+    <ClInclude Include="skydome.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="speedmeter.h" />
     <ClInclude Include="time.h" />

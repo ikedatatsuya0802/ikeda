@@ -180,6 +180,9 @@
     <ClCompile Include="ranking.cpp">
       <Filter>ソース ファイル\Result</Filter>
     </ClCompile>
+    <ClCompile Include="skydome.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -313,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="ranking.h">
       <Filter>ヘッダー ファイル\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="skydome.h">
+      <Filter>ヘッダー ファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,17 +17,17 @@
 #include "game.h"
 #include "player.h"
 #include "cameraDX.h"
+#include "goal.h"
 #include <process.h>
 
 bool				CBuilding::m_ifInitialize = false;
 SPLINE*				CBuilding::m_Spline;
-vector<CSceneXDX*>	CBuilding::m_Instance;
+D3DXMATRIX			CBuilding::m_mtxWorld;
 MODELSTATUS			CBuilding::m_BuildingMesh[BUILDING_TYPE_NUM];
-
-uint				CBuilding::m_thIDUpdate;
-HANDLE				CBuilding::m_hThUpdate;
-uint				CBuilding::m_thIDDraw;
-HANDLE				CBuilding::m_hThDraw;
+D3DXMATERIAL*		CBuilding::m_BuildingMat[BUILDING_TYPE_NUM];
+BUILDING			CBuilding::m_Building[BUILDING_ALL];
+uint				CBuilding::m_thID;
+HANDLE				CBuilding::m_hTh;
 
 //=============================================================================
 //	関数名	:Init
@@ -60,12 +60,13 @@ void CBuilding::Init(void)
 		modelFileName.append(".x");
 
 		CSceneXDX::LoadModel(modelFileName.c_str(), &m_BuildingMesh[i]);
+		m_BuildingMat[i] = (D3DXMATERIAL *)m_BuildingMesh[i].pBuffMat->GetBufferPointer();
 	}
 
 	// 建物を作成
-	for(int z = -(BUILDING_INSIDE / 2) ; z < (BUILDING_INSIDE / 2) ; z++)
+	for(int z = 0 ; z < BUILDING_INSIDE ; z++)
 	{
-		for(int x = -(BUILDING_HORIZONTAL / 2) ; x < (BUILDING_HORIZONTAL / 2) ; x++)
+		for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
 		{
 			random_device rd;
 			mt19937 mt(rd());
@@ -74,31 +75,45 @@ void CBuilding::Init(void)
 			int typeNum = type(mt);
 
 			// 生成するビルの種類をランダムに設定
-			m_Instance.push_back(CSceneXDX::Create("", &m_BuildingMesh[typeNum],
-				D3DXVECTOR3((x * BUILDING_MARGIN), 0.0f, (z * BUILDING_MARGIN) + 1000.0f)));
-			m_Instance[m_Instance.size() - 1]->UnlinkList();
+			m_Building[z * BUILDING_HORIZONTAL + x].Type	= typeNum;
+			m_Building[z * BUILDING_HORIZONTAL + x].Visible	= true;
+			m_Building[z * BUILDING_HORIZONTAL + x].Pos.x	= ((x - (BUILDING_HORIZONTAL / 2)) * BUILDING_MARGIN);
+			m_Building[z * BUILDING_HORIZONTAL + x].Pos.y	= 0.0f;
+			m_Building[z * BUILDING_HORIZONTAL + x].Pos.z	= ((z - (BUILDING_INSIDE / 2)) * BUILDING_MARGIN);
 		}
 	}
 
 	// 建物が線路に近接している場合非表示にする
-	for each(CSceneXDX* list in m_Instance)
+	for(uint i = 0 ; i < BUILDING_ALL ; i++)
 	{
-		for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
+		for(uint j = 0 ; j < m_Spline->PosHermite.size() ; j++)
 		{
-			if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
+			if(D3DXVec3Length(&(m_Building[i].Pos - m_Spline->PosHermite[j])) < BUILDING_CLEAR_LENGTH)
 			{
-				if(list->GetDrawFrag())
-					list->ChangeDrawFrag();
+				if(m_Building[i].Visible)
+				{
+					m_Building[i].Visible = false;
+				}
 			}
 		}
 	}
 
 	// 初期化が完了
 	m_ifInitialize = true;
-	
+
 	// †スレッド起動†
-	m_hThUpdate	= (HANDLE)_beginthreadex(NULL, 0, UpdateThread, NULL, 0, &m_thIDUpdate);
-	m_hThDraw	= (HANDLE)_beginthreadex(NULL, 0, UpdateThread, NULL, 0, &m_thIDDraw);
+	//m_hTh = (HANDLE)_beginthreadex(NULL, 0, UpdateS, NULL, 0, &m_thID);
+}
+
+//=============================================================================
+//	関数名	:Uninit
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:終了処理を行う。
+//=============================================================================
+void CBuilding::RecalcTexCoord(LPD3DXMESH* mesh)
+{
+	
 }
 
 //=============================================================================
@@ -109,12 +124,8 @@ void CBuilding::Init(void)
 //=============================================================================
 void CBuilding::Uninit(void)
 {
-	for each(CSceneXDX* list in m_Instance)
-	{
-		list->Uninit();
-		delete list;
-		list = NULL;
-	}
+	// スレッド終了
+	CloseHandle(m_hTh);
 
 	for(int i = 0 ; i < BUILDING_TYPE_NUM ; i++)
 	{
@@ -134,6 +145,8 @@ void CBuilding::Uninit(void)
 //=============================================================================
 void CBuilding::Update(void)
 {
+	GOALPOS goalPos = CGame::GetGoal()->GetGoalPos();
+
 	if(m_ifInitialize)
 	{
 		static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
@@ -141,33 +154,77 @@ void CBuilding::Update(void)
 
 
 		// 位置更新
-		for each(CSceneXDX* list in m_Instance)
+		bool flug = false;
+		for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
 		{
-			D3DXVECTOR3 listPos = list->GetPos();
-
-			if(playerPos.z > listPos.z + FOG_END / 2)
+			if(playerPos.x < (m_Building[x].Pos.x - BUILDING_MOVE_STRIDE))
 			{
-				list->SetPos(D3DXVECTOR3(listPos.x, listPos.y, listPos.z + FOG_END));
+				for(int z = 0 ; z < BUILDING_INSIDE ; z++)
+				{
+					m_Building[z * BUILDING_INSIDE + x].Pos.x -= BUILDING_STRIDE_X;
+				}
+				flug = true;
+				break;
+			}
+		}
+
+		for(int z = 0 ; z < BUILDING_INSIDE ; z++)
+		{
+			if(playerPos.z > (m_Building[z * BUILDING_INSIDE].Pos.z + BUILDING_MOVE_STRIDE))
+			{
+				for(int x = 0 ; x < BUILDING_HORIZONTAL ; x++)
+				{
+					m_Building[z * BUILDING_INSIDE + x].Pos.z += BUILDING_STRIDE_Z;
+				}
+				flug = true;
+				break;
 			}
 		}
 
 		// スプライン情報が更新された場合
-		if(fabsf(oldSpline.Length - m_Spline->Length) < 0.01f)
+		if(flug || (oldSpline.Length - m_Spline->Length > 1.0f))
 		{
 			// 建物が線路に近接している場合非表示にする
-			for each(CSceneXDX* list in m_Instance)
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+			for(int i = 0 ; i < BUILDING_ALL ; i++)
 			{
+				bool ifNearBuilding = false;
+
+				// 道中の線路近接判定
 				for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
 				{
-					if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
+					if(D3DXVec3Length(&(m_Building[i].Pos - splPos)) < BUILDING_CLEAR_LENGTH)
 					{
-						if(list->GetDrawFrag())
-							list->ChangeDrawFrag();
+						if(m_Building[i].Visible)
+						{
+							m_Building[i].Visible = false;
+						}
+						ifNearBuilding = true;
 					}
-					else
+				}
+
+				// ゴールの線路近接判定
+				for(int j = 0 ; j < 100 ; j++)
+				{
+					D3DXVECTOR3 nowPos = goalPos.nearPos + (goalPos.farPos - goalPos.nearPos) * (j / 100.0f);
+
+					if(D3DXVec3Length(&(m_Building[i].Pos - nowPos)) < BUILDING_CLEAR_LENGTH)
 					{
-						//if(!list->GetDrawFrag())
-							//list->SetDrawFrag(true);
+						if(m_Building[i].Visible)
+						{
+							m_Building[i].Visible = false;
+						}
+						ifNearBuilding = true;
+					}
+				}
+
+				if(!ifNearBuilding)
+				{
+					if(!m_Building[i].Visible)
+					{
+						m_Building[i].Visible = true;
 					}
 				}
 			}
@@ -186,20 +243,76 @@ void CBuilding::Update(void)
 //=============================================================================
 void CBuilding::Draw(void)
 {
+	D3DXMATERIAL	*pMat = NULL;		// マテリアル
+	D3DMATERIAL9	matDef;				// デフォルトのマテリアル
+
+
 	if(m_ifInitialize)
 	{
-		for each(CSceneXDX* list in m_Instance)
-		{
-			if(list->GetDrawFrag())
-			{
-				D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
+		// Zテスト開始
+		CRendererDX::EnableZTest();
 
-				if(D3DXVec3Length(&(list->GetPos() - playerPos)) < BUILDING_INVISIBLE_FAR)
+		// アルファテスト開始
+		CRendererDX::EnableAlphaTest();
+
+		// ライティング設定をオフに
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, FALSE);
+		
+		// 現在のマテリアルを取得
+		D3D_DEVICE->GetMaterial(&matDef);
+
+		for(int i = 0 ; i < BUILDING_ALL ; i++)
+		{
+			if(m_Building[i].Visible)
+			{
+				// マトリックス設定
+				CRendererDX::SetMatrix(&m_mtxWorld, m_Building[i].Pos, VEC3_ZERO);
+
+				pMat = m_BuildingMat[m_Building[i].Type];
+
+				// 3Dモデル描画
+				for(int j = 0 ; j < (int)m_BuildingMesh[m_Building[i].Type].NumMat ; j++)
 				{
-					list->Draw();
+					// マテリアルセット
+					D3D_DEVICE->SetMaterial(&pMat[j].MatD3D);
+
+					// テクスチャ読み込み
+					if(pMat[j].pTextureFilename)
+					{// テクスチャ有り
+
+						// リストから同名のテクスチャを探索し、セット
+						for each(TEXTURE list in m_BuildingMesh[m_Building[i].Type].Tex)
+						{
+							if(list.FileName == CharPToString(pMat[j].pTextureFilename))
+							{
+								D3D_DEVICE->SetTexture(0, list.pTexture);
+							}
+						}
+					}
+					else
+					{// テクスチャ無し
+
+						// テクスチャをセットしない
+						D3D_DEVICE->SetTexture(0, NULL);
+					}
+
+					// モデル描画
+					m_BuildingMesh[m_Building[i].Type].pMesh->DrawSubset(j);
 				}
 			}
 		}
+
+		// マテリアルを元に戻す
+		D3D_DEVICE->SetMaterial(&matDef);
+
+		// アルファテスト終了
+		CRendererDX::DisableAlphaTest();
+
+		// Zテスト終了
+		CRendererDX::DisableZTest();
+
+		// ライティング設定をオンに
+		//D3D_DEVICE->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
 }
 
@@ -209,75 +322,34 @@ void CBuilding::Draw(void)
 //	戻り値	:無し
 //	説明	:更新処理を行う。
 //=============================================================================
-uint CBuilding::UpdateThread(void*)
+uint __stdcall CBuilding::UpdateS(void*)
 {
-	if(m_ifInitialize)
+	DWORD	dwFrameCount	= 0;
+	DWORD	dwCurrentTime	= 0;
+	DWORD	dwExecLastTime	= 0;
+	DWORD	dwFPSLastTime	= 0;
+
+	dwFrameCount = dwCurrentTime = 0;
+	dwExecLastTime = dwFPSLastTime = timeGetTime();
+
+	while(1)
 	{
-		static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
-		D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
-
-
-		// 位置更新
-		for each(CSceneXDX* list in m_Instance)
+		dwCurrentTime = timeGetTime();
+		if((dwCurrentTime - dwFPSLastTime) >= 500)
 		{
-			D3DXVECTOR3 listPos = list->GetPos();
-
-			if(playerPos.z > listPos.z + FOG_END / 2)
-			{
-				list->SetPos(D3DXVECTOR3(listPos.x, listPos.y, listPos.z + FOG_END));
-			}
+			dwFPSLastTime = dwCurrentTime;
+			dwFrameCount = 0;
 		}
-
-		// スプライン情報が更新された場合
-		if(fabsf(oldSpline.Length - m_Spline->Length) < 0.01f)
+		if((dwCurrentTime - dwExecLastTime) >= (1000 / GAME_FPS))
 		{
-			// 建物が線路に近接している場合非表示にする
-			for each(CSceneXDX* list in m_Instance)
+			dwExecLastTime = dwCurrentTime;
+
+			if(m_ifInitialize)
 			{
-				for each(D3DXVECTOR3 splPos in m_Spline->PosHermite)
-				{
-					if(D3DXVec3Length(&(list->GetPos() - splPos)) < BUILDING_CLEAR_LENGTH)
-					{
-						if(list->GetDrawFrag())
-							list->ChangeDrawFrag();
-					}
-					else
-					{
-						//if(!list->GetDrawFrag())
-						//list->SetDrawFrag(true);
-					}
-				}
+				//Update();
 			}
-		}
 
-		// スプライン情報保存
-		oldSpline = (*m_Spline);
-	}
-
-	return 0;
-}
-
-//=============================================================================
-//	関数名	:Draw
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:描画処理を行う。
-//=============================================================================
-uint CBuilding::DrawThread(void*)
-{
-	if(m_ifInitialize)
-	{
-		for each(CSceneXDX* list in m_Instance)
-		{
-			if(list->GetDrawFrag())
-			{
-				D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
-
-				if(D3DXVec3Length(&(list->GetPos() - playerPos)) < BUILDING_INVISIBLE_FAR)
-				{
-					list->Draw();
-				}
-			}
+			dwFrameCount++;
 		}
 	}
 
