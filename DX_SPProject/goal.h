@@ -9,6 +9,7 @@
 //
 //=============================================================================
 #include "scene3DDX.h"
+#include "sceneXDX.h"
 #include "rail.h"
 #include "railLine.h"
 
@@ -59,6 +60,8 @@ protected:
 
 	D3DXVECTOR3 m_PosFar;
 	D3DXVECTOR3 m_Vec;
+
+	CSceneXDX* m_Instance[2];
 };
 
 #endif

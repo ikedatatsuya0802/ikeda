@@ -290,6 +290,7 @@ void CPillar::Uninit(void)
 void CPillar::Update(void)
 {
 	static uint oldSize = m_pVtxBuff.size();
+	m_Spline = CGame::GetRailLine()->GetSpline();
 
 	if(oldSize < m_Spline->Pos.size())
 	{

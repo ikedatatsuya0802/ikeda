@@ -10,9 +10,7 @@
 //	インクルード
 //=============================================================================
 #include "goal.h"
-#include "manager.h"
 #include "main.h"
-#include "rendererDX.h"
 #include "game.h"
 #include "player.h"
 
@@ -64,10 +62,10 @@ void CGoal::Init(void)
 
 	Load();
 
-	CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL,
+	m_Instance[0] = CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL,
 		D3DXVECTOR3(CGame::GetPlayer1()->GetPlayerPos().x, 0.0f, CGame::GetPlayer1()->GetPlayerPos().z + 150.0f),
 		D3DXVECTOR3(0.0, D3DX_PI, 0.0f));
-	CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
+	m_Instance[1] = CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
 }
 
 //=============================================================================
@@ -151,6 +149,11 @@ void CGoal::Update(void)
 	D3DXVec3Normalize(&m_Vec, &(CGame::GetRailLine()->GetSplinePos(RAILLINE_GOAL + 0.01f) - m_Pos));
 
 	SetVtxBuff();
+
+	// ゴール位置の再設定
+	m_Instance[1]->SetPos(D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
+	D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(0.981f) - CGame::GetRailLine()->GetSplinePos(0.98f);
+	m_Instance[1]->SetRot(D3DXVECTOR3(0, atan2f(pos.x, pos.y), 0));
 }
 
 //=============================================================================

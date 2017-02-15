@@ -146,12 +146,12 @@ void CBuilding::Uninit(void)
 void CBuilding::Update(void)
 {
 	GOALPOS goalPos = CGame::GetGoal()->GetGoalPos();
-	D3DXVECTOR3 moveDir = CGame::GetPlayer1()->GetMoveDir();
 
 	if(m_ifInitialize)
 	{
 		static SPLINE oldSpline = *CGame::GetRailLine()->GetSpline();
 		D3DXVECTOR3 playerPos = CGame::GetPlayer1()->GetPos();
+		D3DXVECTOR3 moveDir = CGame::GetPlayer1()->GetMoveDir();
 
 
 		// ˆÊ’uXV

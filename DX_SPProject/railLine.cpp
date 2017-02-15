@@ -408,7 +408,7 @@ void CRailLine::MouseEdit(void)
 					if(KH_LSHIFT)
 					{
 						// 高さエディット
-						m_Spline.Pos[i].y = (float)holdPos.y - CInput::GetMouseScreenPos().y;
+						m_Spline.Pos[i].y = ((float)holdPos.y - CInput::GetMouseScreenPos().y) * 2.0f;
 						
 						// 高さの下限値設定
 						if(m_Spline.Pos[i].y < 1.0f)
@@ -658,10 +658,11 @@ void CRailLine::AddPoints(void)
 	D3DXVECTOR3 pos = m_Spline.Pos[m_Spline.Pos.size() - 1];
 	m_Spline.Pos.push_back(D3DXVECTOR3(pos.x, pos.y, pos.z));
 	m_Spline.ifHold.push_back(false);
+	m_Spline.LengthMin.push_back(0);
 
 	// 制御ベクトルを追加
 	D3DXVECTOR3 vec = m_Spline.Vec[m_Spline.Vec.size() - 1];
-	m_Spline.Vec.push_back(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
+	m_Spline.Vec.push_back(D3DXVECTOR3(vec.x, vec.y, vec.z));
 
 	// 頂点バッファのリサイズ
 	SafetyRelease(m_pVtxBuff);
@@ -689,6 +690,7 @@ void CRailLine::DeletePoints(void)
 		// 制御座標を削除
 		m_Spline.Pos.pop_back();
 		m_Spline.ifHold.pop_back();
+		m_Spline.LengthMin.pop_back();
 
 		// 制御ベクトルを削除
 		m_Spline.Vec.pop_back();
@@ -714,6 +716,13 @@ void CRailLine::DeletePoints(void)
 //=============================================================================
 void CRailLine::Draw(void)
 {
+	static int dpCnt = 0;
+	dpCnt++;
+	if(dpCnt > 120 * 100000)
+	{
+		dpCnt = 0;
+	}
+
 	if(m_flgDraw)
 	{
 		// マウス座標に対応するスケール
@@ -850,10 +859,25 @@ void CRailLine::Draw(void)
 	if(CManager::GetEdhitMode())
 	{
 		CDebugProc::DebugProc("エディットタイプ:%d\n", m_EditType);
-		for(int i = 0 ; i < (int)m_Spline.Pos.size() ; i++)
+		if(dpCnt / 120 % 2 == 0)
 		{
-			CDebugProc::DebugProc("spl_pos[%d]:(%.1f:%.1f:%.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
-			CDebugProc::DebugProc("vec:(%.1f:%.1f:%.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
+			for(int i = 0 ; i < (int)m_Spline.Pos.size() / 2 ; i++)
+			{
+				CDebugProc::DebugProc("spl_pos[%2d]:(%5.1f:%5.1f:%5.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
+				CDebugProc::DebugProc("vec:(%5.1f:%5.1f:%5.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
+			}
+			if((int)m_Spline.Pos.size() % 2 == 1)
+			{
+				CDebugProc::DebugProc("\n");
+			}
+		}
+		else
+		{
+			for(int i = (int)m_Spline.Pos.size() / 2 ; i < (int)m_Spline.Pos.size() ; i++)
+			{
+				CDebugProc::DebugProc("spl_pos[%2d]:(%5.1f:%5.1f:%5.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
+				CDebugProc::DebugProc("vec:(%5.1f:%5.1f:%5.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
+			}
 		}
 	}
 	CDebugProc::DebugProc("スプライン長:%.1f\n", m_Spline.Length);

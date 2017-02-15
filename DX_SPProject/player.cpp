@@ -76,9 +76,10 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	//LoadSpline(m_RailLine);
 	m_Spline = CGame::GetRailLine()->GetSpline();
 
-	m_SplineTime = 0.0f;
-	m_DriftCurve = 0;
-	m_CntDrift = 0;
+	m_SplineTime	= 0.0f;
+	m_DriftState	= 0;
+	m_DriftCurve	= 0;
+	m_CntDrift		= 0;
 
 	// スポットライトの起動
 	//CLightDX::ChangeLight(CLightDX::GetLightNum() - 1, true);
@@ -113,39 +114,11 @@ void CPlayer::Update(void)
 		// プレイヤー移動
 		UpdateMove();
 
-
-		// ドリフトマーク開始判断
-		if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
+		// ドリフト動作
+		if(CGame::GetFrame() > COUNTDOWN_END_TIME)
 		{
-			if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == -1)
-			{// ドリフトの開始
-
-				if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
-				{// 左カーブ
-
-					if((m_DriftCurve >= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
-					{// ドリフトしていなかった場合、80km/hを超えていたら減速
-
-						CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
-						m_PerMove -= PLAYER_NOT_DRIFT;
-						if(m_PerMove < 0.0f) m_PerMove = 0;
-					}
-				}
-				else
-				{// 右カーブ
-
-					if((m_DriftCurve <= 0) && (m_PerMove > PLAYER_CURVESPEED_MAX))
-					{// ドリフトしていなかった場合、80km/hを超えていたら減速
-
-						CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
-						m_PerMove -= PLAYER_NOT_DRIFT;
-						if(m_PerMove < 0.0f) m_PerMove = 0;
-					}
-				}
-			}
+			UpdateDrift();
 		}
-
-		UpdateDrift();
 	}
 	else
 	{// ゴール到達後
@@ -160,12 +133,6 @@ void CPlayer::Update(void)
 		m_Pos.x -= m_RealSpeed * sinf(m_Spline->Rot.y);
 		m_Pos.z -= m_RealSpeed * cosf(m_Spline->Rot.y);
 	}
-
-	D3DXVECTOR3 lightVec = VEC3_ZERO;
-	D3DXVec3Normalize(&lightVec, &m_MoveVec);
-
-	// スポットライトの設定
-	//CLightDX::SetSpotLight(0, m_Pos, m_MoveVec);
 }
 
 //=============================================================================
@@ -221,6 +188,22 @@ void CPlayer::UpdateMove(void)
 	// 絶対移動量の計測
 	m_RealSpeed = D3DXVec3Length(&(CGame::GetRailLine()->GetSplinePos(m_Per) - m_Pos));
 
+	// ジャンプ量の反映
+	m_Pos.y += m_Move.y;
+
+	// プレイヤーの高さを設定
+	if(m_Pos.y < CGame::GetRailLine()->GetSplinePos(m_Per).y)
+	{
+		m_Pos.y		= CGame::GetRailLine()->GetSplinePos(m_Per).y;
+		m_Move.y	= 0.0f;
+		m_bJump		= false;
+	}
+	else
+	{
+		// ジャンプ量の減衰
+		m_Move.y -= PLAYER_GRAVITY;
+	}
+
 	// 位置反映
 	m_Pos.x = CGame::GetRailLine()->GetSplinePos(m_Per).x;
 	m_Pos.z = CGame::GetRailLine()->GetSplinePos(m_Per).z;
@@ -233,10 +216,13 @@ void CPlayer::UpdateMove(void)
 
 	// 少し手前のスプライン座標
 	D3DXVECTOR3 nearDir = CGame::GetRailLine()->GetSplinePos(m_Per - 0.01f);
+	D3DXVECTOR3 farDir = CGame::GetRailLine()->GetSplinePos(m_Per + 0.01f);
 
 	// 回転量計算
-	m_Spline->Rot.y = atan2f((nearDir.x - m_MoveVec.x), (nearDir.z - m_MoveVec.z));
+	m_Spline->Rot.y = atan2f((nearDir.x - farDir.x), (nearDir.z - farDir.z));
 
+	// 進行方向の計算
+	m_MoveVec = farDir - CGame::GetRailLine()->GetSplinePos(m_Per);
 	
 	// 傾斜の回転軸計算
 	D3DXVECTOR3 vec = CGame::GetRailLine()->GetMoveVec(m_Per);
@@ -261,45 +247,57 @@ void CPlayer::UpdateDrift(void)
 	static int m_DriftTime = 0;	// ドリフトしている時間
 
 	// ドリフト
-	if(KT_LEFT && (CGame::GetFrame() > COUNTDOWN_END_TIME) && !m_CntDrift
-		&& !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == 2)))
+	if(KT_LEFT && !m_CntDrift && (m_DriftState >= 0))
 	{
 		m_Move.y += PLAYER_JUMP;
-
 		m_bJump = true;
 
-		if(!m_DriftCurve) m_DriftCurve--;
-		m_DriftCurve--;
+		m_DriftState--;
+		m_DriftCurve = -1;
 		m_CntDrift = PLAYER_ROT_STEP;
 
-		// エフェクト表示
-		m_DriftTime = 120;
-		CGame::GetHakushin()->SetColor(1.0f);
-
-		// カメラ距離設定
-		CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
+		if(m_DriftState == -1)
+		{
+			// エフェクト表示
+			m_DriftTime = 120;
+			CGame::GetHakushin()->SetColor(1.0f);
+			// カメラ距離設定
+			CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
+		}
+		else
+		{
+			CGame::GetHakushin()->SetColor(0.0f);
+			// カメラ距離設定
+			CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
+		}
 	}
-	else if(KT_LEFT && (CGame::GetFrame() > COUNTDOWN_END_TIME) && !m_CntDrift
-		&& !m_bJump && ((m_DriftCurve == 0) || (m_DriftCurve == -2)))
+	else if(KT_RIGHT && !m_CntDrift && (m_DriftState <= 0))
 	{
 		m_Move.y += PLAYER_JUMP;
-
 		m_bJump = true;
 
-		if(!m_DriftCurve) m_DriftCurve++;
-		m_DriftCurve++;
+		m_DriftState++;
+		m_DriftCurve = 1;
 		m_CntDrift = PLAYER_ROT_STEP;
 
-		// エフェクト表示
-		m_DriftTime = 120;
-		CGame::GetHakushin()->SetColor(1.0f);
-
-		// カメラ距離設定
-		CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
+		if(m_DriftState == 1)
+		{
+			// エフェクト表示
+			m_DriftTime = 120;
+			CGame::GetHakushin()->SetColor(1.0f);
+			// カメラ距離設定
+			CManager::GetCamera()->SetDisVec(-PLAYER_CAMERA_DISVEC);
+		}
+		else
+		{
+			CGame::GetHakushin()->SetColor(0.0f);
+			// カメラ距離設定
+			CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
+		}
 	}
-
+	
 	// ドリフト中かどうか
-	if((m_DriftCurve == 2) || (m_DriftCurve == -2))
+	if(m_DriftCurve)
 	{
 		if(m_DriftTime > 0)
 		{
@@ -317,78 +315,86 @@ void CPlayer::UpdateDrift(void)
 		CGame::GetHakushin()->SetSize(false, SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
 	}
 
+	// ドリフトの回転反映
+	if(m_CntDrift > 0)
+	{
+		m_Rot.y += PLAYER_DRIFT_ROT / PLAYER_ROT_STEP * m_DriftCurve;
+
+		m_CntDrift--;
+		if(m_CntDrift == 0)
+		{
+			m_DriftCurve = 0;
+		}
+	}
+
+
+	// ドリフトマーク開始判断
+	if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
+	{
+		if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == -1)
+		{// ドリフトの開始
+
+			if(!CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Curve)
+			{// 左カーブ
+
+				if((m_DriftState != -1) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+				{// ドリフトしていなかった場合、80km/hを超えていたら減速
+
+					CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+					m_PerMove -= PLAYER_NOT_DRIFT;
+					if(m_PerMove < 0.0f) m_PerMove = 0;
+				}
+			}
+			else
+			{// 右カーブ
+
+				if((m_DriftState != 1) && (m_PerMove > PLAYER_CURVESPEED_MAX))
+				{// ドリフトしていなかった場合、80km/hを超えていたら減速
+
+					CManager::GetCamera()->SetCameraVibrate(180, 10.0f);
+					m_PerMove -= PLAYER_NOT_DRIFT;
+					if(m_PerMove < 0.0f) m_PerMove = 0;
+				}
+			}
+		}
+	}
+
 	// ドリフトマーク終了判断
 	if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).ifDrift)
 	{
 		if(CGame::GetRailLine()->GetDriftStatus(m_PerOld - DRIFTMARK_FUTURE, m_Per - DRIFTMARK_FUTURE).Status == 1)
 		{// ドリフトの終点の場合
 
-			if(m_DriftCurve == 2)
+			if(m_CntDrift == 0)
 			{
-				m_DriftCurve--;
-				m_CntDrift = PLAYER_ROT_STEP;
-				m_Move.y += PLAYER_JUMP;
+				if(m_DriftState == -1)
+				{
+					m_DriftState = 0;
+					m_DriftCurve++;
+					m_CntDrift = PLAYER_ROT_STEP;
+					m_Move.y += PLAYER_JUMP;
 
-				m_bJump = true;
+					m_bJump = true;
 
-				// カメラ距離設定
-				CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
-			}
-			else if(m_DriftCurve == -2)
-			{
-				m_DriftCurve++;
-				m_CntDrift = PLAYER_ROT_STEP;
-				m_Move.y += PLAYER_JUMP;
+					// カメラ距離設定
+					CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
+				}
+				else if(m_DriftState == 1)
+				{
+					m_DriftState = 0;
+					m_DriftCurve--;
+					m_CntDrift = PLAYER_ROT_STEP;
+					m_Move.y += PLAYER_JUMP;
 
-				m_bJump = true;
+					m_bJump = true;
 
-				// カメラ距離設定
-				CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
+					// カメラ距離設定
+					CManager::GetCamera()->SetDisVec(PLAYER_CAMERA_DISVEC);
+				}
 			}
 
 			CGame::GetHakushin()->SetColor(0.0f);
 		}
-	}
-
-	if(m_CntDrift > 0)
-	{
-		switch(m_DriftCurve)
-		{
-		case -2:
-			m_Rot.y -= PLAYER_ROT_SPEED;
-			break;
-		case -1:
-			m_Rot.y += PLAYER_ROT_SPEED;
-			break;
-		case 0:
-			break;
-		case 1:
-			m_Rot.y -= PLAYER_ROT_SPEED;
-			break;
-		case 2:
-			m_Rot.y += PLAYER_ROT_SPEED;
-			break;
-		default:
-			break;
-		}
-
-		m_CntDrift--;
-		if(((m_DriftCurve == -1) || (m_DriftCurve == 1)) && !m_CntDrift)
-		{
-			m_DriftCurve = 0;
-		}
-	}
-
-	// 回転量補正
-	if(m_RotMove.y > D3DX_PI)				// 回転量がプラス方向に逆向きの場合
-	{
-		// 回転量を逆方向に
-		m_RotMove.y -= (D3DX_PI * 2.0f);
-	}
-	else if(m_RotMove.y < -D3DX_PI)			// 回転量がマイナス方向に逆向きの場合
-	{
-		// 回転量を逆方向に
-		m_RotMove.y += (D3DX_PI * 2.0f);
 	}
 }
 

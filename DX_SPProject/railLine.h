@@ -24,7 +24,7 @@ using namespace std;
 #define	RAILLINE_LENGTH			(10000.0f)				// 横幅
 #define	RAILLINE_WIDTH			(15.0f)					// 横幅
 #define	RAILLINE_MARGIN			(50.0f)					// レールの間隔
-#define	RAILLINE_SET			(300)					// レールの分割数
+#define	RAILLINE_SET			(400)					// レールの分割数
 #define	RAILLINE_VECTOR			(4)						// レールのベクトル数
 #define	RAILLINE_VERTEX			(RAILLINE_SET * 2 + 2)	// レールの頂点数
 #define	RAILLINE_SPOINT_SIZE	(20.0f)					// レール頂点の確認用エフェクトサイズ

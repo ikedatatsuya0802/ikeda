@@ -26,12 +26,12 @@
 
 #define	PLAYER_START_PER		(0.02f)		// プレイヤーのスタート地点
 
-#define	PLAYER_ROT_SPEED		(0.02f)			// プレイヤーの回転ステップ
-#define	PLAYER_ROT_STEP			(8)				// プレイヤーの回転ステップ
-#define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.2f)		// プレイヤーの回転ステップ
+#define	PLAYER_DRIFT_ROT		(0.4f)						// ドリフト時の回転量
+#define	PLAYER_ROT_STEP			(8)							// プレイヤーの回転に掛かるフレーム数
+#define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.2f)	// カーブでドリフトしていなかった際の減速量
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
-#define	PLAYER_JUMP				(3.0f)			// プレイヤーの回転ステップ
+#define	PLAYER_JUMP				(10.0f)			// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY			(0.5f)			// プレイヤーの回転ステップ
 #define	PLAYER_ROTMOTION		(0.2f)			// プレイヤーの回転ステップ
 #define	PLAYER_MOTION_SPEED		(1.0f / 15)		// プレイヤーのモーションスピード
@@ -121,6 +121,7 @@ protected:
 	float		m_PerMove;		// スプライン上位置の移動量
 	float		m_SplineTime;	// スプライン上位置の移動量
 	float		m_RealSpeed;	// 絶対移動量
+	int			m_DriftState;	// ドリフトしているか、またどちらにドリフトしているか
 	int			m_DriftCurve;	// どちらにドリフト中か
 	int			m_CntDrift;		// ドリフトカウンタ
 };

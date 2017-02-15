@@ -15,6 +15,7 @@
 #include "manager.h"
 #include "cameraDX.h"
 #include "game.h"
+#include "player.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -251,12 +252,22 @@ void CEStructure::Draw(void)
 		CRendererDX::EnableAlphaTest();
 		CRendererDX::EnableZTest();
 
+		float per = CGame::GetPlayer1()->GetPerSpline();
+		int startIndex = (int)(per * 100);
+		int endIndex = (int)((per + 0.3f) * 100);
+
+		if(startIndex + endIndex > ESTRUCTURE_POLYGON_NUM)
+		{
+			endIndex = ESTRUCTURE_POLYGON_NUM - startIndex;
+		}
+
 		// 描画処理
 		D3D_DEVICE->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));	// 頂点フォーマットの設定
 		D3D_DEVICE->SetIndices(m_pIdxBuff);									// インデックスバッファのバインド
 		D3D_DEVICE->SetFVF(FVF_VERTEX_3D);									// 頂点フォーマットの設定
 		D3D_DEVICE->SetTexture(0, m_pTexture);								// テクスチャの設定
-		D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, ESTRUCTURE_VERTEX_NUM, 0, ESTRUCTURE_POLYGON_NUM);
+		//D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, ESTRUCTURE_VERTEX_NUM, 0, ESTRUCTURE_POLYGON_NUM);
+		D3D_DEVICE->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, ESTRUCTURE_VERTEX_NUM, 0, ESTRUCTURE_POLYGON_NUM + 700);
 		
 		// アルファ・Zテスト終了
 		CRendererDX::DisableAlphaTest();
