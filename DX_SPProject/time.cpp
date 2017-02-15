@@ -114,7 +114,20 @@ void CTime::Update(void)
 //=============================================================================
 void CTime::Draw(void)
 {
-
+	if(!CManager::GetEdhitMode())
+	{
+		for(int i = 0 ; i < TIME_FIGURE ; i++)
+		{
+			m_Instance[i]->SetDrawFrag(true);
+		}
+	}
+	else
+	{
+		for(int i = 0 ; i < TIME_FIGURE ; i++)
+		{
+			m_Instance[i]->SetDrawFrag(false);
+		}
+	}
 }
 
 //=============================================================================

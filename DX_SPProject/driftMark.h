@@ -22,7 +22,7 @@
 #define	DRIFTMARK_TEXNAME001	"drift002.jpg"
 #define	DRIFTMARK_TYPE			(2)
 #define	DRIFTMARK_SRIDESPEED	(0.015f)
-#define	DRIFTMARK_FUTURE		(0.03f)		// ドリフトマーク表示地点
+#define	DRIFTMARK_FUTURE		(0.01f)		// ドリフトマーク表示地点
 
 //=============================================================================
 //	構造体

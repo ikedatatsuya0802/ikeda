@@ -102,7 +102,7 @@ void CGame::Init(void)
 	m_Frame = -1;
 
 	// BGMçƒê∂
-	//CSound::Play(SOUNDLABEL_BGM000);
+	CSound::Play(SOUNDLABEL_BGM000);
 }
 
 //=============================================================================

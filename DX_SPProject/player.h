@@ -20,15 +20,15 @@
 //=============================================================================
 #define	PLAYER_PARTS			(1)			// プレイヤーのパーツ数
 
-#define PLAYER_MOVEMENT			(0.05f / CGame::GetRailLine()->GetSpline()->LengthMin[0])	// 加速度
-#define PLAYER_SPEED_MAX		(PLAYER_MOVEMENT * 1200.0f)									// 最高速
-#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (1.0f / 12.0f))							// カーブの限界スピード
+#define PLAYER_MOVEMENT			(0.03f / CGame::GetRailLine()->GetSpline()->LengthMin[0])	// 加速度
+#define PLAYER_SPEED_MAX		(PLAYER_MOVEMENT * 1800.0f)									// 最高速
+#define	PLAYER_CURVESPEED_MAX	(PLAYER_SPEED_MAX * (4.0f / 12.0f))							// カーブの限界スピード
 
 #define	PLAYER_START_PER		(0.02f)		// プレイヤーのスタート地点
 
-#define	PLAYER_DRIFT_ROT		(0.4f)						// ドリフト時の回転量
+#define	PLAYER_DRIFT_ROT		(0.2f)						// ドリフト時の回転量
 #define	PLAYER_ROT_STEP			(8)							// プレイヤーの回転に掛かるフレーム数
-#define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.2f)	// カーブでドリフトしていなかった際の減速量
+#define	PLAYER_NOT_DRIFT		(PLAYER_SPEED_MAX * 0.4f)	// カーブでドリフトしていなかった際の減速量
 
 #define	PLAYER_SPEED_DOWN		(0.05f)			// プレイヤーの回転ステップ
 #define	PLAYER_JUMP				(10.0f)			// プレイヤーの回転ステップ

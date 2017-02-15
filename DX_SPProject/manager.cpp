@@ -118,7 +118,8 @@ void CManager::Draw(void)
 
 #ifdef _DEBUG
 	// デバッグプロシージャ
-	CDebugProc::Draw();
+	if(CManager::GetEdhitMode())
+		CDebugProc::Draw();
 #endif
 	CDebugProc::Clear();
 #ifdef _DEBUG

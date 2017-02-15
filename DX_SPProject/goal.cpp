@@ -65,7 +65,8 @@ void CGoal::Init(void)
 	m_Instance[0] = CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL,
 		D3DXVECTOR3(CGame::GetPlayer1()->GetPlayerPos().x, 0.0f, CGame::GetPlayer1()->GetPlayerPos().z + 150.0f),
 		D3DXVECTOR3(0.0, D3DX_PI, 0.0f));
-	m_Instance[1] = CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL, D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
+	m_Instance[1] = CSceneXDX::Create(".\\data\\MODEL\\ekisha\\ekisha.x", NULL,
+		D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z), D3DXVECTOR3(0.0f, (D3DX_PI / 2), 0.0f));
 }
 
 //=============================================================================
@@ -152,8 +153,6 @@ void CGoal::Update(void)
 
 	// ƒS[ƒ‹ˆÊ’u‚ÌÄÝ’è
 	m_Instance[1]->SetPos(D3DXVECTOR3(m_Pos.x, 0.0f, m_Pos.z));
-	D3DXVECTOR3 pos = CGame::GetRailLine()->GetSplinePos(0.981f) - CGame::GetRailLine()->GetSplinePos(0.98f);
-	m_Instance[1]->SetRot(D3DXVECTOR3(0, atan2f(pos.x, pos.y), 0));
 }
 
 //=============================================================================

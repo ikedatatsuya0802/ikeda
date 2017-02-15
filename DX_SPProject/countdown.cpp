@@ -12,6 +12,7 @@
 #include "countdown.h"
 #include "game.h"
 #include "player.h"
+#include "sound.h"
 
 //=============================================================================
 //	ä÷êîñº	:CCountdown()
@@ -156,7 +157,7 @@ void CCountdown::Update(void)
 
 		if((frame - (MINUTE * COUNTDOWN_MINUTE)) / MINUTE == 0)
 		{// ÉJÉEÉìÉg3
-
+			
 			m_Tex = 0.0f;
 
 			m_Alpha = ((frame - (MINUTE * COUNTDOWN_MINUTE)) % MINUTE) / (float)MINUTE;
@@ -181,6 +182,12 @@ void CCountdown::Update(void)
 
 			m_SizePow += (1.0f / MINUTE * COUNTDOWN_SIZE_POW);
 		}
+	}
+
+	if(frame == (COUNTDOWN_START + MINUTE * COUNTDOWN_MINUTE))
+	{
+		// SEçƒê∂
+		CSound::Play(1);
 	}
 
 	SetVtxBuff();

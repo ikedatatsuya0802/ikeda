@@ -323,8 +323,18 @@ void CPillar::Draw(void)
 
 		for(int i = 0 ; i < (int)m_Spline->Pos.size() ; i++)
 		{
+			bool flug = false;
+
+			for(int j = 0 ; j < i ; j++)
+			{
+				if(1000.0f > D3DXVec3Length(&(m_Spline->Pos[j] - m_Spline->Pos[i])))
+				{
+					flug = true;
+				}
+			}
+
 			// 最低ラインの高さには柱を出さない
-			if(m_Spline->Pos[i].y > 2.0f)
+			if(!flug && m_Spline->Pos[i].y > 2.0f)
 			{
 				// 設置位置・サイズの設定
 				CRendererDX::SetMatrix(&m_mtxWorld,

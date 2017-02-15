@@ -23,6 +23,11 @@ SOUNDPARAM	CSound::m_Param[SOUNDLABEL_MAX] = {
 	{"./data/SOUND/se000.wav", 0},					// SEその1
 };	// サウンドパラメータ
 
+int		CSound::m_NowPlaySource;
+
+DWORD	CSound::m_PlayTime;
+DWORD	CSound::m_PlayLong;
+
 //=============================================================================
 //	関数名	:Init
 //	引数	:無し
@@ -38,6 +43,10 @@ void CSound::Init(void)
 	{
 		m_Buffer[i] = alutCreateBufferFromFile(m_Param[i].pFilename);
 	}
+
+	m_NowPlaySource = -1;
+	m_PlayTime = 0;
+	m_PlayLong = 0;
 }
 
 //=============================================================================
@@ -89,7 +98,10 @@ void CSound::Uninit(void)
 //=============================================================================
 void CSound::Update(void)
 {
-
+	if(m_PlayTime > 0)
+	{
+		m_PlayLong = timeGetTime() - m_PlayTime;
+	}
 }
 
 //=============================================================================
@@ -100,6 +112,9 @@ void CSound::Update(void)
 //=============================================================================
 void CSound::Play(ALuint index, float volume)
 {
+	m_PlayTime = timeGetTime();
+	m_NowPlaySource = index;
+
 	// インデックスの閾値検査
 	if(index < SOUNDLABEL_MAX)
 	{// インデックスが正常な場合のみ再生処理を行う
@@ -165,6 +180,9 @@ void CSound::Play(ALuint index, float volume)
 //=============================================================================
 void CSound::Stop(int index)
 {
+	m_PlayTime = 0;
+	m_NowPlaySource = -1;
+
 	// インデックスの閾値検査
 	if(index < SOUNDLABEL_MAX)
 	{// インデックスが正常な場合のみ停止処理を行う
@@ -182,4 +200,16 @@ void CSound::Stop(int index)
 			alSourceStop(m_Source[index]);
 		}
 	}
+}
+
+//=============================================================================
+//	関数名	:PlaySet
+//	引数	:int index(停止するインデックス番号)
+//	戻り値	:int
+//	説明	:インデックス番号で指定したサウンドファイルを停止する。
+//=============================================================================
+void CSound::PlaySet(float time)
+{
+	//alGetSourcef(m_Source[m_NowPlaySource], AL_SEC_OFFSET, &time);
+	//alSourceRewind(time);
 }

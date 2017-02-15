@@ -859,21 +859,33 @@ void CRailLine::Draw(void)
 	if(CManager::GetEdhitMode())
 	{
 		CDebugProc::DebugProc("エディットタイプ:%d\n", m_EditType);
-		if(dpCnt / 120 % 2 == 0)
+		if(dpCnt / 120 % 3 == 0)
 		{
-			for(int i = 0 ; i < (int)m_Spline.Pos.size() / 2 ; i++)
+			for(int i = 0 ; i < (int)m_Spline.Pos.size() / 3 ; i++)
 			{
 				CDebugProc::DebugProc("spl_pos[%2d]:(%5.1f:%5.1f:%5.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
 				CDebugProc::DebugProc("vec:(%5.1f:%5.1f:%5.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
 			}
-			if((int)m_Spline.Pos.size() % 2 == 1)
+			if((int)m_Spline.Pos.size() % 3 > 0)
+			{
+				CDebugProc::DebugProc("\n");
+			}
+		}
+		else if(dpCnt / 120 % 3 == 1)
+		{
+			for(int i = (int)m_Spline.Pos.size() / 3 ; i < (int)m_Spline.Pos.size() / 3 * 2 ; i++)
+			{
+				CDebugProc::DebugProc("spl_pos[%2d]:(%5.1f:%5.1f:%5.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
+				CDebugProc::DebugProc("vec:(%5.1f:%5.1f:%5.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);
+			}
+			if((int)m_Spline.Pos.size() % 3 > 0)
 			{
 				CDebugProc::DebugProc("\n");
 			}
 		}
 		else
 		{
-			for(int i = (int)m_Spline.Pos.size() / 2 ; i < (int)m_Spline.Pos.size() ; i++)
+			for(int i = (int)m_Spline.Pos.size() / 3 * 2 ; i < (int)m_Spline.Pos.size() ; i++)
 			{
 				CDebugProc::DebugProc("spl_pos[%2d]:(%5.1f:%5.1f:%5.1f) ", i, m_Spline.Pos[i].x, m_Spline.Pos[i].y, m_Spline.Pos[i].z);
 				CDebugProc::DebugProc("vec:(%5.1f:%5.1f:%5.1f)\n", m_Spline.Vec[i].x, m_Spline.Vec[i].y, m_Spline.Vec[i].z);

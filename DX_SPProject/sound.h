@@ -53,12 +53,18 @@ public:
 	static void Play(ALuint index, float volume = 1.0f);
 	static void Stop(int index);
 
+	static void PlaySet(float time);
+
 private:
 	static ALuint		m_Buffer[SOUNDLABEL_MAX];
 	static ALuint		m_Source[NUM_SOURCE];
 
 	static SOUNDPARAM	m_Param[SOUNDLABEL_MAX];
 
+	static int m_NowPlaySource;
+
+	static DWORD		m_PlayTime;
+	static DWORD		m_PlayLong;
 };
 
 #endif
