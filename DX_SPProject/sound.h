@@ -35,8 +35,9 @@ typedef struct{			// サウンドのパラメータ
 } SOUNDPARAM;
 
 typedef enum{				// サウンドのラベル
-	SOUNDLABEL_BGM000 = 0,	// BGMその１
-	SOUNDLABEL_SE000,		// SEその１
+	SOUNDLABEL_BGM000 = 0,	// BGMその1
+	SOUNDLABEL_SE000,		// SEその1
+	SOUNDLABEL_SE001,		// SEその2
 	SOUNDLABEL_MAX,
 } SOUNDLABEL;
 
@@ -52,6 +53,7 @@ public:
 
 	static void Play(ALuint index, float volume = 1.0f);
 	static void Stop(int index);
+	static void SetVolume(cint index, float volume = 1.0f);
 
 	static void PlaySet(float time);
 

@@ -81,8 +81,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 	m_DriftCurve	= 0;
 	m_CntDrift		= 0;
 
-	// スポットライトの起動
-	//CLightDX::ChangeLight(CLightDX::GetLightNum() - 1, true);
+	// SE2再生
+	CSound::Play(SOUNDLABEL_SE001, 0.0f);
 }
 
 //=============================================================================
@@ -93,6 +93,8 @@ void CPlayer::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(void)
 {
+	CSound::Stop(SOUNDLABEL_SE001);
+	m_PerMove = 0.0f;
 	// スポットライトの終了
 	//CLightDX::ChangeLight(CLightDX::GetLightNum() - 1, false);
 }
@@ -132,6 +134,21 @@ void CPlayer::Update(void)
 		// 位置反映
 		m_Pos.x -= m_RealSpeed * sinf(m_Spline->Rot.y);
 		m_Pos.z -= m_RealSpeed * cosf(m_Spline->Rot.y);
+	}
+
+	// SE2の音量調整
+	float volume = m_PerMove * 100.0f;
+	
+	CSound::SetVolume(0, volume);
+	
+	if(volume > 0.01f)
+	{
+		//CSound::Play(SOUNDLABEL_SE001, 1.0f);
+		//CSound::Play(SOUNDLABEL_SE001, 1.0f);
+	}
+	else
+	{
+		//CSound::Stop(SOUNDLABEL_SE001);
 	}
 }
 

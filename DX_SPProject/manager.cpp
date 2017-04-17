@@ -44,7 +44,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 #ifdef _DEBUG
-	m_Mode = new CGame();
+	m_Mode = new CTitle();
 #else
 	m_Mode = new CGame();
 #endif // DEBUG
@@ -52,11 +52,11 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 初期化処理
 	CInput::Init(hInstance, hWnd);
+	CSound::Init();
 	CLightDX::Init();
 	m_Mode->Init();
 	m_Camera->Init();
 	CFade::Init();
-	CSound::Init();
 	CDebugProc::Init();
 }
 

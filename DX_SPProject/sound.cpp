@@ -21,6 +21,7 @@ ALuint		CSound::m_Source[NUM_SOURCE];			// ソース
 SOUNDPARAM	CSound::m_Param[SOUNDLABEL_MAX] = {
 	{"./data/SOUND/bgm000.wav", -1},				// BGMその1
 	{"./data/SOUND/se000.wav", 0},					// SEその1
+	{"./data/SOUND/se001.wav", -1},					// SEその1
 };	// サウンドパラメータ
 
 int		CSound::m_NowPlaySource;
@@ -199,6 +200,30 @@ void CSound::Stop(int index)
 			// サウンド停止
 			alSourceStop(m_Source[index]);
 		}
+	}
+}
+
+//=============================================================================
+//	関数名	:SetVolume
+//	引数	:int index(停止するインデックス番号)
+//	戻り値	:int
+//	説明	:インデックス番号で指定したサウンドファイルを停止する。
+//=============================================================================
+void CSound::SetVolume(cint index, float volume)
+{
+	// インデックスの閾値検査
+	if(index < SOUNDLABEL_MAX)
+	{// インデックスが正常な場合のみ処理を行う
+
+		int state;	// サウンドの状態
+
+		if(volume > 1.0f)
+		{
+			volume = 1.0f;
+		}
+
+		// ボリューム設定
+		alSourcef(m_Source[index], AL_GAIN, volume);
 	}
 }
 

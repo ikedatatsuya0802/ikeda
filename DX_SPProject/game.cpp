@@ -102,7 +102,9 @@ void CGame::Init(void)
 	m_Frame = -1;
 
 	// BGM再生
-	CSound::Play(SOUNDLABEL_BGM000);
+	CSound::Play(SOUNDLABEL_BGM000, 0.1f);
+
+	m_GameState = 0;
 }
 
 //=============================================================================
@@ -117,6 +119,9 @@ void CGame::Uninit(void)
 
 	// 終了処理・インスタンス削除
 	CSceneDX::DeleteAll();
+	
+	CSound::Uninit();
+	//CSound::Stop(SOUNDLABEL_BGM000);
 }
 
 //=============================================================================

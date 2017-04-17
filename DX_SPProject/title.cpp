@@ -62,6 +62,9 @@ void CTitle::Init(void)
 	CRail_Title::Create();
 	CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, -(30000.0f)));
 	//CPlayer_Title::Create(true, 2, OBJTYPE_PLAYER, D3DXVECTOR3(0.0f, 0.0f, 100.0f));
+
+	// SE2çƒê∂
+	CSound::Play(SOUNDLABEL_SE001, 0.5f);
 }
 
 //=============================================================================
@@ -73,6 +76,7 @@ void CTitle::Init(void)
 void CTitle::Uninit(void)
 {
 	CSceneDX::DeleteAll();
+	CSound::Uninit();
 }
 
 //=============================================================================
